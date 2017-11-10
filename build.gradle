@@ -1,0 +1,53 @@
+buildscript {
+    ext.kotlin_version = '1.1.51'
+    repositories {
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+        maven {
+            url 'http://dl.bintray.com/jetbrains/intellij-plugin-service'
+        }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+plugins {
+    id "org.jetbrains.intellij" version "0.1.10"
+}
+apply plugin: 'org.jetbrains.intellij'
+
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'kotlin'
+    group = 'com.gitgub.kornilova_l'
+    version = '1.0'
+}
+
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    intellij.updateSinceUntilBuild = false
+    intellij.downloadSources = false
+    intellij.version = "172.3317.76"
+}
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+compileTestKotlin {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
