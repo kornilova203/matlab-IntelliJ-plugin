@@ -2,3 +2,4 @@
 .gradle/
 build/
 lib/
+src/main/gen/

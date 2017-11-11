@@ -1,0 +1,20 @@
+{
+  parserClass="com.github.kornilova_l.matlab.MatlabParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Matlab"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.github.kornilova_l.matlab.psi"
+  psiImplPackage="com.github.kornilova_l.matlab.psi.impl"
+
+  elementTypeHolderClass="com.github.kornilova_l.matlab.psi.MatlabTypes"
+  elementTypeClass="com.github.kornilova_l.matlab.psi.MatlabElementType"
+  tokenTypeClass="com.github.kornilova_l.matlab.psi.MatlabTokenType"
+}
+
+matlabFile ::= item_*
+
+private item_ ::= (property|COMMENT|CRLF)
+
+property ::= (KEY? SEPARATOR VALUE?) | KEY

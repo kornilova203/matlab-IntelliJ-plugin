@@ -22,6 +22,7 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="com.github.kornilova_l.matlab.MatlabFileTypeFactory"/>
+        <lang.parserDefinition language="Matlab" implementationClass="com.github.kornilova_l.matlab.MatlabParserDefinition"/>
     </extensions>
 
 </idea-plugin>
