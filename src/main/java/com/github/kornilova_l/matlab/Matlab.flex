@@ -2,43 +2,58 @@ package com.github.kornilova_l.matlab;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
-import com.github.kornilova_l.matlab.psi.MatlabTypes;
-import com.intellij.psi.TokenType;
+
+import static com.intellij.psi.TokenType.BAD_CHARACTER;
+import static com.intellij.psi.TokenType.WHITE_SPACE;
+import static com.github.kornilova_l.matlab.psi.MatlabTypes.*;
 
 %%
 
+%{
+  public MatlabLexer() {
+    this((java.io.Reader)null);
+  }
+%}
+
+%public
 %class MatlabLexer
 %implements FlexLexer
-%unicode
 %function advance
 %type IElementType
-%eof{  return;
-%eof}
+%unicode
 
-CRLF=\R
-WHITE_SPACE=[\ \n\t\f]
-FIRST_VALUE_CHARACTER=[^ \n\f\\] | "\\"{CRLF} | "\\".
-VALUE_CHARACTER=[^\n\f\\] | "\\"{CRLF} | "\\".
-END_OF_LINE_COMMENT=("#"|"!")[^\r\n]*
-SEPARATOR=[:=]
-KEY_CHARACTER=[^:=\ \n\t\f\\] | "\\ "
+EOL=\R
+WHITE_SPACE=\s+
 
-%state WAITING_VALUE
+SPACE=[ \t\n\x0B\f\r]+
+COMMENT="//".*
+NUMBER=[0-9]+(\.[0-9]*)?
+ID=[:letter:][a-zA-Z_0-9]*
+STRING=('([^'\\]|\\.)*'|\"([^\"\\]|\\.)*\")
 
 %%
+<YYINITIAL> {
+  {WHITE_SPACE}      { return WHITE_SPACE; }
 
-<YYINITIAL> {END_OF_LINE_COMMENT}                           { yybegin(YYINITIAL); return MatlabTypes.COMMENT; }
+  ";"                { return SEMI; }
+  "="                { return EQ; }
+  "("                { return LP; }
+  ")"                { return RP; }
+  "end"              { return END; }
+  "if"               { return IF; }
+  "+"                { return OP_1; }
+  "-"                { return OP_2; }
+  "*"                { return OP_3; }
+  "/"                { return OP_4; }
+  "!"                { return OP_5; }
+  "float"            { return FLOAT; }
 
-<YYINITIAL> {KEY_CHARACTER}+                                { yybegin(YYINITIAL); return MatlabTypes.KEY; }
+  {SPACE}            { return SPACE; }
+  {COMMENT}          { return COMMENT; }
+  {NUMBER}           { return NUMBER; }
+  {ID}               { return ID; }
+  {STRING}           { return STRING; }
 
-<YYINITIAL> {SEPARATOR}                                     { yybegin(WAITING_VALUE); return MatlabTypes.SEPARATOR; }
+}
 
-<WAITING_VALUE> {CRLF}({CRLF}|{WHITE_SPACE})+               { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
-
-<WAITING_VALUE> {WHITE_SPACE}+                              { yybegin(WAITING_VALUE); return TokenType.WHITE_SPACE; }
-
-<WAITING_VALUE> {FIRST_VALUE_CHARACTER}{VALUE_CHARACTER}*   { yybegin(YYINITIAL); return MatlabTypes.VALUE; }
-
-({CRLF}|{WHITE_SPACE})+                                     { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
-
-.                                                           { return TokenType.BAD_CHARACTER; }
+[^] { return BAD_CHARACTER; }

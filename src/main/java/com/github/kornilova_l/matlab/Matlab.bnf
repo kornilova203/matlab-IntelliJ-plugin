@@ -11,10 +11,61 @@
   elementTypeHolderClass="com.github.kornilova_l.matlab.psi.MatlabTypes"
   elementTypeClass="com.github.kornilova_l.matlab.psi.MatlabElementType"
   tokenTypeClass="com.github.kornilova_l.matlab.psi.MatlabTokenType"
-}
 
-matlabFile ::= item_*
+  tokens=[
+      SEMI=';'
+      EQ='='
+      LP='('
+      RP=')'
 
-private item_ ::= (property|COMMENT|CRLF)
+      space='regexp:\s+'
+      comment='regexp://.*'
+      number='regexp:\d+(\.\d*)?'
+      end="end"
+      if="if"
+      id='regexp:\p{Alpha}\w*'
+      string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\.)*\")"
 
-property ::= (KEY? SEPARATOR VALUE?) | KEY
+      op_1='+'
+      op_2='-'
+      op_3='*'
+      op_4='/'
+      op_5='!'
+      op_equal="=="
+    ]
+
+    name(".*expr")='expression'
+    extends(".*expr")=expr
+  }
+
+  root ::= (function | statement) *
+
+  property ::= id '=' expr [";"]
+
+  if_statement ::= if expr { statement }
+                           { "elseif" { statement } }
+                           [ "else" { statement } ]
+                      end
+
+  expr ::= factor plus_expr *
+  left plus_expr ::= plus_op factor
+  private plus_op ::= '+'|'-'
+  private factor ::= primary mul_expr *
+  left mul_expr  ::= mul_op primary
+  private mul_op ::= '*'|'/'
+  private primary ::= primary_inner factorial_expr ?
+  left factorial_expr ::= '!'
+  private primary_inner ::= literal_expr | ref_expr | paren_expr
+  paren_expr ::= '(' expr ')'
+  ref_expr ::= id
+  literal_expr ::= number | string | float
+
+  function ::= "function" { id } "=" id "(" parameters_list ")" { statement } "end"
+
+  statement ::= property | if_statement | for_loop
+
+  for_loop ::= id "=" values { statement } "end"
+
+  values ::= expr":"expr
+
+  parameters_list ::= id { "," id }
