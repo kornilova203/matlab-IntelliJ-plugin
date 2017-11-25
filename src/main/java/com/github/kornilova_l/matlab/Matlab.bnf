@@ -33,11 +33,15 @@ expr ::= assign_expr
   | primary_group
   | unary_group
   | conditional_group
+  | mul_group
+  | add_group
 
 
 private unary_group ::= unary_min_expr | unary_not_expr
 private primary_group ::= literal_expr | simple_ref_expr
 private conditional_group ::= conditional_expr
+private mul_group ::= mul_expr | div_expr
+private add_group ::= plus_expr | minus_expr
 
 // expressions: auto-operator detection or parents
 //fake ref_expr ::= expr?
@@ -47,6 +51,10 @@ unary_min_expr ::= '-' expr
 unary_not_expr ::= '!' expr
 assign_expr ::= expr '=' expr { rightAssociative=true }
 conditional_expr ::= expr ('<' | '>' | '<=' | '>=' | '==' | '!=') expr
+div_expr ::= expr '/' expr
+mul_expr ::= expr '*' expr
+minus_expr ::= expr '-' expr
+plus_expr ::= expr '+' expr
 
 
 float_literal ::=
