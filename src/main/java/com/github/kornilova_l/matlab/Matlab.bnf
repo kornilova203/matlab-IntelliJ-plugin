@@ -13,11 +13,18 @@
   tokenTypeClass="com.github.kornilova_l.matlab.psi.MatlabTokenType"
 
   tokens=[
+      function="function"
+      if="if"
+      end="end"
+      while="while"
       imaginarysuffix = "regexp:[ij]"
-      echaracter = "regexp:e(?=[\d\+-])"
+      echaracter = "regexp:e/[\d\+-]"
+      newline = 'regexp:\n+'
       space='regexp:\s+'
       comment='regexp://.*'
-      string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\.)*\")"
+      string="regexp:('((\.\.\.\n)|[^'\n])*'|\"((\.\.\.)\n|[^\"\n])*\")"
+      singleqoute="'"
+      doubleqoute='"'
       id = "regexp:[A-Za-z_]+[A-Za-z\d]*"
 
       integer='regexp:[0-9]+'
@@ -47,6 +54,7 @@ expr ::= function_group
   | add_group
   | element_by_group
   | primary_group
+  | flow_group
 
 
 private unary_group ::= unary_min_expr | unary_not_expr
@@ -55,8 +63,9 @@ private conditional_group ::= conditional_expr
 private mul_group ::= mul_expr | div_expr | left_div_expr | power_expr | complex_conjugate_transpose_expr
 private add_group ::= plus_expr | minus_expr
 private element_by_group ::= el_mul_expr | el_div_expr | el_left_div_expr | el_power_expr | el_complex_conjugate_transpose_expr
-private function_group ::= function_expr
+private function_group ::= function_expr | function_declaration_expr
 private logical_group ::= matrix_and_expr | matrix_or_expr | and_expr | or_expr
+private flow_group ::= if_expr | while_expr
 
 // expressions: auto-operator detection or parents
 //fake ref_expr ::= expr?
@@ -66,7 +75,6 @@ unary_min_expr ::= '-' expr
 unary_not_expr ::= '~' expr
 assign_expr ::= expr '=' expr { rightAssociative=true }
 conditional_expr ::= expr ('<' | '>' | '<=' | '>=' | '==' | '!=') expr
-function_expr ::= id "(" arg_list ")"
 
 div_expr ::= expr '/' expr
 left_div_expr ::= expr '\' expr
@@ -104,4 +112,11 @@ number ::= (float_literal | integer) imaginarysuffix*
 
 exponent_part ::= (echaracter integer) | ( echaracter ["+" | "-"] integer)
 
+function_expr ::= id "(" arg_list? ")"
 arg_list ::= expr ("," expr)*
+
+function_declaration_expr ::= function [(id | ("[" arg_list "]"))] "=" id "(" arg_list ")" element* end
+
+if_expr ::= if expr ":" element* end
+
+while_expr ::= while expr ":" element* end
