@@ -13,82 +13,71 @@
   tokenTypeClass="com.github.kornilova_l.matlab.psi.MatlabTokenType"
 
   tokens=[
-      SEMI=';'
-      EQ='='
-      LP='('
-      RP=')'
-
       space='regexp:\s+'
       comment='regexp://.*'
-      number='regexp:\d+(\.\d*)?'
-      end="end"
-      if="if"
       id='regexp:\p{Alpha}\w*'
       string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\.)*\")"
 
-      op_1='+'
-      op_2='-'
-      op_3='*'
-      op_4='/'
-      op_5='!'
-      op_equal="=="
-    ]
+      syntax='regexp:;|\.|\+|-|\*\*|\*|==|=|/|,|\(|\)|\^|\!=|\!|>=|<=|>|<'
+      integer='regexp:[0-9]+'
+      newline='\n'
+  ]
 
-    name(".*expr")='expression'
-    extends(".*expr")=expr
-  }
+  extends(".*expr")=expr
+}
 
-  root ::= (function | statement) *
+root ::= element *
+private element ::= expr ";"?  {recoverWhile=element_recover}
+private element_recover ::= !('(' | '+' | '-' | '!' | '*' | id | float_literal | integer)
 
-  property ::= id '=' expr [";"]
-
-  if_statement ::= if expr { statement }
-                           { "elseif" { statement } }
-                           [ "else" { statement } ]
-                      end
-
-  expr ::=
-        numeric_expression
-        | testing_expression
-        | logical_expression
-        | string_expression
-        | bit_expression
-        | casting_expression
-        | creating_expression
-        | literal_expression
-        | "null"
-        | "super"
-        | "this"
-        | identifier
-        | ( "(" expr ")" )
-        | ( expr
-        ( ( "(" [ arglist ] ")" )
-        | ( "[" expr "]" )
-        | ( "." expr )
-        | ( "," expr )
-        | ( "instanceof" ( class_name | interface_name ) )
-        ) )
-
-  numeric_expression ::= ( "-" expr ) | ( expr ( "+" | "-" | "*" | "/" | "%" ) expr )
-
-  testing_expression ::= ( expr ( ">" | "<" | ">=" | "<=" | "==" | "!=" ) expr )
-
-  logical_expression ::= ( "!" expr )
-        | ( expr ( "&&" | "||" ) expr )
-        | "true"
-        | "false"
-
-  string_expression ::= ( expr ( "+" | "+=" ) expr )
+// left recursion and empty PSI children define expression root
+expr ::= assign_expr
+  | conditional_group
+  | add_group
+  | mul_group
+  | unary_group
+  | exp_expr
+  | call_expr
+  | qualification_expr
+  | primary_group
 
 
-  literal_expr ::= number | string | float
+private conditional_group ::= elvis_expr | conditional_expr
+private unary_group ::= unary_min_expr | unary_not_expr
+private mul_group ::= mul_expr | div_expr
+private add_group ::= plus_expr | minus_expr
+private primary_group ::= special_expr | simple_ref_expr | literal_expr | paren_expr
 
-  function ::= "function" { id } "=" id "(" parameters_list ")" { statement } "end"
+// expressions: auto-operator detection or parents
+fake ref_expr ::= expr? '.' identifier
+simple_ref_expr ::= identifier {extends=ref_expr elementType=ref_expr}
+qualification_expr ::= expr '.' identifier {extends=ref_expr elementType=ref_expr}
+call_expr ::= ref_expr arg_list
+arg_list ::= '(' [ !')' expr  (',' expr) * ] ')' {pin(".*")=1}
+literal_expr ::= number | string
+identifier ::= id
+unary_min_expr ::= '-' expr
+unary_not_expr ::= '!' expr
+assign_expr ::= expr '=' expr { rightAssociative=true }
+conditional_expr ::= expr ('<' | '>' | '<=' | '>=' | '==' | '!=') expr
+div_expr ::= expr '/' expr
+mul_expr ::= expr '*' expr
+minus_expr ::= expr '-' expr
+plus_expr ::= expr '+' expr
+exp_expr ::= expr ('**' expr) + // N-ary variant
+paren_expr ::= '(' expr ')'
+elvis_expr ::= expr '?' expr ':' expr
 
-  statement ::= property | if_statement | for_loop
+// test specific expressions
+external special_expr ::= meta_special_expr
+meta_special_expr ::= '*' '(' simple_ref_expr ',' mul_expr ')' {elementType="special_expr" pin=2}
 
-  for_loop ::= id "=" values { statement } "end"
+float_literal ::=
+        integer "." integer [ exponent_part ]
+        | "." integer [ exponent_part ]
+        | integer exponent_part
+        | integer "." exponent_part
 
-  values ::= expr":"expr
+number ::= float_literal | integer [ "i" | "j" ]
 
-  parameters_list ::= id { "," id }
+exponent_part ::= "e" [ "+" | "-" | "" ] integer
