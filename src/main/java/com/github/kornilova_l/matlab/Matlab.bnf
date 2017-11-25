@@ -13,13 +13,21 @@
   tokenTypeClass="com.github.kornilova_l.matlab.psi.MatlabTokenType"
 
   tokens=[
+      imaginarysuffix = "regexp:[ij]"
+      echaracter = "regexp:e(?=[\d\+-])"
       space='regexp:\s+'
       comment='regexp://.*'
-      id='regexp:[A-z]+[A-z0-9_]*'
       string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\.)*\")"
 
       integer='regexp:[0-9]+'
       newline = "regexp:\n"
+
+      letter='regexp:[A-Za-z]'
+      digit='regexp:[0-9]'
+
+      opensquarebracket = "["
+      closesquarebracket = "]"
+
   ]
 
   extends(".*expr")=expr
@@ -73,7 +81,9 @@ paren_expr ::= '(' expr ')'
 
 array ::= vector | array_with_numbers
 vector ::= "(" integer ":" integer ")"
-array_with_numbers ::= "[" integer "]"
+array_with_numbers ::= "[" (";"* integer)* "]"
+
+id ::= (letter | echaracter) (letter | digit | echaracter)*
 
 
 float_literal ::=
@@ -82,6 +92,6 @@ float_literal ::=
         | (integer exponent_part)
         | (integer "." exponent_part)
 
-number ::= float_literal | integer [ "i" | "j" ]
+number ::= (float_literal | integer) imaginarysuffix*
 
-exponent_part ::= ("e" ["+" | "-"] integer) | ("e" integer)
+exponent_part ::= (echaracter integer) | ( echaracter ["+" | "-"] integer)
