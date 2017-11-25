@@ -47,17 +47,40 @@
                            [ "else" { statement } ]
                       end
 
-  expr ::= factor plus_expr *
-  left plus_expr ::= plus_op factor
-  private plus_op ::= '+'|'-'
-  private factor ::= primary mul_expr *
-  left mul_expr  ::= mul_op primary
-  private mul_op ::= '*'|'/'
-  private primary ::= primary_inner factorial_expr ?
-  left factorial_expr ::= '!'
-  private primary_inner ::= literal_expr | ref_expr | paren_expr
-  paren_expr ::= '(' expr ')'
-  ref_expr ::= id
+  expr ::=
+        numeric_expression
+        | testing_expression
+        | logical_expression
+        | string_expression
+        | bit_expression
+        | casting_expression
+        | creating_expression
+        | literal_expression
+        | "null"
+        | "super"
+        | "this"
+        | identifier
+        | ( "(" expr ")" )
+        | ( expr
+        ( ( "(" [ arglist ] ")" )
+        | ( "[" expr "]" )
+        | ( "." expr )
+        | ( "," expr )
+        | ( "instanceof" ( class_name | interface_name ) )
+        ) )
+
+  numeric_expression ::= ( "-" expr ) | ( expr ( "+" | "-" | "*" | "/" | "%" ) expr )
+
+  testing_expression ::= ( expr ( ">" | "<" | ">=" | "<=" | "==" | "!=" ) expr )
+
+  logical_expression ::= ( "!" expr )
+        | ( expr ( "&&" | "||" ) expr )
+        | "true"
+        | "false"
+
+  string_expression ::= ( expr ( "+" | "+=" ) expr )
+
+
   literal_expr ::= number | string | float
 
   function ::= "function" { id } "=" id "(" parameters_list ")" { statement } "end"
