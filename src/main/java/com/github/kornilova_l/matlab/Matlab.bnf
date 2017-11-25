@@ -18,6 +18,7 @@
       space='regexp:\s+'
       comment='regexp://.*'
       string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\.)*\")"
+      id = "regexp:[A-Za-z]+[A-Za-z\d]*"
 
       integer='regexp:[0-9]+'
 
@@ -37,13 +38,14 @@ root ::= element *
 private element ::= expr ";"?
 
 // left recursion and empty PSI children define expression root
-expr ::= assign_expr
-  | primary_group
+expr ::= function_group
+  | assign_expr
   | unary_group
   | conditional_group
   | mul_group
   | add_group
   | element_by_group
+  | primary_group
 
 
 private unary_group ::= unary_min_expr | unary_not_expr
@@ -52,6 +54,7 @@ private conditional_group ::= conditional_expr
 private mul_group ::= mul_expr | div_expr | left_div_expr | power_expr | complex_conjugate_transpose_expr
 private add_group ::= plus_expr | minus_expr
 private element_by_group ::= el_mul_expr | el_div_expr | el_left_div_expr | el_power_expr | el_complex_conjugate_transpose_expr
+private function_group ::= function_expr
 
 // expressions: auto-operator detection or parents
 //fake ref_expr ::= expr?
@@ -61,6 +64,7 @@ unary_min_expr ::= '-' expr
 unary_not_expr ::= '!' expr
 assign_expr ::= expr '=' expr { rightAssociative=true }
 conditional_expr ::= expr ('<' | '>' | '<=' | '>=' | '==' | '!=') expr
+function_expr ::= id "(" arg_list ")"
 
 div_expr ::= expr '/' expr
 left_div_expr ::= expr '\' expr
@@ -83,9 +87,6 @@ array ::= vector | array_with_numbers
 vector ::= "(" expr [ ":" expr ] [ ":" expr ] ")"
 array_with_numbers ::= "[" (";"* expr)* "]"
 
-id ::= (letter | echaracter) (letter | digit | echaracter)*
-
-
 float_literal ::=
         (integer "." integer exponent_part)
         | ("." integer [ exponent_part ])
@@ -95,3 +96,5 @@ float_literal ::=
 number ::= (float_literal | integer) imaginarysuffix*
 
 exponent_part ::= (echaracter integer) | ( echaracter ["+" | "-"] integer)
+
+arg_list ::= expr ("," expr)*
