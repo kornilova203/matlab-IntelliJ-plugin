@@ -18,7 +18,7 @@
       space='regexp:\s+'
       comment='regexp://.*'
       string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\.)*\")"
-      id = "regexp:[A-Za-z]+[A-Za-z\d]*"
+      id = "regexp:[A-Za-z_]+[A-Za-z\d]*"
 
       integer='regexp:[0-9]+'
 
@@ -42,6 +42,7 @@ expr ::= function_group
   | assign_expr
   | unary_group
   | conditional_group
+  | logical_group
   | mul_group
   | add_group
   | element_by_group
@@ -55,13 +56,14 @@ private mul_group ::= mul_expr | div_expr | left_div_expr | power_expr | complex
 private add_group ::= plus_expr | minus_expr
 private element_by_group ::= el_mul_expr | el_div_expr | el_left_div_expr | el_power_expr | el_complex_conjugate_transpose_expr
 private function_group ::= function_expr
+private logical_group ::= matrix_and_expr | matrix_or_expr | and_expr | or_expr
 
 // expressions: auto-operator detection or parents
 //fake ref_expr ::= expr?
 literal_expr ::= number | string | array
 simple_ref_expr ::= id // {extends=ref_expr elementType=ref_expr}
 unary_min_expr ::= '-' expr
-unary_not_expr ::= '!' expr
+unary_not_expr ::= '~' expr
 assign_expr ::= expr '=' expr { rightAssociative=true }
 conditional_expr ::= expr ('<' | '>' | '<=' | '>=' | '==' | '!=') expr
 function_expr ::= id "(" arg_list ")"
@@ -80,6 +82,11 @@ el_complex_conjugate_transpose_expr ::= ".'"
 
 minus_expr ::= expr '-' expr
 plus_expr ::= expr '+' expr
+
+matrix_and_expr ::= expr "&" expr
+matrix_or_expr ::= expr "|" expr
+and_expr ::= expr "&&" expr
+or_expr ::= expr "||" expr
 
 paren_expr ::= '(' expr ')'
 
