@@ -35,6 +35,7 @@ expr ::= assign_expr
   | conditional_group
   | mul_group
   | add_group
+  | element_by_group
 
 
 private unary_group ::= unary_min_expr | unary_not_expr
@@ -42,6 +43,7 @@ private primary_group ::= literal_expr | simple_ref_expr | paren_expr
 private conditional_group ::= conditional_expr
 private mul_group ::= mul_expr | div_expr | left_div_expr | power_expr | complex_conjugate_transpose_expr
 private add_group ::= plus_expr | minus_expr
+private element_by_group ::= el_mul_expr | el_div_expr | el_left_div_expr | el_power_expr | el_complex_conjugate_transpose_expr
 
 // expressions: auto-operator detection or parents
 //fake ref_expr ::= expr?
@@ -51,13 +53,22 @@ unary_min_expr ::= '-' expr
 unary_not_expr ::= '!' expr
 assign_expr ::= expr '=' expr { rightAssociative=true }
 conditional_expr ::= expr ('<' | '>' | '<=' | '>=' | '==' | '!=') expr
+
 div_expr ::= expr '/' expr
 left_div_expr ::= expr '\' expr
 mul_expr ::= expr '*' expr
 power_expr ::= expr '^' expr
 complex_conjugate_transpose_expr ::= "'"
+
+el_div_expr ::= expr './' expr
+el_left_div_expr ::= expr '.\' expr
+el_mul_expr ::= expr '.*' expr
+el_power_expr ::= expr '.^' expr
+el_complex_conjugate_transpose_expr ::= ".'"
+
 minus_expr ::= expr '-' expr
 plus_expr ::= expr '+' expr
+
 paren_expr ::= '(' expr ')'
 
 
