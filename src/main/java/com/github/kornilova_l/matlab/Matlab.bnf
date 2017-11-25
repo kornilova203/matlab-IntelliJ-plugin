@@ -20,10 +20,10 @@
       string="regexp:('([^'\\]|\\.)*'|\"([^\"\\]|\\.)*\")"
 
       integer='regexp:[0-9]+'
-      newline = "regexp:\n"
 
       letter='regexp:[A-Za-z]'
       digit='regexp:[0-9]'
+      newline="regexp:\n"
 
       opensquarebracket = "["
       closesquarebracket = "]"
@@ -80,8 +80,8 @@ plus_expr ::= expr '+' expr
 paren_expr ::= '(' expr ')'
 
 array ::= vector | array_with_numbers
-vector ::= "(" integer ":" integer ")"
-array_with_numbers ::= "[" (";"* integer)* "]"
+vector ::= "(" integer [ ":" integer ] [ ":" integer ] ")"
+array_with_numbers ::= "[" (";"* expr)* "]"
 
 id ::= (letter | echaracter) (letter | digit | echaracter)*
 
