@@ -80,7 +80,7 @@ plus_expr ::= expr '+' expr
 paren_expr ::= '(' expr ')'
 
 array ::= vector | array_with_numbers
-vector ::= "(" integer [ ":" integer ] [ ":" integer ] ")"
+vector ::= "(" expr [ ":" expr ] [ ":" expr ] ")"
 array_with_numbers ::= "[" (";"* expr)* "]"
 
 id ::= (letter | echaracter) (letter | digit | echaracter)*
