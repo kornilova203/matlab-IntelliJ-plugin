@@ -22,6 +22,12 @@
       while="while"
       ob = "("
       cb = ")"
+      lessorequal="<="
+      moreorequal=">="
+      more=">"
+      less="<"
+      equal="=="
+      notequal="!="
       coma = ","
       colon=":"
       semicolon=";"
@@ -83,10 +89,13 @@ unary_min_expr ::= '-' expr
 unary_not_expr ::= '~' expr
 transpose_expr ::= expr singleqoute
 assign_expr ::= expr '=' expr { rightAssociative=true }
-conditional_expr ::= expr ('<' | '>' | '<=' | '>=' | '==' | '!=') expr
+conditional_expr ::= expr (less | more | lessorequal | moreorequal | equal | notequal) expr
 
-string_literal_single_quote ::= singleqoute (integer | id | colon | semicolon | for | notsinglequote | if | elseif | else | function | end | while)* singleqoute
-string_literal_double_quote ::= doubleqoute (integer | id | colon | semicolon | for | notsinglequote | if | elseif | else | function | end | while)* doubleqoute
+symbols_and_characters ::= (integer | id | colon | semicolon | for | if | elseif | else | function | end | while |
+                    less | more | lessorequal | moreorequal | equal | notequal)
+
+string_literal_single_quote ::= singleqoute (symbols_and_characters | notsinglequote)* singleqoute
+string_literal_double_quote ::= doubleqoute (symbols_and_characters | notdoublequote)* doubleqoute
 
 div_expr ::= expr '/' expr
 left_div_expr ::= expr '\' expr
