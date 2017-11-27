@@ -14,20 +14,29 @@
 
   tokens=[
       function="function"
-      if="if"
+      elseif="elseif"
+      else="else"
       end="end"
+      if="if"
+      for="for"
       while="while"
+      ob = "("
+      cb = ")"
+      coma = ","
+      colon=":"
+      semicolon=";"
       imaginarysuffix = "regexp:[ij]"
       echaracter = "regexp:e/[\d\+-]"
       newline = 'regexp:\n+'
       space='regexp:\s+'
-      comment='regexp://.*'
-      string="regexp:('((\.\.\.\n)|[^'\n])*'|\"((\.\.\.)\n|[^\"\n])*\")"
+      comment='regexp:%.*'
+      id = "regexp:[A-Za-z_]+[A-Za-z\d]*"
+      integer='regexp:[0-9]+'
+
       singleqoute="'"
       doubleqoute='"'
-      id = "regexp:[A-Za-z_]+[A-Za-z\d]*"
-
-      integer='regexp:[0-9]+'
+      notsinglequote="regexp:(\\')|[^']"
+      notdoublequote="regexp:(\\\")|[^\"]"
 
       letter='regexp:[A-Za-z]'
       digit='regexp:[0-9]'
@@ -57,36 +66,38 @@ expr ::= function_group
   | flow_group
 
 
-private unary_group ::= unary_min_expr | unary_not_expr
+private unary_group ::= unary_min_expr | unary_not_expr | transpose_expr
 private primary_group ::= literal_expr | simple_ref_expr | paren_expr
 private conditional_group ::= conditional_expr
-private mul_group ::= mul_expr | div_expr | left_div_expr | power_expr | complex_conjugate_transpose_expr
+private mul_group ::= mul_expr | div_expr | left_div_expr | power_expr
 private add_group ::= plus_expr | minus_expr
 private element_by_group ::= el_mul_expr | el_div_expr | el_left_div_expr | el_power_expr | el_complex_conjugate_transpose_expr
 private function_group ::= function_expr | function_declaration_expr
-private logical_group ::= matrix_and_expr | matrix_or_expr | and_expr | or_expr
-private flow_group ::= if_expr | while_expr
+private logical_group ::= matrix_and_expr | matrix_or_expr | and_expr | or_expr | vector_expr
+private flow_group ::= if_expr | while_expr | for_expr
 
 // expressions: auto-operator detection or parents
-//fake ref_expr ::= expr?
-literal_expr ::= number | string | array
+literal_expr ::= number | string_literal_single_quote | string_literal_double_quote | array
 simple_ref_expr ::= id // {extends=ref_expr elementType=ref_expr}
 unary_min_expr ::= '-' expr
 unary_not_expr ::= '~' expr
+transpose_expr ::= expr singleqoute
 assign_expr ::= expr '=' expr { rightAssociative=true }
 conditional_expr ::= expr ('<' | '>' | '<=' | '>=' | '==' | '!=') expr
+
+string_literal_single_quote ::= singleqoute (integer | id | colon | semicolon | for | notsinglequote | if | elseif | else | function | end | while)* singleqoute
+string_literal_double_quote ::= doubleqoute (integer | id | colon | semicolon | for | notsinglequote | if | elseif | else | function | end | while)* doubleqoute
 
 div_expr ::= expr '/' expr
 left_div_expr ::= expr '\' expr
 mul_expr ::= expr '*' expr
 power_expr ::= expr '^' expr
-complex_conjugate_transpose_expr ::= "'"
 
 el_div_expr ::= expr './' expr
-el_left_div_expr ::= expr '.\' expr
+el_left_div_expr ::= expr '.\' exprelse
 el_mul_expr ::= expr '.*' expr
 el_power_expr ::= expr '.^' expr
-el_complex_conjugate_transpose_expr ::= ".'"
+el_complex_conjugate_transpose_expr ::= expr ".'" expr
 
 minus_expr ::= expr '-' expr
 plus_expr ::= expr '+' expr
@@ -95,12 +106,13 @@ matrix_and_expr ::= expr "&" expr
 matrix_or_expr ::= expr "|" expr
 and_expr ::= expr "&&" expr
 or_expr ::= expr "||" expr
+vector_expr ::= expr colon expr
 
-paren_expr ::= '(' expr ')'
+paren_expr ::= ob expr cb
 
 array ::= vector | array_with_numbers
-vector ::= "(" expr [ ":" expr ] [ ":" expr ] ")"
-array_with_numbers ::= "[" (";"* expr)* "]"
+vector ::= ob expr [ colon expr ] [ colon expr ] cb
+array_with_numbers ::= "[" (semicolon* expr)* "]"
 
 float_literal ::=
         (integer "." integer exponent_part)
@@ -112,11 +124,16 @@ number ::= (float_literal | integer) imaginarysuffix*
 
 exponent_part ::= (echaracter integer) | ( echaracter ["+" | "-"] integer)
 
-function_expr ::= id "(" arg_list? ")"
-arg_list ::= expr ("," expr)*
+function_expr ::= id ob arg_list? cb
+arg_list ::= expr (coma expr)*
 
-function_declaration_expr ::= function [(id | ("[" arg_list "]"))] "=" id "(" arg_list ")" element* end
+function_declaration_expr ::= function [(id | ("[" arg_list "]"))] "=" id ob arg_list cb element* end
 
-if_expr ::= if expr ":" element* end
+if_expr ::= if expr element*
+        ( elseif expr element* )*
+        [ else element* ]
+        end
 
-while_expr ::= while expr ":" element* end
+while_expr ::= while expr element* end
+
+for_expr ::= for expr element* end
