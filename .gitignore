@@ -3,3 +3,4 @@
 build/
 lib/
 src/main/gen/
+/src/main/java/com/github/kornilova_l/matlab/MatlabLexer.flex

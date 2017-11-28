@@ -31,12 +31,13 @@
       coma = ","
       colon=":"
       semicolon=";"
-      imaginarysuffix = "regexp:[ij]"
-      echaracter = "regexp:e/[\d\+-]"
       newline = 'regexp:\n+'
       space='regexp:\s+'
       comment='regexp:%.*'
       id = "regexp:[A-Za-z_]+[A-Za-z\d]*"
+      floatcomplex="regexp:((\d*\.\d+(e[\+-]?\d+)?)|(\d+\.?e[\+-]?\d+))i"
+      float="regexp:(\d*\.\d+(e[\+-]?\d+)?)|(\d+\.?e[\+-]?\d+)"
+      integercomplex='regexp:[0-9]+i'
       integer='regexp:[0-9]+'
 
       singleqoute="'"
@@ -123,15 +124,7 @@ array ::= vector | array_with_numbers
 vector ::= ob expr [ colon expr ] [ colon expr ] cb
 array_with_numbers ::= "[" (semicolon* expr)* "]"
 
-float_literal ::=
-        (integer "." integer exponent_part)
-        | ("." integer [ exponent_part ])
-        | (integer exponent_part)
-        | (integer "." exponent_part)
-
-number ::= (float_literal | integer) imaginarysuffix*
-
-exponent_part ::= (echaracter integer) | ( echaracter ["+" | "-"] integer)
+number ::= (float | floatcomplex | integer | integercomplex)
 
 function_expr ::= id ob arg_list? cb
 arg_list ::= expr (coma expr)*
