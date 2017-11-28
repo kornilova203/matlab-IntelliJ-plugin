@@ -10,9 +10,11 @@ import static com.github.kornilova_l.matlab.psi.MatlabTypes.*;
 %%
 
 %{
-  public MatlabLexer() {
-    this((java.io.Reader)null);
-  }
+    private boolean isTranspose = false;
+
+    public MatlabLexer() {
+        this((java.io.Reader)null);
+    }
 %}
 
 %public
@@ -35,57 +37,71 @@ INTEGER=[0-9]+i?
 LETTER=[A-Za-z]
 DIGIT=[0-9]
 
-%state STRING_STATE
+%state STRING_DOUBLE_STATE
+%state STRING_SINGLE_STATE
 
 %%
 <YYINITIAL> {
-  \"                    { yybegin(STRING_STATE); }
   {WHITE_SPACE}         { return WHITE_SPACE; }
 
-  function            { return FUNCTION; }
-  elseif              { return ELSEIF; }
-  else                { return ELSE; }
-  "end"                 { return END; }
-  "if"                  { return IF; }
-  "for"                 { return FOR; }
-  "while"               { return WHILE; }
-  "("                   { return OB; }
-  ")"                   { return CB; }
-  "<="                  { return LESSOREQUAL; }
-  ">="                  { return MOREOREQUAL; }
-  ">"                   { return MORE; }
-  "<"                   { return LESS; }
-  "=="                  { return EQUAL; }
-  "!="                  { return NOTEQUAL; }
-  ","                   { return COMA; }
-  ":"                   { return COLON; }
-  ";"                   { return SEMICOLON; }
-  "["                   { return OPENSQUAREBRACKET; }
-  "]"                   { return CLOSESQUAREBRACKET; }
-  "exprelse"            { return EXPRELSE; }
+  \"                    { yybegin(STRING_DOUBLE_STATE); }
+  "'"                   { if (isTranspose) { isTranspose = false; return TRANSPOSE; } else yybegin(STRING_SINGLE_STATE); }
 
-  {NEWLINE}             { return NEWLINE; }
-  {SPACE}               { return SPACE; }
-  {COMMENT}             { return COMMENT; }
-  {ID}                  { return ID; }
-  {FLOATEXPONENTIAL}    { return FLOATEXPONENTIAL; }
-  {FLOAT}               { return FLOAT; }
-  {INTEGER}             { return INTEGER; }
-  {LETTER}              { return LETTER; }
-  {DIGIT}               { return DIGIT; }
+  function              { isTranspose = false; return FUNCTION; }
+  elseif                { isTranspose = false; return ELSEIF; }
+  else                  { isTranspose = false; return ELSE; }
+  "end"                 { isTranspose = false; return END; }
+  "if"                  { isTranspose = false; return IF; }
+  "for"                 { isTranspose = false; return FOR; }
+  "while"               { isTranspose = false; return WHILE; }
+  "("                   { isTranspose = false; return OB; }
+  ")"                   { isTranspose = true; return CB; }
+  "<="                  { isTranspose = false; return LESSOREQUAL; }
+  "-"                   { isTranspose = false; return MINUS; }
+  "="                   { isTranspose = false; return ASSIGN; }
+  ">="                  { isTranspose = false; return MOREOREQUAL; }
+  ">"                   { isTranspose = false; return MORE; }
+  "<"                   { isTranspose = false; return LESS; }
+  "=="                  { isTranspose = false; return EQUAL; }
+  "!="                  { isTranspose = false; return NOTEQUAL; }
+  ","                   { isTranspose = false; return COMA; }
+  ":"                   { isTranspose = false; return COLON; }
+  ";"                   { isTranspose = false; return SEMICOLON; }
+  "["                   { isTranspose = false; return OPENSQUAREBRACKET; }
+  "]"                   { isTranspose = true; return CLOSESQUAREBRACKET; }
+
+  {NEWLINE}             { isTranspose = false; return NEWLINE; }
+  {SPACE}               { isTranspose = false; return SPACE; }
+  {COMMENT}             { isTranspose = false; return COMMENT; }
+  {ID}                  { isTranspose = true; return ID; }
+  {FLOATEXPONENTIAL}    { isTranspose = false; return FLOATEXPONENTIAL; }
+  {FLOAT}               { isTranspose = false; return FLOAT; }
+  {INTEGER}             { isTranspose = false; return INTEGER; }
+  {LETTER}              { isTranspose = false; return LETTER; }
+  {DIGIT}               { isTranspose = false; return DIGIT; }
 
 }
 
-<STRING_STATE> {
-    \"                             { yybegin(YYINITIAL);
-                                     return STRING; }
-    [^\n\r\"\\]+                   {  }
-    \\t                            {  }
-    \\n                            {  }
+<STRING_DOUBLE_STATE> {
+    \"                  { yybegin(YYINITIAL); return STRING; }
+    [^\n\r\"\\]+        {  }
+    \n                  { yybegin(YYINITIAL); return BAD_CHARACTER; }
+    \\t                 {  }
+    \\n                 {  }
+    \\r                 {  }
+    \\\"                {  }
+    \\                  {  }
+}
 
-    \\r                            {  }
-    \\\"                           {  }
-    \\                             {  }
+<STRING_SINGLE_STATE> {
+    "'"                 { yybegin(YYINITIAL); return STRING; }
+    [^\n\r'\\]+         {  }
+    \n                  { yybegin(YYINITIAL); return BAD_CHARACTER; }
+    \\t                 {  }
+    \\n                 {  }
+    \\r                 {  }
+    \\'                 {  }
+    \\                  {  }
 }
 
 [^] { return BAD_CHARACTER; }

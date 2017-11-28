@@ -46,10 +46,10 @@ private comment_group ::= simple_comment_expr
 // expressions: auto-operator detection or parents
 literal_expr ::= number | string | array
 simple_ref_expr ::= id // {extends=ref_expr elementType=ref_expr}
-unary_min_expr ::= '-' expr
+unary_min_expr ::= minus expr
 unary_not_expr ::= '~' expr
 transpose_expr ::= expr transpose
-assign_expr ::= expr '=' expr { rightAssociative=true }
+assign_expr ::= expr assign expr { rightAssociative=true }
 conditional_expr ::= expr (less | more | lessorequal | moreorequal | equal | notequal) expr
 simple_comment_expr ::= comment
 
@@ -59,7 +59,7 @@ mul_expr ::= expr '*' expr
 power_expr ::= expr '^' expr
 
 el_div_expr ::= expr './' expr
-el_left_div_expr ::= expr '.\' exprelse
+el_left_div_expr ::= expr '.\' expr
 el_mul_expr ::= expr '.*' expr
 el_power_expr ::= expr '.^' expr
 el_complex_conjugate_transpose_expr ::= expr ".'" expr
