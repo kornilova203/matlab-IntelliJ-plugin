@@ -12,48 +12,6 @@
   elementTypeClass="com.github.kornilova_l.matlab.psi.MatlabElementType"
   tokenTypeClass="com.github.kornilova_l.matlab.psi.MatlabTokenType"
 
-  tokens=[
-      function="function"
-      elseif="elseif"
-      else="else"
-      end="end"
-      if="if"
-      for="for"
-      while="while"
-      ob = "("
-      cb = ")"
-      lessorequal="<="
-      moreorequal=">="
-      more=">"
-      less="<"
-      equal="=="
-      notequal="!="
-      coma = ","
-      colon=":"
-      semicolon=";"
-      newline = 'regexp:\n+'
-      space='regexp:\s+'
-      comment='regexp:%.*'
-      id = "regexp:[A-Za-z_]+[A-Za-z\d]*"
-      floatcomplex="regexp:((\d*\.\d+(e[\+-]?\d+)?)|(\d+\.?e[\+-]?\d+))i"
-      float="regexp:(\d*\.\d+(e[\+-]?\d+)?)|(\d+\.?e[\+-]?\d+)"
-      integercomplex='regexp:[0-9]+i'
-      integer='regexp:[0-9]+'
-
-      singleqoute="'"
-      doubleqoute='"'
-      notsinglequote="regexp:(\\')|[^']"
-      notdoublequote="regexp:(\\\")|[^\"]"
-
-      letter='regexp:[A-Za-z]'
-      digit='regexp:[0-9]'
-      newline="regexp:\n"
-
-      opensquarebracket = "["
-      closesquarebracket = "]"
-
-  ]
-
   extends(".*expr")=expr
 }
 
@@ -71,6 +29,7 @@ expr ::= function_group
   | element_by_group
   | primary_group
   | flow_group
+  | comment_group
 
 
 private unary_group ::= unary_min_expr | unary_not_expr | transpose_expr
@@ -82,21 +41,17 @@ private element_by_group ::= el_mul_expr | el_div_expr | el_left_div_expr | el_p
 private function_group ::= function_expr | function_declaration_expr
 private logical_group ::= matrix_and_expr | matrix_or_expr | and_expr | or_expr | vector_expr
 private flow_group ::= if_expr | while_expr | for_expr
+private comment_group ::= simple_comment_expr
 
 // expressions: auto-operator detection or parents
-literal_expr ::= number | string_literal_single_quote | string_literal_double_quote | array
+literal_expr ::= number | string | array
 simple_ref_expr ::= id // {extends=ref_expr elementType=ref_expr}
 unary_min_expr ::= '-' expr
 unary_not_expr ::= '~' expr
-transpose_expr ::= expr singleqoute
+transpose_expr ::= expr transpose
 assign_expr ::= expr '=' expr { rightAssociative=true }
 conditional_expr ::= expr (less | more | lessorequal | moreorequal | equal | notequal) expr
-
-symbols_and_characters ::= (integer | id | colon | semicolon | for | if | elseif | else | function | end | while |
-                    less | more | lessorequal | moreorequal | equal | notequal)
-
-string_literal_single_quote ::= singleqoute (symbols_and_characters | notsinglequote)* singleqoute
-string_literal_double_quote ::= doubleqoute (symbols_and_characters | notdoublequote)* doubleqoute
+simple_comment_expr ::= comment
 
 div_expr ::= expr '/' expr
 left_div_expr ::= expr '\' expr
@@ -122,14 +77,14 @@ paren_expr ::= ob expr cb
 
 array ::= vector | array_with_numbers
 vector ::= ob expr [ colon expr ] [ colon expr ] cb
-array_with_numbers ::= "[" (semicolon* expr)* "]"
+array_with_numbers ::= opensquarebracket (semicolon* expr)* closesquarebracket
 
 number ::= (float | floatcomplex | integer | integercomplex)
 
 function_expr ::= id ob arg_list? cb
 arg_list ::= expr (coma expr)*
 
-function_declaration_expr ::= function [(id | ("[" arg_list "]"))] "=" id ob arg_list cb element* end
+function_declaration_expr ::= function [(id | (opensquarebracket arg_list closesquarebracket))] "=" id ob arg_list cb element* end
 
 if_expr ::= if expr element*
         ( elseif expr element* )*

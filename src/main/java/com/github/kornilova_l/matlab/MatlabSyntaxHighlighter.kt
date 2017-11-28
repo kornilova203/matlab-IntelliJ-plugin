@@ -37,9 +37,7 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
         return when (tokenType) {
             MatlabTypes.COMMENT -> COMMENT_KEYS
             TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS
-            MatlabTypes.STRING_LITERAL_DOUBLE_QUOTE -> STRING_KEYS
-            MatlabTypes.STRING_LITERAL_SINGLE_QUOTE -> STRING_KEYS
-            MatlabTypes.SYMBOLS_AND_CHARACTERS -> STRING_KEYS
+            MatlabTypes.STRING -> STRING_KEYS
             MatlabTypes.SEMICOLON -> SEMICOLON_KEYS
             MatlabTypes.ID -> ID_KEYS
 
