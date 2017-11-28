@@ -16,7 +16,7 @@
 }
 
 root ::= element *
-private element ::= expr ";"?
+private element ::= ( expr ( ";" | newline ) ) | comment | newline
 
 expr ::= function_group
   | assign_expr
@@ -28,7 +28,6 @@ expr ::= function_group
   | element_by_group
   | primary_group
   | flow_group
-  | comment_group
 
 
 private unary_group ::= unary_min_expr | unary_not_expr | transpose_expr
@@ -40,7 +39,6 @@ private element_by_group ::= el_mul_expr | el_div_expr | el_left_div_expr | el_p
 private function_group ::= function_expr | function_declaration_expr
 private logical_group ::= matrix_and_expr | matrix_or_expr | and_expr | or_expr | vector_expr
 private flow_group ::= if_expr | while_expr | for_expr
-private comment_group ::= simple_comment_expr
 
 literal_expr ::= number | string | array
 simple_ref_expr ::= id
@@ -49,7 +47,6 @@ unary_not_expr ::= not expr
 transpose_expr ::= expr transpose
 assign_expr ::= expr assign expr { rightAssociative=true }
 conditional_expr ::= expr ( less | more | lessorequal | moreorequal | equal | notequal ) expr
-simple_comment_expr ::= comment
 
 div_expr ::= expr delete expr
 left_div_expr ::= expr backslash expr
@@ -82,7 +79,9 @@ number ::= ( float | floatexponential | integer )
 function_expr ::= id ob arg_list? cb
 arg_list ::= expr (coma expr)*
 
-function_declaration_expr ::= function [ ( id | ( opensquarebracket arg_list closesquarebracket ) ) ] "=" id ob arg_list cb element* end
+function_declaration_expr ::= function
+        ( [ ( id | ( opensquarebracket arg_list? closesquarebracket ) ) ] assign )?
+        id ob arg_list? cb element* end
 
 if_expr ::= if expr element*
         ( elseif expr element* )*

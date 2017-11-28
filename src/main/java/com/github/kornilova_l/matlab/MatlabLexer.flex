@@ -24,15 +24,13 @@ import static com.github.kornilova_l.matlab.psi.MatlabTypes.*;
 %type IElementType
 %unicode
 
-EOL=\R
-WHITE_SPACE=\s+
+NEWLINE=(\R( \t)*)+
+WHITE_SPACE=[ \t\x0B\f]+ // do not match new line
 TRANSPOSE='
-NEWLINE=\n
-SPACE=[ \t\n\x0B\f\r]+
 COMMENT=%.*
-ID=[A-Za-z_]+[A-Za-z\d]*
-FLOAT=([\d]*\.[\d]+)|([\d]+\.)i?
+FLOAT=(([\d]*\.[\d]+)|([\d]+\.))i?
 FLOATEXPONENTIAL=(([\d]*\.[\d]+)|([\d]+\.)|\d+)e[\+-]?[\d]+i?
+ID=[A-Za-z_]+[A-Za-z\d]*
 INTEGER=[0-9]+i?
 LETTER=[A-Za-z]
 DIGIT=[0-9]
@@ -86,12 +84,11 @@ DIGIT=[0-9]
   "]"                   { isTranspose = true; return CLOSESQUAREBRACKET; }
 
   {NEWLINE}             { isTranspose = false; return NEWLINE; }
-  {SPACE}               { isTranspose = false; return SPACE; }
   {COMMENT}             { isTranspose = false; return COMMENT; }
-  {ID}                  { isTranspose = true; return ID; }
   {FLOATEXPONENTIAL}    { isTranspose = false; return FLOATEXPONENTIAL; }
   {FLOAT}               { isTranspose = false; return FLOAT; }
   {INTEGER}             { isTranspose = false; return INTEGER; }
+  {ID}                  { isTranspose = true; return ID; }
   {LETTER}              { isTranspose = false; return LETTER; }
   {DIGIT}               { isTranspose = false; return DIGIT; }
 

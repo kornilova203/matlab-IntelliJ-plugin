@@ -41,6 +41,8 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
             MatlabTypes.SEMICOLON -> SEMICOLON_KEYS
             MatlabTypes.ID -> ID_KEYS
 
+            MatlabTypes.FUNCTION -> KEYWORD_KEYS
+            MatlabTypes.END -> KEYWORD_KEYS
             MatlabTypes.IF -> KEYWORD_KEYS
             MatlabTypes.ELSE -> KEYWORD_KEYS
             MatlabTypes.ELSEIF -> KEYWORD_KEYS
