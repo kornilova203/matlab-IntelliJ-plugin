@@ -79,7 +79,7 @@ array ::= vector | array_with_numbers
 vector ::= ob expr [ colon expr ] [ colon expr ] cb
 array_with_numbers ::= opensquarebracket (semicolon* expr)* closesquarebracket
 
-number ::= (float | floatcomplex | integer | integercomplex)
+number ::= ( float | floatexponential | integer )
 
 function_expr ::= id ob arg_list? cb
 arg_list ::= expr (coma expr)*

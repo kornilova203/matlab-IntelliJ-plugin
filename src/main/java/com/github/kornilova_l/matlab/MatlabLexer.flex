@@ -29,10 +29,9 @@ NEWLINE=\n
 SPACE=[ \t\n\x0B\f\r]+
 COMMENT=%.*
 ID=[A-Za-z_]+[A-Za-z\d]*
-FLOATCOMPLEX=(([0-9]*\.[0-9]+(e[\+-]?[0-9]+)?)|([0-9]+\.?e[\+-]?[0-9]+))i
-FLOAT=([0-9]*\.[0-9]+(e[\+-]?[0-9]+)?)|([0-9]+\.?e[\+-]?[0-9]+)
-INTEGERCOMPLEX=[0-9]+i
-INTEGER=[0-9]+
+FLOAT=([\d]*.[\d]+)|([\d]+.)i?
+FLOATEXPONENTIAL=(([\d]*\.[\d]+)|([\d]+\.)|\d+)e[\+-]?[\d]+i?
+INTEGER=[0-9]+i?
 LETTER=[A-Za-z]
 DIGIT=[0-9]
 
@@ -69,9 +68,8 @@ DIGIT=[0-9]
   {SPACE}               { return SPACE; }
   {COMMENT}             { return COMMENT; }
   {ID}                  { return ID; }
-  {FLOATCOMPLEX}        { return FLOATCOMPLEX; }
+  {FLOATEXPONENTIAL}    { return FLOATEXPONENTIAL; }
   {FLOAT}               { return FLOAT; }
-  {INTEGERCOMPLEX}      { return INTEGERCOMPLEX; }
   {INTEGER}             { return INTEGER; }
   {LETTER}              { return LETTER; }
   {DIGIT}               { return DIGIT; }

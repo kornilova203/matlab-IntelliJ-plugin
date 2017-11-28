@@ -48,9 +48,8 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
             MatlabTypes.FOR -> KEYWORD_KEYS
 
             MatlabTypes.INTEGER -> NUMBER_KEYS
-            MatlabTypes.INTEGERCOMPLEX -> NUMBER_KEYS
             MatlabTypes.FLOAT -> NUMBER_KEYS
-            MatlabTypes.FLOATCOMPLEX -> NUMBER_KEYS
+            MatlabTypes.FLOATEXPONENTIAL -> NUMBER_KEYS
             else -> EMPTY_KEYS
         }
     }
