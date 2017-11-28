@@ -27,7 +27,7 @@ import static com.github.kornilova_l.matlab.psi.MatlabTypes.*;
 NEWLINE=(\R( \t)*)+
 WHITE_SPACE=[ \t\x0B\f]+ // do not match new line
 TRANSPOSE='
-COMMENT=%.*
+LINECOMMENT=%.*
 FLOAT=(([\d]*\.[\d]+)|([\d]+\.))i?
 FLOATEXPONENTIAL=(([\d]*\.[\d]+)|([\d]+\.)|\d+)e[\+-]?[\d]+i?
 ID=[A-Za-z_]+[A-Za-z\d]*
@@ -37,6 +37,7 @@ DIGIT=[0-9]
 
 %state STRING_DOUBLE_STATE
 %state STRING_SINGLE_STATE
+%state BLOCKCOMMENT_STATE
 
 %%
 <YYINITIAL> {
@@ -82,9 +83,10 @@ DIGIT=[0-9]
   ";"                   { isTranspose = false; return SEMICOLON; }
   "["                   { isTranspose = false; return OPENSQUAREBRACKET; }
   "]"                   { isTranspose = true; return CLOSESQUAREBRACKET; }
+  "%{"                  { isTranspose = false; yybegin(BLOCKCOMMENT_STATE); }
 
   {NEWLINE}             { isTranspose = false; return NEWLINE; }
-  {COMMENT}             { isTranspose = false; return COMMENT; }
+  {LINECOMMENT}         { isTranspose = false; return COMMENT; }
   {FLOATEXPONENTIAL}    { isTranspose = false; return FLOATEXPONENTIAL; }
   {FLOAT}               { isTranspose = false; return FLOAT; }
   {INTEGER}             { isTranspose = false; return INTEGER; }
@@ -109,6 +111,17 @@ DIGIT=[0-9]
     "'"                 { yybegin(YYINITIAL); return STRING; }
     [^\n\r'\\]+         {  }
     \n                  { yybegin(YYINITIAL); return BAD_CHARACTER; }
+    \\t                 {  }
+    \\n                 {  }
+    \\r                 {  }
+    \\'                 {  }
+    \\                  {  }
+}
+
+<BLOCKCOMMENT_STATE> {
+    "%}"                { yybegin(YYINITIAL); return COMMENT; }
+    [^\n\r'\\]+         {  }
+    \n                  {  }
     \\t                 {  }
     \\n                 {  }
     \\r                 {  }
