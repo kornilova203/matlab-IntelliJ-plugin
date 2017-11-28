@@ -31,7 +31,7 @@ NEWLINE=\n
 SPACE=[ \t\n\x0B\f\r]+
 COMMENT=%.*
 ID=[A-Za-z_]+[A-Za-z\d]*
-FLOAT=([\d]*.[\d]+)|([\d]+.)i?
+FLOAT=([\d]*\.[\d]+)|([\d]+\.)i?
 FLOATEXPONENTIAL=(([\d]*\.[\d]+)|([\d]+\.)|\d+)e[\+-]?[\d]+i?
 INTEGER=[0-9]+i?
 LETTER=[A-Za-z]
@@ -58,6 +58,21 @@ DIGIT=[0-9]
   ")"                   { isTranspose = true; return CB; }
   "<="                  { isTranspose = false; return LESSOREQUAL; }
   "-"                   { isTranspose = false; return MINUS; }
+  "+"                   { isTranspose = false; return PLUS; }
+  "./"                  { isTranspose = false; return DOTDELETE; }
+  "/"                   { isTranspose = false; return DELETE; }
+  "\\"                  { isTranspose = false; return BACKSLASH; }
+  ".\\"                 { isTranspose = false; return DOTBACKSLASH; }
+  ".*"                  { isTranspose = false; return DOTMUL; }
+  "*"                   { isTranspose = false; return MUL; }
+  ".^"                  { isTranspose = false; return DOTPOW; }
+  "^"                   { isTranspose = false; return POW; }
+  "&&"                  { isTranspose = false; return AND; }
+  "&"                   { isTranspose = false; return MATRIXAND; }
+  "||"                  { isTranspose = false; return OR; }
+  "|"                   { isTranspose = false; return MATRIXOR; }
+  ".'"                  { isTranspose = false; return DOTTRANSPOSE; }
+  "~"                   { isTranspose = false; return NOT; }
   "="                   { isTranspose = false; return ASSIGN; }
   ">="                  { isTranspose = false; return MOREOREQUAL; }
   ">"                   { isTranspose = false; return MORE; }

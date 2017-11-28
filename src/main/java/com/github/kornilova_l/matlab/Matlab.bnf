@@ -18,7 +18,6 @@
 root ::= element *
 private element ::= expr ";"?
 
-// left recursion and empty PSI children define expression root
 expr ::= function_group
   | assign_expr
   | unary_group
@@ -43,34 +42,33 @@ private logical_group ::= matrix_and_expr | matrix_or_expr | and_expr | or_expr 
 private flow_group ::= if_expr | while_expr | for_expr
 private comment_group ::= simple_comment_expr
 
-// expressions: auto-operator detection or parents
 literal_expr ::= number | string | array
-simple_ref_expr ::= id // {extends=ref_expr elementType=ref_expr}
+simple_ref_expr ::= id
 unary_min_expr ::= minus expr
-unary_not_expr ::= '~' expr
+unary_not_expr ::= not expr
 transpose_expr ::= expr transpose
 assign_expr ::= expr assign expr { rightAssociative=true }
-conditional_expr ::= expr (less | more | lessorequal | moreorequal | equal | notequal) expr
+conditional_expr ::= expr ( less | more | lessorequal | moreorequal | equal | notequal ) expr
 simple_comment_expr ::= comment
 
-div_expr ::= expr '/' expr
-left_div_expr ::= expr '\' expr
-mul_expr ::= expr '*' expr
-power_expr ::= expr '^' expr
+div_expr ::= expr delete expr
+left_div_expr ::= expr backslash expr
+mul_expr ::= expr mul expr
+power_expr ::= expr pow expr
 
-el_div_expr ::= expr './' expr
-el_left_div_expr ::= expr '.\' expr
-el_mul_expr ::= expr '.*' expr
-el_power_expr ::= expr '.^' expr
-el_complex_conjugate_transpose_expr ::= expr ".'" expr
+el_div_expr ::= expr dotdelete expr
+el_left_div_expr ::= expr dotbackslash expr
+el_mul_expr ::= expr dotmul expr
+el_power_expr ::= expr dotpow expr
+el_complex_conjugate_transpose_expr ::= expr dottranspose expr
 
-minus_expr ::= expr '-' expr
-plus_expr ::= expr '+' expr
+minus_expr ::= expr minus expr
+plus_expr ::= expr plus expr
 
-matrix_and_expr ::= expr "&" expr
-matrix_or_expr ::= expr "|" expr
-and_expr ::= expr "&&" expr
-or_expr ::= expr "||" expr
+matrix_and_expr ::= expr matrixand expr
+matrix_or_expr ::= expr matrixor expr
+and_expr ::= expr and expr
+or_expr ::= expr or expr
 vector_expr ::= expr colon expr
 
 paren_expr ::= ob expr cb
@@ -84,7 +82,7 @@ number ::= ( float | floatexponential | integer )
 function_expr ::= id ob arg_list? cb
 arg_list ::= expr (coma expr)*
 
-function_declaration_expr ::= function [(id | (opensquarebracket arg_list closesquarebracket))] "=" id ob arg_list cb element* end
+function_declaration_expr ::= function [ ( id | ( opensquarebracket arg_list closesquarebracket ) ) ] "=" id ob arg_list cb element* end
 
 if_expr ::= if expr element*
         ( elseif expr element* )*
