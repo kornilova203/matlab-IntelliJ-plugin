@@ -35,7 +35,7 @@ expr ::= function_group
   | class_group
   | load_group
 
-
+private recover_until_end ::= !( end )
 
 private unary_group ::= unary_min_expr | unary_not_expr | transpose_expr
 private primary_group ::= literal_expr | simple_ref_expr | paren_expr
@@ -98,7 +98,8 @@ if_expr ::= if expr element*
         [ else element* ]
         end
 
-while_expr ::= while expr element* end
+while_expr ::= while while_inner_part end { pin=1 }
+private while_inner_part ::= expr element* { recoverWhile=recover_until_end }
 
 for_expr ::= for expr element* end
 
