@@ -38,6 +38,7 @@ DIGIT=[0-9]
 %state STRING_DOUBLE_STATE
 %state STRING_SINGLE_STATE
 %state BLOCKCOMMENT_STATE
+%state FILE_NAME_STATE
 
 %%
 <YYINITIAL> {
@@ -49,10 +50,15 @@ DIGIT=[0-9]
   function              { isTranspose = false; return FUNCTION; }
   elseif                { isTranspose = false; return ELSEIF; }
   else                  { isTranspose = false; return ELSE; }
-  "end"                 { isTranspose = false; return END; }
-  "if"                  { isTranspose = false; return IF; }
-  "for"                 { isTranspose = false; return FOR; }
-  "while"               { isTranspose = false; return WHILE; }
+  end                   { isTranspose = false; return END; }
+  if                    { isTranspose = false; return IF; }
+  for                   { isTranspose = false; return FOR; }
+  while                 { isTranspose = false; return WHILE; }
+  classdef              { isTranspose = false; return CLASSDEF; }
+  properties            { isTranspose = false; return PROPERTIES; }
+  methods               { isTranspose = false; return METHODS; }
+  load/" "              { isTranspose = false; yybegin(FILE_NAME_STATE); return LOAD; }
+
   "("                   { isTranspose = false; return OB; }
   ")"                   { isTranspose = true; return CB; }
   "<="                  { isTranspose = false; return LESSOREQUAL; }
@@ -84,6 +90,7 @@ DIGIT=[0-9]
   "["                   { isTranspose = false; return OPENSQUAREBRACKET; }
   "]"                   { isTranspose = true; return CLOSESQUAREBRACKET; }
   "%{"                  { isTranspose = false; yybegin(BLOCKCOMMENT_STATE); }
+  "."                   { isTranspose = false; return DOT; }
 
   {NEWLINE}             { isTranspose = false; return NEWLINE; }
   {LINECOMMENT}         { isTranspose = false; return COMMENT; }
@@ -127,6 +134,12 @@ DIGIT=[0-9]
     \\r                 {  }
     \\'                 {  }
     \\                  {  }
+}
+
+<FILE_NAME_STATE> {
+    \n                { yybegin(YYINITIAL); return FILENAME; }
+    "("               { yybegin(YYINITIAL); }
+    [^\n(]+           {  }
 }
 
 [^] { return BAD_CHARACTER; }

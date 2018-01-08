@@ -26,6 +26,7 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
         private val SEMICOLON_KEYS: Array<TextAttributesKey?> = arrayOf(SEMICOLON)
         private val KEYWORD_KEYS: Array<TextAttributesKey?> = arrayOf(KEYWORD)
         private val ID_KEYS: Array<TextAttributesKey?> = arrayOf(ID)
+        private val CLASSNAME_KEYS: Array<TextAttributesKey?> = arrayOf(DefaultLanguageHighlighterColors.CLASS_NAME)
         private val NUMBER_KEYS: Array<TextAttributesKey?> = arrayOf(DefaultLanguageHighlighterColors.NUMBER)
         private val EMPTY_KEYS = arrayOfNulls<TextAttributesKey>(0)
     }
@@ -48,6 +49,9 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
             MatlabTypes.ELSEIF -> KEYWORD_KEYS
             MatlabTypes.WHILE -> KEYWORD_KEYS
             MatlabTypes.FOR -> KEYWORD_KEYS
+            MatlabTypes.CLASSDEF -> KEYWORD_KEYS
+            MatlabTypes.PROPERTIES -> KEYWORD_KEYS
+            MatlabTypes.METHODS -> KEYWORD_KEYS
 
             MatlabTypes.INTEGER -> NUMBER_KEYS
             MatlabTypes.FLOAT -> NUMBER_KEYS
