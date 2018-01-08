@@ -93,15 +93,16 @@ function_declaration_expr ::= function
         ( [ ( id | ( opensquarebracket arg_list? closesquarebracket ) ) ] assign )?
         id ob arg_list? cb element* end
 
-if_expr ::= if expr element*
-        ( elseif expr element* )*
-        [ else element* ]
-        end
+if_expr ::= if if_inner end { pin=1 }
+if_inner ::= expr element*
+             ( elseif expr element* )*
+             [ else element* ] { recoverWhile=recover_until_end }
 
-while_expr ::= while while_inner_part end { pin=1 }
-private while_inner_part ::= expr element* { recoverWhile=recover_until_end }
+private condition_and_expressions ::= expr element* { recoverWhile=recover_until_end }
 
-for_expr ::= for expr element* end
+while_expr ::= while condition_and_expressions end { pin=1 }
+
+for_expr ::= for condition_and_expressions end { pin=1 }
 
 class_def_expr ::= classdef id newline?
         properties newline? (id newline? )* end newline?
