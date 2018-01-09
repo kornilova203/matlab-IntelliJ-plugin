@@ -106,11 +106,11 @@ if_inner ::= expr [ newline ] element*
         ( elseif expr [ newline ] element* )*
         [ else element* ] { recoverWhile=recover_until_end }
 
-private condition_and_expressions ::= expr [ newline ] element_inside_block* { recoverWhile=recover_until_end }
+while_expr ::= while inner_while end { pin=1 }
+private inner_while ::= expr [ newline ] element_inside_block* { recoverWhile=recover_until_end }
 
-while_expr ::= while condition_and_expressions end { pin=1 }
-
-for_expr ::= for condition_and_expressions end { pin=1 }
+for_expr ::= for inner_for end { pin=1 }
+private inner_for ::= assign_expr [ newline ] element_inside_block* { recoverWhile=recover_until_end }
 
 class_def_expr ::= classdef id newline?
         properties newline? (id newline? )* end newline?
