@@ -61,6 +61,7 @@ DIGIT=[0-9]
 
   "("                   { isTranspose = false; return OPENBRACKET; }
   ")"                   { isTranspose = true; return CLOSEBRACKET; }
+  "."                   { isTranspose = false; return DOT; }
   "<="                  { isTranspose = false; return LESSOREQUAL; }
   "-"                   { isTranspose = false; return MINUS; }
   "+"                   { isTranspose = false; return PLUS; }
