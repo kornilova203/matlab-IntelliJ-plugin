@@ -15,10 +15,17 @@
   extends(".*expr")=expr
 }
 
+/* recoverWhile rule is executed even if nothing is matched.
+ * If you are not careful enough it can consume everything (your time and other good things that you have)
+ * Some expressions have 'inner' part to which recoverWhile is applied.
+ * Therefore recoverWhile is executed only if some part of the expression is matched and
+ * it does not consume ending of the expression if there is a mistake
+ * somewhere inside the expression */
+
 root ::= element *
 private element ::= ( newline | inner_element ( newline | semicolon newline | semicolon | <<eof>> ) )
 private inner_element ::= ( expr | comment ) { recoverWhile=recover_until_semicolon_or_newline }
-/* element inside a block. It recovers also until 'end' (otherwise it consumes 'end') */
+/* element inside a block. It recovers also until 'end' (without this rule it consumes 'end') */
 private element_inside_block ::= newline
     | inner_element_inside_block [ newline | semicolon newline | semicolon ]
 private inner_element_inside_block ::= ( expr | comment ) { recoverWhile=recover_until_semicolon_or_newline_or_end }
