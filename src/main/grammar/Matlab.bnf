@@ -112,7 +112,14 @@ private inner_while ::= expr [ newline ] element_inside_block* { recoverWhile=re
 for_expr ::= for inner_for end { pin=1 }
 private inner_for ::= assign_expr [ newline ] element_inside_block* { recoverWhile=recover_until_end }
 
-class_def_expr ::= classdef id newline?
-        properties newline? (id newline? )* end newline?
-        methods newline? (function_declaration_expr newline?)* end newline?
-        end newline? { pin=1 }
+class_def_expr ::= classdef class_def_inner end { pin=1 }
+private class_def_inner ::= id [ newline ]
+    [ properties_block [ newline ] ]
+    [ methods_block [ newline ] ] { recoverWhile=recover_until_end }
+
+properties_block ::= properties [ newline ] properties_block_inner end { pin=1 }
+private properties_block_inner ::= ( id [ newline ] ) * { recoverWhile=recover_until_end }
+
+methods_block ::= methods [ newline ] methods_block_inner end { pin=1 }
+private methods_block_inner ::= ( function_declaration_expr [ newline ] ) * { recoverWhile=recover_until_end }
+
