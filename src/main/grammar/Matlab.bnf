@@ -99,7 +99,7 @@ arg_list ::= expr (coma expr)* { recoverWhile=recover_until_close_bracket }
 
 function_declaration_expr ::= function function_inner end { pin=1 }
 private function_inner ::= ( [ ( id | ( opensquarebracket arg_list? closesquarebracket ) ) ] assign )?
-                                   id openbracket arg_list? closebracket element* { recoverWhile=recover_until_end }
+                                   id openbracket arg_list? closebracket element_inside_block* { recoverWhile=recover_until_end }
 
 if_expr ::= if if_inner end { pin=1 }
 private if_inner ::= expr [ newline ] element_inside_block*

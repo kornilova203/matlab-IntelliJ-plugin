@@ -36,4 +36,8 @@ open class MatlabParserTest : ParsingTestCase("", "m", MatlabParserDefinition())
     fun testValidFunctionCall() {
         doTest(true)
     }
+
+    fun testValidFunctionDeclaration() {
+        doTest(true)
+    }
 }
