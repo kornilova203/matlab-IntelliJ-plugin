@@ -28,4 +28,8 @@ open class MatlabParserTest : ParsingTestCase("", "m", MatlabParserDefinition())
     fun testValidFor() {
         doTest(true)
     }
+
+    fun testValidIf() {
+        doTest(true)
+    }
 }

@@ -42,7 +42,7 @@ expr ::= function_group
 
 private recover_until_end ::= !( end )
 private recover_until_semicolon_or_newline ::= !( semicolon | newline )
-private recover_until_semicolon_or_newline_or_end ::= !( semicolon | newline | end )
+private recover_until_semicolon_or_newline_or_end ::= !( semicolon | newline | end | elseif | else )
 private recover_until_close_bracket ::= !( closebracket )
 
 private unary_group ::= unary_min_expr | unary_not_expr | transpose_expr
@@ -102,9 +102,9 @@ private function_inner ::= ( [ ( id | ( opensquarebracket arg_list? closesquareb
                                    id openbracket arg_list? closebracket element* { recoverWhile=recover_until_end }
 
 if_expr ::= if if_inner end { pin=1 }
-if_inner ::= expr [ newline ] element*
-        ( elseif expr [ newline ] element* )*
-        [ else element* ] { recoverWhile=recover_until_end }
+private if_inner ::= expr [ newline ] element_inside_block*
+        ( elseif expr [ newline ] element_inside_block* )*
+        [ else element_inside_block* ] { recoverWhile=recover_until_end }
 
 while_expr ::= while inner_while end { pin=1 }
 private inner_while ::= expr [ newline ] element_inside_block* { recoverWhile=recover_until_end }
