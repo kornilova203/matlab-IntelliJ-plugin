@@ -87,7 +87,7 @@ array ::= vector | array_with_numbers
 vector ::= ob expr [ colon expr ] [ colon expr ] cb
 array_with_numbers ::= opensquarebracket (semicolon* expr)* closesquarebracket
 
-number ::= ( float | floatexponential | integer )
+private number ::= float | floatexponential | integer
 
 function_expr ::= id ob arg_list? cb { pin=2 }
 arg_list ::= expr (coma expr)* { recoverWhile=recover_until_close_bracket }
