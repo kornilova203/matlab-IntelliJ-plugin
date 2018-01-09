@@ -38,7 +38,7 @@ expr ::= function_group
 
 private recover_until_end ::= !( end )
 private recover_until_semicolon_or_newline ::= !( semicolon | newline )
-private recover_until_close_bracket ::= !( cb )
+private recover_until_close_bracket ::= !( closebracket )
 
 private unary_group ::= unary_min_expr | unary_not_expr | transpose_expr
 private primary_group ::= literal_expr | simple_ref_expr | paren_expr
@@ -81,20 +81,20 @@ and_expr ::= expr and expr
 or_expr ::= expr or expr
 vector_expr ::= expr colon expr
 
-paren_expr ::= ob expr cb
+paren_expr ::= openbracket expr closebracket
 
 array ::= vector | array_with_numbers
-vector ::= ob expr [ colon expr ] [ colon expr ] cb
+vector ::= openbracket expr [ colon expr ] [ colon expr ] closebracket
 array_with_numbers ::= opensquarebracket (semicolon* expr)* closesquarebracket
 
 private number ::= float | floatexponential | integer
 
-function_expr ::= id ob arg_list? cb { pin=2 }
+function_expr ::= id openbracket arg_list? closebracket { pin=2 }
 arg_list ::= expr (coma expr)* { recoverWhile=recover_until_close_bracket }
 
 function_declaration_expr ::= function function_inner end { pin=1 }
 private function_inner ::= ( [ ( id | ( opensquarebracket arg_list? closesquarebracket ) ) ] assign )?
-                                   id ob arg_list? cb element* { recoverWhile=recover_until_end }
+                                   id openbracket arg_list? closebracket element* { recoverWhile=recover_until_end }
 
 if_expr ::= if if_inner end { pin=1 }
 if_inner ::= expr [ newline ] element*

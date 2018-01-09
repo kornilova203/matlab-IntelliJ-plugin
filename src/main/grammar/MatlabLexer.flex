@@ -57,10 +57,10 @@ DIGIT=[0-9]
   classdef              { isTranspose = false; return CLASSDEF; }
   properties            { isTranspose = false; return PROPERTIES; }
   methods               { isTranspose = false; return METHODS; }
-  load/" "              { isTranspose = false; yybegin(FILE_NAME_STATE); return LOAD; }
+  load/" "+[^ (]        { isTranspose = false; yybegin(FILE_NAME_STATE); return LOAD; }
 
-  "("                   { isTranspose = false; return OB; }
-  ")"                   { isTranspose = true; return CB; }
+  "("                   { isTranspose = false; return OPENBRACKET; }
+  ")"                   { isTranspose = true; return CLOSEBRACKET; }
   "<="                  { isTranspose = false; return LESSOREQUAL; }
   "-"                   { isTranspose = false; return MINUS; }
   "+"                   { isTranspose = false; return PLUS; }
@@ -137,9 +137,10 @@ DIGIT=[0-9]
 }
 
 <FILE_NAME_STATE> {
-    \n                { yybegin(YYINITIAL); return FILENAME; }
+    /* stop consuming filename when find newline */
+    [^\n(]/\n         { yybegin(YYINITIAL); return FILENAME; }
     "("               { yybegin(YYINITIAL); }
-    [^\n(]+           {  }
+    [^\n(]            {  }
 }
 
 [^] { return BAD_CHARACTER; }
