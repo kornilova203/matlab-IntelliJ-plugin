@@ -20,7 +20,7 @@
 }
 
 root ::= element *
-private element ::= ( newline | inner_element ( newline | semicolon newline | semicolon ) )
+private element ::= ( newline | inner_element ( newline | semicolon newline | semicolon | <<eof>> ) )
 private inner_element ::= ( expr | comment ) { pin=1 recoverWhile=recover_until_semicolon_or_newline }
 
 expr ::= function_group
