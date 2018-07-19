@@ -48,4 +48,8 @@ open class MatlabParserTest : ParsingTestCase("", "m", MatlabParserDefinition())
     fun testValidPropertyAccess() {
         doTest(true)
     }
+
+    fun testStrings() {
+        doTest(true)
+    }
 }

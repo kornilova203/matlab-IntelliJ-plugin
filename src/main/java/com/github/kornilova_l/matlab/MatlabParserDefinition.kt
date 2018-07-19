@@ -30,7 +30,7 @@ class MatlabParserDefinition : ParserDefinition {
         return MatlabFile(viewProvider)
     }
 
-    override fun spaceExistanceTypeBetweenTokens(p0: ASTNode?, p1: ASTNode?): ParserDefinition.SpaceRequirements {
+    override fun spaceExistenceTypeBetweenTokens(p0: ASTNode?, p1: ASTNode?): ParserDefinition.SpaceRequirements {
         return ParserDefinition.SpaceRequirements.MAY
     }
 
@@ -43,7 +43,7 @@ class MatlabParserDefinition : ParserDefinition {
     override fun createLexer(p0: Project?): Lexer = MatlabLexerAdapter()
 
     override fun createElement(node: ASTNode?): PsiElement {
-        return MatlabTypes.Factory.createElement(node)
+        throw AssertionError("Unknown element type: ${node!!.elementType}")
     }
 
     override fun getCommentTokens(): TokenSet = COMMENTS

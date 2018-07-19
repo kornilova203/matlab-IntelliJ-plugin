@@ -1,5 +1,7 @@
 # matlab-IntelliJ-plugin
-Matlab syntax highlighting plugin for IntelliJ IDEA
+Matlab syntax highlighting plugin for JetBrains IDEs
+
+![Screenshot of Matlab plugin](screenshots/screen.png)
 
 ## Build
 1. Install [Grammar-Kit](https://plugins.jetbrains.com/plugin/6606-grammar-kit) plugin

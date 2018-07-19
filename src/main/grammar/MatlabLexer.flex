@@ -32,8 +32,6 @@ FLOAT=(([\d]*\.[\d]+)|([\d]+\.))i?
 FLOATEXPONENTIAL=(([\d]*\.[\d]+)|([\d]+\.)|\d+)e[\+-]?[\d]+i?
 ID=[A-Za-z_]+[A-Za-z\d]*
 INTEGER=[0-9]+i?
-LETTER=[A-Za-z]
-DIGIT=[0-9]
 
 %state STRING_DOUBLE_STATE
 %state STRING_SINGLE_STATE
@@ -42,10 +40,10 @@ DIGIT=[0-9]
 
 %%
 <YYINITIAL> {
-  {WHITE_SPACE}         { return WHITE_SPACE; }
+  {WHITE_SPACE}         { isTranspose = false; return WHITE_SPACE; }
 
   \"                    { yybegin(STRING_DOUBLE_STATE); }
-  "'"                   { if (isTranspose) { isTranspose = false; return TRANSPOSE; } else yybegin(STRING_SINGLE_STATE); }
+  {TRANSPOSE}           { if (isTranspose) { isTranspose = false; return TRANSPOSE; } else yybegin(STRING_SINGLE_STATE); }
 
   function              { isTranspose = false; return FUNCTION; }
   elseif                { isTranspose = false; return ELSEIF; }
@@ -78,7 +76,7 @@ DIGIT=[0-9]
   "||"                  { isTranspose = false; return OR; }
   "|"                   { isTranspose = false; return MATRIXOR; }
   ".'"                  { isTranspose = false; return DOTTRANSPOSE; }
-  "~"                   { isTranspose = false; return NOT; }
+  "~"                   { isTranspose = false; return TILDA; }
   "="                   { isTranspose = false; return ASSIGN; }
   ">="                  { isTranspose = false; return MOREOREQUAL; }
   ">"                   { isTranspose = false; return MORE; }
@@ -90,6 +88,8 @@ DIGIT=[0-9]
   ";"                   { isTranspose = false; return SEMICOLON; }
   "["                   { isTranspose = false; return OPENSQUAREBRACKET; }
   "]"                   { isTranspose = true; return CLOSESQUAREBRACKET; }
+  "{"                   { isTranspose = false; return OPENCURLYBRACKET; }
+  "}"                   { isTranspose = false; return CLOSECURLYBRACKET; }
   "%{"                  { isTranspose = false; yybegin(BLOCKCOMMENT_STATE); }
   "."                   { isTranspose = false; return DOT; }
 
@@ -99,9 +99,6 @@ DIGIT=[0-9]
   {FLOAT}               { isTranspose = false; return FLOAT; }
   {INTEGER}             { isTranspose = false; return INTEGER; }
   {ID}                  { isTranspose = true; return ID; }
-  {LETTER}              { isTranspose = false; return LETTER; }
-  {DIGIT}               { isTranspose = false; return DIGIT; }
-
 }
 
 <STRING_DOUBLE_STATE> {
@@ -113,6 +110,7 @@ DIGIT=[0-9]
     \\r                 {  }
     \\\"                {  }
     \\                  {  }
+    .                   {  }
 }
 
 <STRING_SINGLE_STATE> {
@@ -124,6 +122,7 @@ DIGIT=[0-9]
     \\r                 {  }
     \\'                 {  }
     \\                  {  }
+    .                   {  }
 }
 
 <BLOCKCOMMENT_STATE> {

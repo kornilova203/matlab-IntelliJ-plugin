@@ -13,7 +13,9 @@ repositories {
 }
 
 configurations {
+    intellij.updateSinceUntilBuild = false
     intellij.downloadSources = true
+    intellij.pluginName = 'Matlab Support'
 }
 
 compileKotlin {

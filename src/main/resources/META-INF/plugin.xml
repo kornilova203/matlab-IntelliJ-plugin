@@ -1,24 +1,22 @@
 <idea-plugin>
     <id>com.github.com.kornilovaL</id>
-    <name>Matlab syntax highlight</name>
-    <version>1.0</version>
+    <name>Matlab Support</name>
+    <version>0.1-SNAPSHOT</version>
 
     <description><![CDATA[
-      Matlab syntax highlight
+    Matlab syntax highlighting plugin for JetBrains IDEs.
     ]]></description>
 
     <change-notes><![CDATA[
+    <ol>
+      <li>Implemented simple syntax highlighting.</li>
+    </ol>
     ]]>
     </change-notes>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
     <idea-version since-build="162"/>
 
-    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-         on how to target different products -->
-    <!-- uncomment to enable plugin in all products
     <depends>com.intellij.modules.lang</depends>
-    -->
 
     <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="com.github.kornilova_l.matlab.MatlabFileTypeFactory"/>

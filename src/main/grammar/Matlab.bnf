@@ -11,119 +11,14 @@
   elementTypeHolderClass="com.github.kornilova_l.matlab.psi.MatlabTypes"
   elementTypeClass="com.github.kornilova_l.matlab.psi.MatlabElementType"
   tokenTypeClass="com.github.kornilova_l.matlab.psi.MatlabTokenType"
-
-  extends(".*expr")=expr
 }
 
-/* recoverWhile rule is executed even if nothing is matched.
- * If you are not careful enough it can consume everything (your time and other good things that you have)
- * Some expressions have 'inner' part to which recoverWhile is applied.
- * Therefore recoverWhile is executed only if some part of the expression is matched and
- * it does not consume ending of the expression if there is a mistake
- * somewhere inside the expression */
+/* The grammar simply lists all tokens */
 
 root ::= element *
-private element ::= ( newline | inner_element ( newline | semicolon newline | semicolon | <<eof>> ) )
-private inner_element ::= ( expr | comment ) { recoverWhile=recover_until_semicolon_or_newline }
-/* element inside a block. It recovers also until 'end' (without this rule it consumes 'end') */
-private element_inside_block ::= newline
-    | inner_element_inside_block [ newline | semicolon newline | semicolon ]
-private inner_element_inside_block ::= ( expr | comment ) { recoverWhile=recover_until_semicolon_or_newline_or_end }
-
-expr ::= function_group
-    | assign_expr
-    | unary_group
-    | conditional_group
-    | logical_group
-    | mul_group
-    | add_group
-    | element_by_group
-    | primary_group
-    | flow_group
-    | class_group
-    | load_group
-
-private recover_until_end ::= !( end )
-private recover_until_semicolon_or_newline ::= !( semicolon | newline )
-private recover_until_semicolon_or_newline_or_end ::= !( semicolon | newline | end | elseif | else )
-private recover_until_close_bracket ::= !( closebracket )
-
-private unary_group ::= unary_min_expr | unary_not_expr | transpose_expr
-private primary_group ::= literal_expr | ref_expr | paren_expr
-private conditional_group ::= conditional_expr
-private mul_group ::= mul_expr | div_expr | left_div_expr | power_expr
-private add_group ::= plus_expr | minus_expr
-private element_by_group ::= el_mul_expr | el_div_expr | el_left_div_expr | el_power_expr | el_complex_conjugate_transpose_expr
-private function_group ::= function_expr | function_declaration_expr
-private logical_group ::= matrix_and_expr | matrix_or_expr | and_expr | or_expr | vector_expr
-private flow_group ::= if_expr | while_expr | for_expr
-private class_group ::= class_def_expr | property_access_expr
-private load_group ::= load_expr
-
-literal_expr ::= number | string | array
-ref_expr ::= id
-unary_min_expr ::= minus expr
-unary_not_expr ::= not expr
-transpose_expr ::= expr transpose
-assign_expr ::= expr assign expr { rightAssociative=true }
-conditional_expr ::= expr ( less | more | lessorequal | moreorequal | equal | notequal ) expr
-load_expr ::= load filename
-
-div_expr ::= expr delete expr
-left_div_expr ::= expr backslash expr
-mul_expr ::= expr mul expr
-power_expr ::= expr pow expr
-
-el_div_expr ::= expr dotdelete expr
-el_left_div_expr ::= expr dotbackslash expr
-el_mul_expr ::= expr dotmul expr
-el_power_expr ::= expr dotpow expr
-el_complex_conjugate_transpose_expr ::= expr dottranspose expr
-
-minus_expr ::= expr minus expr
-plus_expr ::= expr plus expr
-
-matrix_and_expr ::= expr matrixand expr
-matrix_or_expr ::= expr matrixor expr
-and_expr ::= expr and expr
-or_expr ::= expr or expr
-vector_expr ::= expr colon expr
-
-paren_expr ::= openbracket expr closebracket
-
-array ::= vector | array_with_numbers
-vector ::= openbracket expr [ colon expr ] [ colon expr ] closebracket
-array_with_numbers ::= opensquarebracket (semicolon* expr)* closesquarebracket
-
-private number ::= float | floatexponential | integer
-
-function_expr ::= id openbracket arg_list? closebracket { pin=2 }
-arg_list ::= expr (coma expr)* { recoverWhile=recover_until_close_bracket }
-
-function_declaration_expr ::= function function_inner end { pin=1 }
-private function_inner ::= ( [ ( id | ( opensquarebracket arg_list? closesquarebracket ) ) ] assign )?
-                                   id openbracket arg_list? closebracket element_inside_block* { recoverWhile=recover_until_end }
-
-if_expr ::= if if_inner end { pin=1 }
-private if_inner ::= expr [ newline ] element_inside_block*
-        ( elseif expr [ newline ] element_inside_block* )*
-        [ else element_inside_block* ] { recoverWhile=recover_until_end }
-
-while_expr ::= while inner_while end { pin=1 }
-private inner_while ::= expr [ newline ] element_inside_block* { recoverWhile=recover_until_end }
-
-for_expr ::= for inner_for end { pin=1 }
-private inner_for ::= assign_expr [ newline ] element_inside_block* { recoverWhile=recover_until_end }
-
-class_def_expr ::= classdef class_def_inner end { pin=1 }
-private class_def_inner ::= id [ newline ]
-    [ properties_block [ newline ] ]
-    [ methods_block [ newline ] ] { recoverWhile=recover_until_end }
-
-properties_block ::= properties [ newline ] properties_block_inner end { pin=1 }
-private properties_block_inner ::= ( id [ newline ] ) * { recoverWhile=recover_until_end }
-
-methods_block ::= methods [ newline ] methods_block_inner end { pin=1 }
-private methods_block_inner ::= ( function_declaration_expr [ newline ] ) * { recoverWhile=recover_until_end }
-
-property_access_expr ::= expr dot expr
+private element ::= ( newline | transpose | linecomment | float | floatexponential | id | integer | comment | function |
+elseif | else | end | if | for | while | classdef | properties | methods | load | string | filename | openbracket |
+ closebracket | lessorequal | minus | plus | dotdelete | delete | backslash | dotbackslash | dotmul | mul |
+ dotpow | pow | and | matrixand | or | matrixor | dottranspose | tilda | assign | moreorequal | more | less | equal |
+ notequal | coma | colon | semicolon | opensquarebracket | closesquarebracket | opencurlybracket | closecurlybracket |
+ dot )
