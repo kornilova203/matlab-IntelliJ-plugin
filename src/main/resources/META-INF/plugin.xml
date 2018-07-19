@@ -2,6 +2,9 @@
     <id>com.github.com.kornilovaL</id>
     <name>Matlab Support</name>
     <version>0.1-SNAPSHOT</version>
+    <id>MatlabSupport</id>
+
+    <vendor url="https://github.com/kornilova-l" email="kornilova203@gmail.com" />
 
     <description><![CDATA[
     Matlab syntax highlighting plugin for JetBrains IDEs.
