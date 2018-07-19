@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.github.com.kornilovaL</id>
     <name>Matlab Support</name>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
     <id>MatlabSupport</id>
 
     <vendor url="https://github.com/kornilova-l" email="kornilova203@gmail.com" />

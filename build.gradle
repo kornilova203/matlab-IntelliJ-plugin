@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.gitgub.kornilova_l'
-version = '0.1-SNAPSHOT'
+version = '0.1'
 
 repositories {
     mavenCentral()
