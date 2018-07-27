@@ -1,14 +1,15 @@
 package com.github.kornilova_l.matlab
 
 import com.github.kornilova_l.matlab.psi.MatlabTypes
+import com.intellij.lexer.FlexAdapter
 import com.intellij.lexer.Lexer
-import com.intellij.openapi.editor.colors.TextAttributesKey
-import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
-import com.intellij.psi.tree.IElementType
-import com.intellij.openapi.editor.HighlighterColors
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
+import com.intellij.openapi.editor.HighlighterColors
+import com.intellij.openapi.editor.colors.TextAttributesKey
 import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
+import com.intellij.openapi.fileTypes.SyntaxHighlighterBase
 import com.intellij.psi.TokenType
+import com.intellij.psi.tree.IElementType
 
 
 class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
@@ -40,7 +41,7 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
             TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS
             MatlabTypes.STRING -> STRING_KEYS
             MatlabTypes.SEMICOLON -> SEMICOLON_KEYS
-            MatlabTypes.ID -> ID_KEYS
+            MatlabTypes.IDENTIFIER -> ID_KEYS
 
             MatlabTypes.FUNCTION -> KEYWORD_KEYS
             MatlabTypes.END -> KEYWORD_KEYS

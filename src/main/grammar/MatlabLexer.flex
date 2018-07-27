@@ -13,7 +13,7 @@ import static com.github.kornilova_l.matlab.psi.MatlabTypes.*;
     private boolean isTranspose = false;
 
     public MatlabLexer() {
-        this((java.io.Reader)null);
+        this(null);
     }
 %}
 
@@ -30,10 +30,15 @@ TRANSPOSE='
 LINECOMMENT=%.*
 FLOAT=(([\d]*\.[\d]+)|([\d]+\.))i?
 FLOATEXPONENTIAL=(([\d]*\.[\d]+)|([\d]+\.)|\d+)e[\+-]?[\d]+i?
-ID=[A-Za-z_]+[A-Za-z\d]*
+IDENTIFIER = [:jletter:] [:jletterdigit:]*
 INTEGER=[0-9]+i?
 
-%state STRING_DOUBLE_STATE
+/* double quote literal does not allow single \ character. Sequence \" gives double quote */
+DOUBLE_QUOTE_EXCAPE_SEQUENCE=\\[\"bfnrt\\]
+DOUBLE_QUOTE_STRING_LITERAL = \" ([^\\\"\r\n] | {DOUBLE_QUOTE_EXCAPE_SEQUENCE})* \"
+/* single quote literal allows single \ character. Sequence '' gives single quote */
+SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
+
 %state STRING_SINGLE_STATE
 %state BLOCKCOMMENT_STATE
 %state FILE_NAME_STATE
@@ -42,7 +47,6 @@ INTEGER=[0-9]+i?
 <YYINITIAL> {
   {WHITE_SPACE}         { isTranspose = false; return WHITE_SPACE; }
 
-  \"                    { yybegin(STRING_DOUBLE_STATE); }
   {TRANSPOSE}           { if (isTranspose) { isTranspose = false; return TRANSPOSE; } else yybegin(STRING_SINGLE_STATE); }
 
   function              { isTranspose = false; return FUNCTION; }
@@ -98,31 +102,15 @@ INTEGER=[0-9]+i?
   {FLOATEXPONENTIAL}    { isTranspose = false; return FLOATEXPONENTIAL; }
   {FLOAT}               { isTranspose = false; return FLOAT; }
   {INTEGER}             { isTranspose = false; return INTEGER; }
-  {ID}                  { isTranspose = true; return ID; }
-}
-
-<STRING_DOUBLE_STATE> {
-    \"                  { yybegin(YYINITIAL); return STRING; }
-    [^\n\r\"\\]+        {  }
-    \n                  { yybegin(YYINITIAL); return BAD_CHARACTER; }
-    \\t                 {  }
-    \\n                 {  }
-    \\r                 {  }
-    \\\"                {  }
-    \\                  {  }
-    .                   {  }
+  {IDENTIFIER}          { isTranspose = true; return IDENTIFIER; }
+  {DOUBLE_QUOTE_STRING_LITERAL} { return STRING; }
 }
 
 <STRING_SINGLE_STATE> {
-    "'"                 { yybegin(YYINITIAL); return STRING; }
-    [^\n\r'\\]+         {  }
-    \n                  { yybegin(YYINITIAL); return BAD_CHARACTER; }
-    \\t                 {  }
-    \\n                 {  }
-    \\r                 {  }
-    \\'                 {  }
-    \\                  {  }
-    .                   {  }
+    "'"                             { yybegin(YYINITIAL); return STRING; }
+    \n                              { yybegin(YYINITIAL); return BAD_CHARACTER; }
+    {SINGLE_QUOTE_EXCAPE_SEQUENCE}  {  }
+    [^\r]                           {  }
 }
 
 <BLOCKCOMMENT_STATE> {
