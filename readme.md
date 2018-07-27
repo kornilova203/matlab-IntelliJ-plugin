@@ -10,16 +10,26 @@ https://plugins.jetbrains.com/plugin/10941-matlab-support
  2. Click **Browse repositories...**
  3. Type _Matlab Support_ in search bar
  4. Click **Install**
+ 
+## Development
 
-## Build
-1. Install [Grammar-Kit](https://plugins.jetbrains.com/plugin/6606-grammar-kit) plugin
-2. Open [Matlab.bnf](src/main/grammar/Matlab.bnf) and run `Generate Parser Code` action in context menu
-3. Open [MatlabLexer.flex](src/main/grammar/MatlabLexer.flex) and run `Run JFlex Generator` action in context menu
-4. Run `runIdea`
-    ```bash
-    # Linux
-    ./gradlew runIdea
+For easier development install [Grammar-Kit](https://plugins.jetbrains.com/plugin/6606-grammar-kit) plugin.
 
-    # Windows
-    gradlew.bat runIdea
-    ```
+### Run IntelliJ IDEA with the plugin
+```bash
+# Linux
+./gradlew runIde
+
+# Windows
+gradlew.bat runIde
+```
+
+### Build jar with the plugin
+```bash
+# Linux
+./gradlew buildPlugin
+
+# Windows
+gradlew.bat buildPlugin
+```
+Jar will be outputted to `build/distributions` directory.
