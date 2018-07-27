@@ -3,10 +3,11 @@ plugins {
     id "org.jetbrains.kotlin.jvm" version "1.2.51"
     id "java"
     id "idea"
+    id "org.jetbrains.grammarkit" version "2018.1.7"
 }
 
-group = 'com.gitgub.kornilova_l'
-version = '0.2-SNAPSHOT'
+group = "com.gitgub.kornilova_l"
+version = "0.2-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -15,7 +16,7 @@ repositories {
 configurations {
     intellij.updateSinceUntilBuild = false
     intellij.downloadSources = true
-    intellij.pluginName = 'Matlab Support'
+    intellij.pluginName = "Matlab Support"
 }
 
 compileKotlin {
@@ -30,10 +31,34 @@ compileTestKotlin {
     }
 }
 
-sourceSets.main.java.srcDir file('src/main/gen')
+sourceSets.main.java.srcDir file("src/main/gen")
 
 idea {
     module {
-        generatedSourceDirs += file('src/main/gen')
+        generatedSourceDirs += file("src/main/gen")
     }
 }
+
+import org.jetbrains.grammarkit.tasks.*
+
+task generateMatlabLexer(type: GenerateLexer) {
+    source = "src/main/grammar/MatlabLexer.flex"
+    targetDir = "src/main/gen/com/github/kornilova_l/matlab"
+    targetClass = "MatlabLexer"
+
+    // if set, plugin will remove a lexer output file before generating new one. Default: false
+    purgeOldFiles = true
+}
+
+task generateMatlabParser(type: GenerateParser) {
+    source = "src/main/grammar/Matlab.bnf"
+    targetRoot = "src/main/gen/"
+    pathToParser = "/com/github/kornilova_l/matlab/MatlabParser.java"
+    pathToPsiRoot = "/com/github/kornilova_l/matlab/psi"
+
+    // if set, plugin will remove a parser output file and psi output directory before generating new ones. Default: false
+    purgeOldFiles = true
+}
+
+compileKotlin.dependsOn generateMatlabLexer
+compileKotlin.dependsOn generateMatlabParser
