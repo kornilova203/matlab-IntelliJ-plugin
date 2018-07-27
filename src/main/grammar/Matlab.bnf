@@ -16,9 +16,9 @@
 /* The grammar simply lists all tokens */
 
 root ::= element *
-private element ::= ( newline | transpose | linecomment | float | floatexponential | identifier | integer | comment | function |
-elseif | else | end | if | for | while | classdef | properties | methods | load | string | filename | openbracket |
- closebracket | lessorequal | minus | plus | dotdelete | delete | backslash | dotbackslash | dotmul | mul |
- dotpow | pow | and | matrixand | or | matrixor | dottranspose | tilda | assign | moreorequal | more | less | equal |
- notequal | coma | colon | semicolon | opensquarebracket | closesquarebracket | opencurlybracket | closecurlybracket |
- dot )
+private element ::= ( newline | transpose | linecomment | float | floatexponential | identifier | integer | comment |
+  function | elseif | else | end | if | for | while | classdef | properties | methods | load |
+  singlequotestringliteral | doublequotestringliteral | filename | openbracket | closebracket | lessorequal | minus |
+  plus | dotdelete | delete | backslash | dotbackslash | dotmul | mul | dotpow | pow | and | matrixand | or |
+  matrixor | dottranspose | tilda | assign | moreorequal | more | less | equal | notequal | coma | colon | semicolon |
+  opensquarebracket | closesquarebracket | opencurlybracket | closecurlybracket | dot )

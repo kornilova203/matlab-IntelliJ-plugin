@@ -1,18 +1,23 @@
-package com.github.kornilova_l.matlab;
+package com.github.kornilova_l.matlab.lexer;
 
+import com.intellij.lexer.FlexAdapter;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 
+import static com.github.kornilova_l.matlab.psi.MatlabTypes.*;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
-import static com.github.kornilova_l.matlab.psi.MatlabTypes.*;
 
 %%
 
 %{
     private boolean isTranspose = false;
 
-    public MatlabLexer() {
+    public static FlexAdapter getAdapter() {
+        return new FlexAdapter(new MatlabLexer());
+    }
+
+    private MatlabLexer() {
         this(null);
     }
 %}
@@ -26,7 +31,7 @@ import static com.github.kornilova_l.matlab.psi.MatlabTypes.*;
 
 NEWLINE=(\R( \t)*)+
 WHITE_SPACE=[ \t\x0B\f]+ // do not match new line
-TRANSPOSE='
+SINGLE_QUOTE='
 LINECOMMENT=%.*
 FLOAT=(([\d]*\.[\d]+)|([\d]+\.))i?
 FLOATEXPONENTIAL=(([\d]*\.[\d]+)|([\d]+\.)|\d+)e[\+-]?[\d]+i?
@@ -34,8 +39,8 @@ IDENTIFIER = [:jletter:] [:jletterdigit:]*
 INTEGER=[0-9]+i?
 
 /* double quote literal does not allow single \ character. Sequence \" gives double quote */
-DOUBLE_QUOTE_EXCAPE_SEQUENCE=\\[\"bfnrt\\]
-DOUBLE_QUOTE_STRING_LITERAL = \" ([^\\\"\r\n] | {DOUBLE_QUOTE_EXCAPE_SEQUENCE})* \"
+ESCAPE_SEQUENCE = \\[^\r\n]
+DOUBLE_QUOTE_STRING_LITERAL = \" ([^\\\"\r\n] | {ESCAPE_SEQUENCE})* \"?
 /* single quote literal allows single \ character. Sequence '' gives single quote */
 SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 
@@ -47,7 +52,10 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 <YYINITIAL> {
   {WHITE_SPACE}         { isTranspose = false; return WHITE_SPACE; }
 
-  {TRANSPOSE}           { if (isTranspose) { isTranspose = false; return TRANSPOSE; } else yybegin(STRING_SINGLE_STATE); }
+  {SINGLE_QUOTE}$       { if (isTranspose) { isTranspose = false; return TRANSPOSE; }
+                          else return SINGLEQUOTESTRINGLITERAL; }
+  {SINGLE_QUOTE}        { if (isTranspose) { isTranspose = false; return TRANSPOSE; }
+                          else yybegin(STRING_SINGLE_STATE); }
 
   function              { isTranspose = false; return FUNCTION; }
   elseif                { isTranspose = false; return ELSEIF; }
@@ -103,14 +111,17 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   {FLOAT}               { isTranspose = false; return FLOAT; }
   {INTEGER}             { isTranspose = false; return INTEGER; }
   {IDENTIFIER}          { isTranspose = true; return IDENTIFIER; }
-  {DOUBLE_QUOTE_STRING_LITERAL} { return STRING; }
+  {DOUBLE_QUOTE_STRING_LITERAL} { return DOUBLEQUOTESTRINGLITERAL; }
 }
 
 <STRING_SINGLE_STATE> {
-    "'"                             { yybegin(YYINITIAL); return STRING; }
-    \n                              { yybegin(YYINITIAL); return BAD_CHARACTER; }
-    {SINGLE_QUOTE_EXCAPE_SEQUENCE}  {  }
-    [^\r]                           {  }
+    {SINGLE_QUOTE_EXCAPE_SEQUENCE} / \n  { yybegin(YYINITIAL); return SINGLEQUOTESTRINGLITERAL; }
+    {SINGLE_QUOTE_EXCAPE_SEQUENCE}       {  }
+    "'"                                  { yybegin(YYINITIAL); return SINGLEQUOTESTRINGLITERAL; }
+
+    /* line should not consume \n character */
+    . / \n                               { yybegin(YYINITIAL); return SINGLEQUOTESTRINGLITERAL; }
+    .                                    {  }
 }
 
 <BLOCKCOMMENT_STATE> {
