@@ -43,8 +43,17 @@ import org.jetbrains.grammarkit.tasks.*
 
 task generateMatlabLexer(type: GenerateLexer) {
     source = "src/main/grammar/MatlabLexer.flex"
-    targetDir = "src/main/gen/com/github/kornilova_l/matlab"
+    targetDir = "src/main/gen/com/github/kornilova_l/matlab/lexer"
     targetClass = "MatlabLexer"
+
+    // if set, plugin will remove a lexer output file before generating new one. Default: false
+    purgeOldFiles = true
+}
+
+task generateSingleQuoteStringLiteralLexer(type: GenerateLexer) {
+    source = "src/main/grammar/SingleQuoteStringLiteralLexer.flex"
+    targetDir = "src/main/gen/com/github/kornilova_l/matlab/lexer"
+    targetClass = "SingleQuoteStringLiteralLexer"
 
     // if set, plugin will remove a lexer output file before generating new one. Default: false
     purgeOldFiles = true
@@ -62,3 +71,4 @@ task generateMatlabParser(type: GenerateParser) {
 
 compileKotlin.dependsOn generateMatlabLexer
 compileKotlin.dependsOn generateMatlabParser
+compileKotlin.dependsOn generateSingleQuoteStringLiteralLexer

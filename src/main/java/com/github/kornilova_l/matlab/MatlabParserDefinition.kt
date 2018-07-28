@@ -1,5 +1,6 @@
 package com.github.kornilova_l.matlab
 
+import com.github.kornilova_l.matlab.lexer.MatlabLexer
 import com.github.kornilova_l.matlab.psi.MatlabFile
 import com.github.kornilova_l.matlab.psi.MatlabTypes
 import com.intellij.lang.ASTNode
@@ -40,7 +41,7 @@ class MatlabParserDefinition : ParserDefinition {
 
     override fun getWhitespaceTokens(): TokenSet = WHITE_SPACES
 
-    override fun createLexer(p0: Project?): Lexer = MatlabLexerAdapter()
+    override fun createLexer(p0: Project?): Lexer = MatlabLexer.getAdapter()
 
     override fun createElement(node: ASTNode?): PsiElement {
         throw AssertionError("Unknown element type: ${node!!.elementType}")
