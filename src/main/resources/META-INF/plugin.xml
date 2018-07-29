@@ -25,6 +25,10 @@
         <fileTypeFactory implementation="com.github.kornilova_l.matlab.MatlabFileTypeFactory"/>
         <lang.parserDefinition language="Matlab" implementationClass="com.github.kornilova_l.matlab.MatlabParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Matlab" implementationClass="com.github.kornilova_l.matlab.MatlabSyntaxHighlighterFactory"/>
+        <configurationType implementation="com.github.kornilova_l.matlab.execution.MatlabConfigurationType"/>
+        <programRunner implementation="com.github.kornilova_l.matlab.execution.MatlabProgramRunner"/>
+        <runConfigurationProducer
+                implementation="com.github.kornilova_l.matlab.execution.MatlabRunConfigurationProducer"/>
     </extensions>
 
 </idea-plugin>
