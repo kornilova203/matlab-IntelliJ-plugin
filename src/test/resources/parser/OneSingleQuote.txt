@@ -1,2 +1,3 @@
 Matlab File(0,1)
-  PsiElement(MatlabTokenType.SINGLE_QUOTE_STRING)(''')(0,1)
+  MatlabLiteralExprImpl(LITERAL_EXPR)(0,1)
+    PsiElement(SINGLE_QUOTE_STRING)(''')(0,1)

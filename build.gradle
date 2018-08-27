@@ -1,6 +1,6 @@
 plugins {
     id "org.jetbrains.intellij" version "0.3.4"
-    id "org.jetbrains.kotlin.jvm" version "1.2.51"
+    id "org.jetbrains.kotlin.jvm" version "1.2.70"
     id "java"
     id "idea"
     id "org.jetbrains.grammarkit" version "2018.1.7"
@@ -13,6 +13,7 @@ repositories {
 }
 
 intellij {
+    version = "2018.2.3"
     updateSinceUntilBuild = false
     downloadSources = true
     pluginName = "Matlab Support"

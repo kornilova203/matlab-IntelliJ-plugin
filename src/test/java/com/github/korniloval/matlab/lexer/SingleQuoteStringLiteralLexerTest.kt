@@ -13,14 +13,14 @@ open class SingleQuoteStringLiteralLexerTest : LexerTestCase() {
                ''
                """.trimIndent(),
                 """
-               MatlabTokenType.SINGLE_QUOTE_STRING ('''')
+               SINGLE_QUOTE_STRING ('''')
                """.trimIndent())
 
         doTest("""
                'hello'
                """.trimIndent(),
                 """
-               MatlabTokenType.SINGLE_QUOTE_STRING (''hello'')
+               SINGLE_QUOTE_STRING (''hello'')
                """.trimIndent())
     }
 
@@ -29,27 +29,27 @@ open class SingleQuoteStringLiteralLexerTest : LexerTestCase() {
                 '\n'
                 """.trimIndent(),
                 """
-                MatlabTokenType.SINGLE_QUOTE_STRING (''')
+                SINGLE_QUOTE_STRING (''')
                 VALID_STRING_ESCAPE_TOKEN ('\n')
-                MatlabTokenType.SINGLE_QUOTE_STRING (''')
+                SINGLE_QUOTE_STRING (''')
                 """.trimIndent())
 
         doTest("""
                 ''''
                 """.trimIndent(),
                 """
-                MatlabTokenType.SINGLE_QUOTE_STRING (''')
+                SINGLE_QUOTE_STRING (''')
                 VALID_STRING_ESCAPE_TOKEN ('''')
-                MatlabTokenType.SINGLE_QUOTE_STRING (''')
+                SINGLE_QUOTE_STRING (''')
                 """.trimIndent())
 
         doTest("""
                 'hello\t'
                 """.trimIndent(),
                 """
-                MatlabTokenType.SINGLE_QUOTE_STRING (''hello')
+                SINGLE_QUOTE_STRING (''hello')
                 VALID_STRING_ESCAPE_TOKEN ('\t')
-                MatlabTokenType.SINGLE_QUOTE_STRING (''')
+                SINGLE_QUOTE_STRING (''')
                 """.trimIndent())
     }
 
@@ -58,44 +58,44 @@ open class SingleQuoteStringLiteralLexerTest : LexerTestCase() {
                 '\'
                 """.trimIndent(),
                 """
-                MatlabTokenType.SINGLE_QUOTE_STRING (''\'')
+                SINGLE_QUOTE_STRING (''\'')
                 """.trimIndent())
 
         doTest("""
                 '\\'
                 """.trimIndent(),
                 """
-                MatlabTokenType.SINGLE_QUOTE_STRING (''')
+                SINGLE_QUOTE_STRING (''')
                 VALID_STRING_ESCAPE_TOKEN ('\\')
-                MatlabTokenType.SINGLE_QUOTE_STRING (''')
+                SINGLE_QUOTE_STRING (''')
                 """.trimIndent())
 
         doTest("""
                 '\\\hello'
                 """.trimIndent(),
                 """
-                MatlabTokenType.SINGLE_QUOTE_STRING (''')
+                SINGLE_QUOTE_STRING (''')
                 VALID_STRING_ESCAPE_TOKEN ('\\')
-                MatlabTokenType.SINGLE_QUOTE_STRING ('\hello'')
+                SINGLE_QUOTE_STRING ('\hello'')
                 """.trimIndent())
 
         doTest("""
                 '\\\n hello'
                 """.trimIndent(),
                 """
-                MatlabTokenType.SINGLE_QUOTE_STRING (''')
+                SINGLE_QUOTE_STRING (''')
                 VALID_STRING_ESCAPE_TOKEN ('\\')
                 VALID_STRING_ESCAPE_TOKEN ('\n')
-                MatlabTokenType.SINGLE_QUOTE_STRING (' hello'')
+                SINGLE_QUOTE_STRING (' hello'')
                 """.trimIndent())
 
         doTest("""
                 '\'''
                 """.trimIndent(),
                 """
-                MatlabTokenType.SINGLE_QUOTE_STRING (''\')
+                SINGLE_QUOTE_STRING (''\')
                 VALID_STRING_ESCAPE_TOKEN ('''')
-                MatlabTokenType.SINGLE_QUOTE_STRING (''')
+                SINGLE_QUOTE_STRING (''')
                 """.trimIndent())
     }
 
@@ -104,21 +104,21 @@ open class SingleQuoteStringLiteralLexerTest : LexerTestCase() {
                 '
                 """.trimIndent(),
                 """
-                MatlabTokenType.SINGLE_QUOTE_STRING (''')
+                SINGLE_QUOTE_STRING (''')
                 """.trimIndent())
 
         doTest("""
                 '\
                 """.trimIndent(),
                 """
-                MatlabTokenType.SINGLE_QUOTE_STRING (''\')
+                SINGLE_QUOTE_STRING (''\')
                 """.trimIndent())
 
         doTest("""
                 '''
                 """.trimIndent(),
                 """
-                MatlabTokenType.SINGLE_QUOTE_STRING (''')
+                SINGLE_QUOTE_STRING (''')
                 VALID_STRING_ESCAPE_TOKEN ('''')
                 """.trimIndent())
     }

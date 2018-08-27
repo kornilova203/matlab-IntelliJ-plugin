@@ -30,7 +30,7 @@ import static com.intellij.psi.TokenType.WHITE_SPACE;
 %type IElementType
 %unicode
 
-NEWLINE=(\R( \t)*)+
+NEWLINE=(\R( \t)*)
 WHITE_SPACE=[ \t\x0B\f]+ // do not match new line
 SINGLE_QUOTE='
 LINE_COMMENT=%.*
@@ -79,7 +79,13 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   classdef              { isTranspose = false; return CLASSDEF; }
   properties            { isTranspose = false; return PROPERTIES; }
   methods               { isTranspose = false; return METHODS; }
+  events                { isTranspose = false; return EVENTS; }
   load/" "+[^ (]        { isTranspose = false; yybegin(FILE_NAME_STATE); return LOAD; }
+  dir/" "+[^ (]         { isTranspose = false; yybegin(FILE_NAME_STATE); return DIR; }
+  ls/" "+[^ (]          { isTranspose = false; yybegin(FILE_NAME_STATE); return LS; }
+  cd/" "+[^ (]          { isTranspose = false; yybegin(FILE_NAME_STATE); return CD; }
+  true                  { return TRUE; }
+  false                 { return FALSE; }
 
   "("                   { isTranspose = false; return LPARENTH; }
   ")"                   { isTranspose = true; return RPARENTH; }
@@ -87,10 +93,10 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   "<="                  { isTranspose = false; return LESS_OR_EQUAL; }
   "-"                   { isTranspose = false; return MINUS; }
   "+"                   { isTranspose = false; return PLUS; }
-  "./"                  { isTranspose = false; return DOT_DELETE; }
-  "/"                   { isTranspose = false; return DELETE; }
-  "\\"                  { isTranspose = false; return BACKSLASH; }
-  ".\\"                 { isTranspose = false; return DOT_BACKSLASH; }
+  "./"                  { isTranspose = false; return DOT_RDIV; }
+  "/"                   { isTranspose = false; return RDIV; }
+  "\\"                  { isTranspose = false; return LDIV; }
+  ".\\"                 { isTranspose = false; return DOT_LDIV; }
   ".*"                  { isTranspose = false; return DOT_MUL; }
   "*"                   { isTranspose = false; return MUL; }
   ".^"                  { isTranspose = false; return DOT_POW; }
@@ -106,7 +112,7 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   ">"                   { isTranspose = false; return MORE; }
   "<"                   { isTranspose = false; return LESS; }
   "=="                  { isTranspose = false; return EQUAL; }
-  "!="                  { isTranspose = false; return NOT_EQUAL; }
+  "~="                  { isTranspose = false; return NOT_EQUAL; }
   ","                   { isTranspose = false; return COMA; }
   ":"                   { isTranspose = false; return COLON; }
   ";"                   { isTranspose = false; return SEMICOLON; }
@@ -115,7 +121,9 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   "{"                   { isTranspose = false; return LBRACE; }
   "}"                   { isTranspose = false; return RBRACE; }
   "%{"                  { isTranspose = false; blockCommentLevel = 1; yybegin(BLOCKCOMMENT_STATE); }
+  "..."                 { isTranspose = false; return DOTS; }
   "."                   { isTranspose = false; return DOT; }
+  "@"                   { isTranspose = false; return AT; }
 
   {NEWLINE}             { isTranspose = false; return NEWLINE; }
   {LINE_COMMENT}        { isTranspose = false; return COMMENT; }
@@ -155,9 +163,10 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 
 <FILE_NAME_STATE> {
     /* stop consuming filename when find newline */
-    [^\n(]/\n         { yybegin(YYINITIAL); return FILE_NAME; }
+    [^(]/[\n ]        { yybegin(YYINITIAL); return FILE_NAME; }
     "("               { yybegin(YYINITIAL); }
-    [^\n(]            {  }
+    <<EOF>>           { yybegin(YYINITIAL); return FILE_NAME; }
+    .                 {  }
 }
 
 [^] { return BAD_CHARACTER; }

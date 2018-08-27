@@ -59,6 +59,7 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
             MatlabTypes.CLASSDEF -> KEYWORD_KEYS
             MatlabTypes.PROPERTIES -> KEYWORD_KEYS
             MatlabTypes.METHODS -> KEYWORD_KEYS
+            MatlabTypes.EVENTS -> KEYWORD_KEYS
 
             MatlabTypes.INTEGER -> NUMBER_KEYS
             MatlabTypes.FLOAT -> NUMBER_KEYS

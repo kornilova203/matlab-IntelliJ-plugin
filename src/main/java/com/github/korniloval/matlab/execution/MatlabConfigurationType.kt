@@ -14,7 +14,7 @@ class MatlabConfigurationType
         addFactory(object : ConfigurationFactory(this) {
             override fun createTemplateConfiguration(project: Project): RunConfiguration = MatlabRunConfiguration(project, this)
 
-            override fun createConfiguration(name: String?, template: RunConfiguration?): RunConfiguration {
+            override fun createConfiguration(name: String?, template: RunConfiguration): RunConfiguration {
                 val runConfiguration = super.createConfiguration(name, template)
                 if (runConfiguration is MatlabRunConfiguration) {
                     /* set default interpreter path */
