@@ -41,8 +41,8 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
         return when (tokenType) {
             MatlabTypes.COMMENT -> COMMENT_KEYS
 
-            MatlabTypes.SINGLEQUOTESTRINGLITERAL -> STRING_KEYS
-            MatlabTypes.DOUBLEQUOTESTRINGLITERAL -> STRING_KEYS
+            MatlabTypes.SINGLE_QUOTE_STRING -> STRING_KEYS
+            MatlabTypes.DOUBLE_QUOTE_STRING -> STRING_KEYS
             StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN -> arrayOf(VALID_STRING_ESCAPE)
             StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN -> arrayOf(INVALID_STRING_ESCAPE)
 
@@ -62,7 +62,7 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
 
             MatlabTypes.INTEGER -> NUMBER_KEYS
             MatlabTypes.FLOAT -> NUMBER_KEYS
-            MatlabTypes.FLOATEXPONENTIAL -> NUMBER_KEYS
+            MatlabTypes.FLOAT_EXPONENTIAL -> NUMBER_KEYS
 
             TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS
             else -> EMPTY_KEYS

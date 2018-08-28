@@ -16,9 +16,9 @@
 /* The grammar simply lists all tokens */
 
 root ::= element *
-private element ::= ( newline | transpose | linecomment | float | floatexponential | identifier | integer | comment |
-  function | elseif | else | end | if | for | while | classdef | properties | methods | load |
-  singlequotestringliteral | doublequotestringliteral | filename | openbracket | closebracket | lessorequal | minus |
-  plus | dotdelete | delete | backslash | dotbackslash | dotmul | mul | dotpow | pow | and | matrixand | or |
-  matrixor | dottranspose | tilda | assign | moreorequal | more | less | equal | notequal | coma | colon | semicolon |
-  opensquarebracket | closesquarebracket | opencurlybracket | closecurlybracket | dot )
+private element ::= ( NEWLINE | TRANSPOSE | LINE_COMMENT | FLOAT | FLOAT_EXPONENTIAL | IDENTIFIER | INTEGER | COMMENT |
+  FUNCTION | ELSEIF | ELSE | END | IF | FOR | WHILE | CLASSDEF | PROPERTIES | METHODS | LOAD |
+  SINGLE_QUOTE_STRING | DOUBLE_QUOTE_STRING | FILE_NAME | OPEN_BRACKET | CLOSE_BRACKET | LESS_OR_EQUAL | MINUS |
+  PLUS | DOT_DELETE | DELETE | BACKSLASH | DOT_BACKSLASH | DOT_MUL | MUL | DOT_POW | POW | AND | MATRIX_AND | OR |
+  MATRIX_OR | DOT_TRANSPOSE | TILDA | ASSIGN | MORE_OR_EQUAL | MORE | LESS | EQUAL | NOT_EQUAL | COMA | COLON | SEMICOLON |
+  OPEN_SQUARE_BRACKET | CLOSE_SQUARE_BRACKET | OPEN_CURLY_BRACKET | CLOSE_CURLY_BRACKET | DOT )

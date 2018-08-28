@@ -12,6 +12,7 @@ import static com.intellij.psi.TokenType.WHITE_SPACE;
 
 %{
     private boolean isTranspose = false;
+    private int blockCommentLevel = 0;
 
     public static FlexAdapter getAdapter() {
         return new FlexAdapter(new MatlabLexer());
@@ -32,15 +33,15 @@ import static com.intellij.psi.TokenType.WHITE_SPACE;
 NEWLINE=(\R( \t)*)+
 WHITE_SPACE=[ \t\x0B\f]+ // do not match new line
 SINGLE_QUOTE='
-LINECOMMENT=%.*
+LINE_COMMENT=%.*
 FLOAT=(([\d]*\.[\d]+)|([\d]+\.))i?
-FLOATEXPONENTIAL=(([\d]*\.[\d]+)|([\d]+\.)|\d+)e[\+-]?[\d]+i?
+FLOAT_EXPONENTIAL=(([\d]*\.[\d]+)|([\d]+\.)|\d+)e[\+-]?[\d]+i?
 IDENTIFIER = [:jletter:] [:jletterdigit:]*
 INTEGER=[0-9]+i?
 
 /* double quote literal does not allow single \ character. Sequence \" gives double quote */
 ESCAPE_SEQUENCE = \\[^\r\n]
-DOUBLE_QUOTE_STRING_LITERAL = \" ([^\\\"\r\n] | {ESCAPE_SEQUENCE})* \"?
+DOUBLE_QUOTE_STRING = \" ([^\\\"\r\n] | {ESCAPE_SEQUENCE})* \"?
 /* single quote literal allows single \ character. Sequence '' gives single quote */
 SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 
@@ -52,10 +53,21 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 <YYINITIAL> {
   {WHITE_SPACE}         { isTranspose = false; return WHITE_SPACE; }
 
-  {SINGLE_QUOTE}$       { if (isTranspose) { isTranspose = false; return TRANSPOSE; }
-                          else return SINGLEQUOTESTRINGLITERAL; }
-  {SINGLE_QUOTE}        { if (isTranspose) { isTranspose = false; return TRANSPOSE; }
-                          else yybegin(STRING_SINGLE_STATE); }
+  {SINGLE_QUOTE}$       { if (isTranspose) {
+                              isTranspose = false;
+                              return TRANSPOSE;
+                          } else {
+                              return SINGLE_QUOTE_STRING;
+                          }
+                        }
+
+  {SINGLE_QUOTE}        { if (isTranspose) {
+                              isTranspose = false;
+                              return TRANSPOSE;
+                          } else {
+                              yybegin(STRING_SINGLE_STATE);
+                          }
+                        }
 
   function              { isTranspose = false; return FUNCTION; }
   elseif                { isTranspose = false; return ELSEIF; }
@@ -69,75 +81,80 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   methods               { isTranspose = false; return METHODS; }
   load/" "+[^ (]        { isTranspose = false; yybegin(FILE_NAME_STATE); return LOAD; }
 
-  "("                   { isTranspose = false; return OPENBRACKET; }
-  ")"                   { isTranspose = true; return CLOSEBRACKET; }
+  "("                   { isTranspose = false; return OPEN_BRACKET; }
+  ")"                   { isTranspose = true; return CLOSE_BRACKET; }
   "."                   { isTranspose = false; return DOT; }
-  "<="                  { isTranspose = false; return LESSOREQUAL; }
+  "<="                  { isTranspose = false; return LESS_OR_EQUAL; }
   "-"                   { isTranspose = false; return MINUS; }
   "+"                   { isTranspose = false; return PLUS; }
-  "./"                  { isTranspose = false; return DOTDELETE; }
+  "./"                  { isTranspose = false; return DOT_DELETE; }
   "/"                   { isTranspose = false; return DELETE; }
   "\\"                  { isTranspose = false; return BACKSLASH; }
-  ".\\"                 { isTranspose = false; return DOTBACKSLASH; }
-  ".*"                  { isTranspose = false; return DOTMUL; }
+  ".\\"                 { isTranspose = false; return DOT_BACKSLASH; }
+  ".*"                  { isTranspose = false; return DOT_MUL; }
   "*"                   { isTranspose = false; return MUL; }
-  ".^"                  { isTranspose = false; return DOTPOW; }
+  ".^"                  { isTranspose = false; return DOT_POW; }
   "^"                   { isTranspose = false; return POW; }
   "&&"                  { isTranspose = false; return AND; }
-  "&"                   { isTranspose = false; return MATRIXAND; }
+  "&"                   { isTranspose = false; return MATRIX_AND; }
   "||"                  { isTranspose = false; return OR; }
-  "|"                   { isTranspose = false; return MATRIXOR; }
-  ".'"                  { isTranspose = false; return DOTTRANSPOSE; }
+  "|"                   { isTranspose = false; return MATRIX_OR; }
+  ".'"                  { isTranspose = false; return DOT_TRANSPOSE; }
   "~"                   { isTranspose = false; return TILDA; }
   "="                   { isTranspose = false; return ASSIGN; }
-  ">="                  { isTranspose = false; return MOREOREQUAL; }
+  ">="                  { isTranspose = false; return MORE_OR_EQUAL; }
   ">"                   { isTranspose = false; return MORE; }
   "<"                   { isTranspose = false; return LESS; }
   "=="                  { isTranspose = false; return EQUAL; }
-  "!="                  { isTranspose = false; return NOTEQUAL; }
+  "!="                  { isTranspose = false; return NOT_EQUAL; }
   ","                   { isTranspose = false; return COMA; }
   ":"                   { isTranspose = false; return COLON; }
   ";"                   { isTranspose = false; return SEMICOLON; }
-  "["                   { isTranspose = false; return OPENSQUAREBRACKET; }
-  "]"                   { isTranspose = true; return CLOSESQUAREBRACKET; }
-  "{"                   { isTranspose = false; return OPENCURLYBRACKET; }
-  "}"                   { isTranspose = false; return CLOSECURLYBRACKET; }
-  "%{"                  { isTranspose = false; yybegin(BLOCKCOMMENT_STATE); }
+  "["                   { isTranspose = false; return OPEN_SQUARE_BRACKET; }
+  "]"                   { isTranspose = true; return CLOSE_SQUARE_BRACKET; }
+  "{"                   { isTranspose = false; return OPEN_CURLY_BRACKET; }
+  "}"                   { isTranspose = false; return CLOSE_CURLY_BRACKET; }
+  "%{"                  { isTranspose = false; blockCommentLevel = 1; yybegin(BLOCKCOMMENT_STATE); }
   "."                   { isTranspose = false; return DOT; }
 
   {NEWLINE}             { isTranspose = false; return NEWLINE; }
-  {LINECOMMENT}         { isTranspose = false; return COMMENT; }
-  {FLOATEXPONENTIAL}    { isTranspose = false; return FLOATEXPONENTIAL; }
+  {LINE_COMMENT}        { isTranspose = false; return COMMENT; }
+  {FLOAT_EXPONENTIAL}   { isTranspose = false; return FLOAT_EXPONENTIAL; }
   {FLOAT}               { isTranspose = false; return FLOAT; }
   {INTEGER}             { isTranspose = false; return INTEGER; }
   {IDENTIFIER}          { isTranspose = true; return IDENTIFIER; }
-  {DOUBLE_QUOTE_STRING_LITERAL} { return DOUBLEQUOTESTRINGLITERAL; }
+  {DOUBLE_QUOTE_STRING} { return DOUBLE_QUOTE_STRING; }
+
+  <<EOF>>               { return null; }
 }
 
 <STRING_SINGLE_STATE> {
-    {SINGLE_QUOTE_EXCAPE_SEQUENCE} / \n  { yybegin(YYINITIAL); return SINGLEQUOTESTRINGLITERAL; }
+    {SINGLE_QUOTE_EXCAPE_SEQUENCE} / \n  { yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }
     {SINGLE_QUOTE_EXCAPE_SEQUENCE}       {  }
-    "'"                                  { yybegin(YYINITIAL); return SINGLEQUOTESTRINGLITERAL; }
+    "'"                                  { yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }
 
     /* line should not consume \n character */
-    . / \n                               { yybegin(YYINITIAL); return SINGLEQUOTESTRINGLITERAL; }
+    . / \n                               { yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }
     .                                    {  }
 }
 
 <BLOCKCOMMENT_STATE> {
-    "%}"                { yybegin(YYINITIAL); return COMMENT; }
-    [^\n\r'\\]+         {  }
-    \n                  {  }
-    \\t                 {  }
-    \\n                 {  }
-    \\r                 {  }
-    \\'                 {  }
-    \\                  {  }
+    "%{"                { blockCommentLevel += 1; }
+
+    "%}"                { blockCommentLevel -= 1;
+                          if (blockCommentLevel == 0) {
+                              yybegin(YYINITIAL);
+                              return COMMENT;
+                          }
+                        }
+    <<EOF>>             { yybegin(YYINITIAL); return COMMENT; }
+
+    [^]                 {  }
 }
 
 <FILE_NAME_STATE> {
     /* stop consuming filename when find newline */
-    [^\n(]/\n         { yybegin(YYINITIAL); return FILENAME; }
+    [^\n(]/\n         { yybegin(YYINITIAL); return FILE_NAME; }
     "("               { yybegin(YYINITIAL); }
     [^\n(]            {  }
 }
