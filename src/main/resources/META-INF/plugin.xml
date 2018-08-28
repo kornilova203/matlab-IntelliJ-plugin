@@ -25,13 +25,15 @@
     <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileTypeFactory implementation="com.github.kornilova_l.matlab.MatlabFileTypeFactory"/>
-        <lang.parserDefinition language="Matlab" implementationClass="com.github.kornilova_l.matlab.MatlabParserDefinition"/>
-        <lang.syntaxHighlighterFactory language="Matlab" implementationClass="com.github.kornilova_l.matlab.MatlabSyntaxHighlighterFactory"/>
-        <configurationType implementation="com.github.kornilova_l.matlab.execution.MatlabConfigurationType"/>
-        <programRunner implementation="com.github.kornilova_l.matlab.execution.MatlabProgramRunner"/>
+        <fileTypeFactory implementation="com.github.korniloval.matlab.MatlabFileTypeFactory"/>
+        <lang.parserDefinition language="Matlab"
+                               implementationClass="com.github.korniloval.matlab.MatlabParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Matlab"
+                                       implementationClass="com.github.korniloval.matlab.MatlabSyntaxHighlighterFactory"/>
+        <configurationType implementation="com.github.korniloval.matlab.execution.MatlabConfigurationType"/>
+        <programRunner implementation="com.github.korniloval.matlab.execution.MatlabProgramRunner"/>
         <runConfigurationProducer
-                implementation="com.github.kornilova_l.matlab.execution.MatlabRunConfigurationProducer"/>
+                implementation="com.github.korniloval.matlab.execution.MatlabRunConfigurationProducer"/>
     </extensions>
 
 </idea-plugin>

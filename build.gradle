@@ -40,7 +40,7 @@ import org.jetbrains.grammarkit.tasks.*
 
 task generateMatlabLexer(type: GenerateLexer) {
     source = "src/main/grammar/MatlabLexer.flex"
-    targetDir = "src/main/gen/com/github/kornilova_l/matlab/lexer"
+    targetDir = "src/main/gen/com/github/korniloval/matlab/lexer"
     targetClass = "MatlabLexer"
 
     // if set, plugin will remove a lexer output file before generating new one. Default: false
@@ -49,7 +49,7 @@ task generateMatlabLexer(type: GenerateLexer) {
 
 task generateSingleQuoteStringLexer(type: GenerateLexer) {
     source = "src/main/grammar/SingleQuoteStringLexer.flex"
-    targetDir = "src/main/gen/com/github/kornilova_l/matlab/lexer"
+    targetDir = "src/main/gen/com/github/korniloval/matlab/lexer"
     targetClass = "SingleQuoteStringLexer"
 
     // if set, plugin will remove a lexer output file before generating new one. Default: false
@@ -59,8 +59,8 @@ task generateSingleQuoteStringLexer(type: GenerateLexer) {
 task generateMatlabParser(type: GenerateParser) {
     source = "src/main/grammar/Matlab.bnf"
     targetRoot = "src/main/gen/"
-    pathToParser = "/com/github/kornilova_l/matlab/MatlabParser.java"
-    pathToPsiRoot = "/com/github/kornilova_l/matlab/psi"
+    pathToParser = "/com/github/korniloval/matlab/MatlabParser.java"
+    pathToPsiRoot = "/com/github/korniloval/matlab/psi"
 
     // if set, plugin will remove a parser output file and psi output directory before generating new ones. Default: false
     purgeOldFiles = true

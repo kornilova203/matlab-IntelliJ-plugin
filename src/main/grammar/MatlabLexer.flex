@@ -1,10 +1,10 @@
-package com.github.kornilova_l.matlab.lexer;
+package com.github.korniloval.matlab.lexer;
 
 import com.intellij.lexer.FlexAdapter;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 
-import static com.github.kornilova_l.matlab.psi.MatlabTypes.*;
+import static com.github.korniloval.matlab.psi.MatlabTypes.*;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
 

@@ -1,16 +1,16 @@
 {
-  parserClass="com.github.kornilova_l.matlab.MatlabParser"
+  parserClass="com.github.korniloval.matlab.MatlabParser"
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
   psiClassPrefix="Matlab"
   psiImplClassSuffix="Impl"
-  psiPackage="com.github.kornilova_l.matlab.psi"
-  psiImplPackage="com.github.kornilova_l.matlab.psi.impl"
+  psiPackage="com.github.korniloval.matlab.psi"
+  psiImplPackage="com.github.korniloval.matlab.psi.impl"
 
-  elementTypeHolderClass="com.github.kornilova_l.matlab.psi.MatlabTypes"
-  elementTypeClass="com.github.kornilova_l.matlab.psi.MatlabElementType"
-  tokenTypeClass="com.github.kornilova_l.matlab.psi.MatlabTokenType"
+  elementTypeHolderClass="com.github.korniloval.matlab.psi.MatlabTypes"
+  elementTypeClass="com.github.korniloval.matlab.psi.MatlabElementType"
+  tokenTypeClass="com.github.korniloval.matlab.psi.MatlabTokenType"
 }
 
 /* The grammar simply lists all tokens */
