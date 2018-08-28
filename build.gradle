@@ -6,9 +6,6 @@ plugins {
     id "org.jetbrains.grammarkit" version "2018.1.7"
 }
 
-group = "com.gitgub.kornilova_l"
-version = "0.3-SNAPSHOT"
-
 repositories {
     mavenCentral()
 }
@@ -50,10 +47,10 @@ task generateMatlabLexer(type: GenerateLexer) {
     purgeOldFiles = true
 }
 
-task generateSingleQuoteStringLiteralLexer(type: GenerateLexer) {
-    source = "src/main/grammar/SingleQuoteStringLiteralLexer.flex"
+task generateSingleQuoteStringLexer(type: GenerateLexer) {
+    source = "src/main/grammar/SingleQuoteStringLexer.flex"
     targetDir = "src/main/gen/com/github/kornilova_l/matlab/lexer"
-    targetClass = "SingleQuoteStringLiteralLexer"
+    targetClass = "SingleQuoteStringLexer"
 
     // if set, plugin will remove a lexer output file before generating new one. Default: false
     purgeOldFiles = true
@@ -69,6 +66,6 @@ task generateMatlabParser(type: GenerateParser) {
     purgeOldFiles = true
 }
 
-compileKotlin.dependsOn generateMatlabLexer
+generateMatlabParser.dependsOn generateMatlabLexer
 compileKotlin.dependsOn generateMatlabParser
-compileKotlin.dependsOn generateSingleQuoteStringLiteralLexer
+compileKotlin.dependsOn generateSingleQuoteStringLexer

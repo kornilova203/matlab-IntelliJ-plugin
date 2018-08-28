@@ -7,9 +7,9 @@ import com.intellij.psi.tree.IElementType
 class MatlabHighlightingLexer : LayeredLexer(MatlabLexer.getAdapter()) {
     init {
         registerSelfStoppingLayer(DoubleQuoteStringLiteralLexer(),
-                arrayOf(MatlabTypes.DOUBLEQUOTESTRINGLITERAL), IElementType.EMPTY_ARRAY)
+                arrayOf(MatlabTypes.DOUBLE_QUOTE_STRING), IElementType.EMPTY_ARRAY)
 
-        registerSelfStoppingLayer(SingleQuoteStringLiteralLexer.getAdapter(),
-                arrayOf(MatlabTypes.SINGLEQUOTESTRINGLITERAL), IElementType.EMPTY_ARRAY)
+        registerSelfStoppingLayer(SingleQuoteStringLexer.getAdapter(),
+                arrayOf(MatlabTypes.SINGLE_QUOTE_STRING), IElementType.EMPTY_ARRAY)
     }
 }

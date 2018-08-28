@@ -1,12 +1,12 @@
 package com.github.kornilova_l.matlab.lexer
 
-import com.github.kornilova_l.matlab.psi.MatlabTypes.DOUBLEQUOTESTRINGLITERAL
+import com.github.kornilova_l.matlab.psi.MatlabTypes.DOUBLE_QUOTE_STRING
 import com.intellij.lexer.StringLiteralLexer
 import com.intellij.psi.StringEscapesTokenTypes
 import com.intellij.psi.tree.IElementType
 
 class DoubleQuoteStringLiteralLexer
-    : StringLiteralLexer('"', DOUBLEQUOTESTRINGLITERAL, false, null, false, false) {
+    : StringLiteralLexer('"', DOUBLE_QUOTE_STRING, false, null, false, false) {
 
     private val legalEscapedChars = arrayOf('n', 'r', 'b', 't', 'f', '\\', '"')
 

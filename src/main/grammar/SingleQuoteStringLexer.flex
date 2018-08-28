@@ -4,7 +4,7 @@ import com.intellij.lexer.FlexAdapter;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 
-import static com.github.kornilova_l.matlab.psi.MatlabTypes.SINGLEQUOTESTRINGLITERAL;
+import static com.github.kornilova_l.matlab.psi.MatlabTypes.SINGLE_QUOTE_STRING;
 import static com.intellij.psi.StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN;
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 
@@ -14,16 +14,16 @@ import static com.intellij.psi.TokenType.BAD_CHARACTER;
     private boolean hasUnmatchedText = false;
 
     public static FlexAdapter getAdapter() {
-        return new FlexAdapter(new SingleQuoteStringLiteralLexer());
+        return new FlexAdapter(new SingleQuoteStringLexer());
     }
 
-    private SingleQuoteStringLiteralLexer() {
+    private SingleQuoteStringLexer() {
         this(null);
     }
 %}
 
 %public
-%class SingleQuoteStringLiteralLexer
+%class SingleQuoteStringLexer
 %implements FlexLexer
 %function advance
 %type IElementType
@@ -40,21 +40,21 @@ import static com.intellij.psi.TokenType.BAD_CHARACTER;
 
 %%
 <YYINITIAL> {
-  ' / (\\[nrbtf\\] | '')  { yybegin(AFTER_FIRST_QUOTE); return SINGLEQUOTESTRINGLITERAL; } // string starts with escaped char
+  ' / (\\[nrbtf\\] | '')  { yybegin(AFTER_FIRST_QUOTE); return SINGLE_QUOTE_STRING; } // string starts with escaped char
   '                       { yybegin(AFTER_FIRST_QUOTE); hasUnmatchedText = true; }
 }
 
 <AFTER_FIRST_QUOTE> {
   <<EOF>>                 { yybegin(AFTER_LAST_QUOTE);
-                            if (hasUnmatchedText) return SINGLEQUOTESTRINGLITERAL;
+                            if (hasUnmatchedText) return SINGLE_QUOTE_STRING;
                             else return null; }
   \\[nrbtf\\]             { hasUnmatchedText = false; return VALID_STRING_ESCAPE_TOKEN; }
   ''                      { hasUnmatchedText = false; return VALID_STRING_ESCAPE_TOKEN; }
 
   /* in the case of ''' group symbols: ('')' */
-  [^'] / ''               { hasUnmatchedText = false; return SINGLEQUOTESTRINGLITERAL; }
+  [^'] / ''               { hasUnmatchedText = false; return SINGLE_QUOTE_STRING; }
   /* in the case of \\\ group symbols: (\\)\ */
-  [^\\] / \\[nrbtf\\]     { hasUnmatchedText = false; return SINGLEQUOTESTRINGLITERAL; }
+  [^\\] / \\[nrbtf\\]     { hasUnmatchedText = false; return SINGLE_QUOTE_STRING; }
   .                       { hasUnmatchedText = true; }
 }
 
