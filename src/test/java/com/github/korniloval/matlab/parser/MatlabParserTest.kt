@@ -31,5 +31,7 @@ open class MatlabParserTest : ParsingTestCase("", "m", MatlabParserDefinition())
 
     fun testStrings() = doTest(true)
 
+    fun testOneSingleQuote() = doTest(true)
+
     fun testComments() = doTest(true)
 }

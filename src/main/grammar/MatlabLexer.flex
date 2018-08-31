@@ -81,8 +81,8 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   methods               { isTranspose = false; return METHODS; }
   load/" "+[^ (]        { isTranspose = false; yybegin(FILE_NAME_STATE); return LOAD; }
 
-  "("                   { isTranspose = false; return OPEN_BRACKET; }
-  ")"                   { isTranspose = true; return CLOSE_BRACKET; }
+  "("                   { isTranspose = false; return LPARENTH; }
+  ")"                   { isTranspose = true; return RPARENTH; }
   "."                   { isTranspose = false; return DOT; }
   "<="                  { isTranspose = false; return LESS_OR_EQUAL; }
   "-"                   { isTranspose = false; return MINUS; }
@@ -110,10 +110,10 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   ","                   { isTranspose = false; return COMA; }
   ":"                   { isTranspose = false; return COLON; }
   ";"                   { isTranspose = false; return SEMICOLON; }
-  "["                   { isTranspose = false; return OPEN_SQUARE_BRACKET; }
-  "]"                   { isTranspose = true; return CLOSE_SQUARE_BRACKET; }
-  "{"                   { isTranspose = false; return OPEN_CURLY_BRACKET; }
-  "}"                   { isTranspose = false; return CLOSE_CURLY_BRACKET; }
+  "["                   { isTranspose = false; return LBRACKET; }
+  "]"                   { isTranspose = true; return RBRACKET; }
+  "{"                   { isTranspose = false; return LBRACE; }
+  "}"                   { isTranspose = false; return RBRACE; }
   "%{"                  { isTranspose = false; blockCommentLevel = 1; yybegin(BLOCKCOMMENT_STATE); }
   "."                   { isTranspose = false; return DOT; }
 
@@ -132,6 +132,7 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
     {SINGLE_QUOTE_EXCAPE_SEQUENCE} / \n  { yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }
     {SINGLE_QUOTE_EXCAPE_SEQUENCE}       {  }
     "'"                                  { yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }
+    <<EOF>>                              { yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }
 
     /* line should not consume \n character */
     . / \n                               { yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }

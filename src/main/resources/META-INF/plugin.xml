@@ -13,9 +13,8 @@
 
     <change-notes><![CDATA[
     <ol>
-      <li>Support running matlab files from IDE.</li>
-      <li>Highlight string escape sequences.</li>
-      <li>Fixed bug when string highlighting disappeared during editing.</li>
+      <li>Auto insert paired quotes and brackets.</li>
+      <li>Fix highlighting of block comments.</li>
     </ol>
     ]]>
     </change-notes>
@@ -34,6 +33,10 @@
         <programRunner implementation="com.github.korniloval.matlab.execution.MatlabProgramRunner"/>
         <runConfigurationProducer
                 implementation="com.github.korniloval.matlab.execution.MatlabRunConfigurationProducer"/>
+
+        <lang.braceMatcher language="Matlab"
+                           implementationClass="com.github.korniloval.matlab.highlighting.MatlabPairedBraceMatcher"/>
+        <quoteHandler fileType="Matlab" className="com.github.korniloval.matlab.editor.actions.MatlabQuoteHandler"/>
     </extensions>
 
 </idea-plugin>

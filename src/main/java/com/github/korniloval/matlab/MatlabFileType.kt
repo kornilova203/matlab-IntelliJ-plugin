@@ -14,7 +14,7 @@ class MatlabFileType private constructor() : LanguageFileType(MatlabLanguage.INS
     }
 
     override fun getName(): String {
-        return "Matlab file"
+        return "Matlab"
     }
 
     override fun getDefaultExtension(): String {

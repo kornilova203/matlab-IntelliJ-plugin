@@ -9,11 +9,19 @@ open class SingleQuoteStringLiteralLexerTest : LexerTestCase() {
     override fun createLexer(): Lexer = SingleQuoteStringLexer.getAdapter()
 
     fun testSimpleCases() {
-        doTest("''",
-                "MatlabTokenType.SINGLE_QUOTE_STRING ('''')")
+        doTest("""
+               ''
+               """.trimIndent(),
+                """
+               MatlabTokenType.SINGLE_QUOTE_STRING ('''')
+               """.trimIndent())
 
-        doTest("'hello'",
-                "MatlabTokenType.SINGLE_QUOTE_STRING (''hello'')")
+        doTest("""
+               'hello'
+               """.trimIndent(),
+                """
+               MatlabTokenType.SINGLE_QUOTE_STRING (''hello'')
+               """.trimIndent())
     }
 
     fun testEscapeSequence() {
