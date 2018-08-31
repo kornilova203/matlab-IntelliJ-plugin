@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>com.github.com.kornilovaL</id>
     <name>Matlab Support</name>
-    <version>0.2.1</version>
+    <version>0.3-SNAPSHOT</version>
     <id>MatlabSupport</id>
 
     <vendor url="https://github.com/kornilova-l" email="kornilova203@gmail.com" />
@@ -13,9 +13,6 @@
 
     <change-notes><![CDATA[
     <ol>
-      <li>Auto insert paired quotes and brackets.</li>
-      <li>Highlight paired brackets.</li>
-      <li>Fix highlighting of block comments.</li>
     </ol>
     ]]>
     </change-notes>
