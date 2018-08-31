@@ -10,10 +10,11 @@ repositories {
     mavenCentral()
 }
 
-configurations {
-    intellij.updateSinceUntilBuild = false
-    intellij.downloadSources = true
-    intellij.pluginName = "Matlab Support"
+intellij {
+    updateSinceUntilBuild = false
+    downloadSources = true
+    pluginName = "Matlab Support"
+    plugins = ["PsiViewer:182.2757.2"]
 }
 
 compileKotlin {
