@@ -31,7 +31,8 @@ class MatlabParserDefinition : ParserDefinition {
         return MatlabFile(viewProvider)
     }
 
-    override fun spaceExistenceTypeBetweenTokens(p0: ASTNode?, p1: ASTNode?): ParserDefinition.SpaceRequirements {
+    override fun spaceExistanceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements {
+        /* for compatibility with older versions */
         return ParserDefinition.SpaceRequirements.MAY
     }
 

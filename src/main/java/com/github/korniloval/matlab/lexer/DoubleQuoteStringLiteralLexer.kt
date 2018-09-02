@@ -14,11 +14,11 @@ class DoubleQuoteStringLiteralLexer
         if (myStart >= myEnd) return null
 
         if (myBuffer[myStart] != '\\') {
-            return myOriginalLiteralToken
+            return DOUBLE_QUOTE_STRING
         }
 
         if (myStart + 1 >= myEnd) {
-            return handleSingleSlashEscapeSequence()
+            return StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN // handleSingleSlashEscapeSequence
         }
         val nextChar = myBuffer[myStart + 1]
         if (legalEscapedChars.contains(nextChar)) {
