@@ -5,33 +5,23 @@ import com.intellij.testFramework.ParsingTestCase
 
 open class MatlabParserTest : ParsingTestCase("", "m", MatlabParserDefinition()) {
 
-    override fun getTestDataPath(): String {
-        return "src/test/resources/parser"
-    }
+    override fun getTestDataPath(): String = "src/test/resources/parser"
 
     override fun includeRanges(): Boolean = true
 
-    fun testValidNumbers() = doTest(true)
-
-    fun testValidLoad() = doTest(true)
-
-    fun testValidWhile() = doTest(true)
-
-    fun testValidFor() = doTest(true)
-
-    fun testValidIf() = doTest(true)
-
-    fun testValidFunctionCall() = doTest(true)
-
-    fun testValidFunctionDeclaration() = doTest(true)
-
-    fun testValidClassDeclaration() = doTest(true)
-
-    fun testValidPropertyAccess() = doTest(true)
-
+    fun testNumbers() = doTest(true)
+    fun testFileOperations() = doTest(true)
+    fun testWhileLoop() = doTest(true)
+    fun testForLoop() = doTest(true)
+    fun testIf() = doTest(true)
+    fun testFunctionCall() = doTest(true)
+    fun testFunctionDefinition() = doTest(true)
+    fun testClassDefinition() = doTest(true)
+    fun testPropertyAccess() = doTest(true)
     fun testStrings() = doTest(true)
-
     fun testOneSingleQuote() = doTest(true)
-
     fun testComments() = doTest(true)
+    fun testCellArray() = doTest(true)
+    fun testMatrix() = doTest(true)
+    fun testLambda() = doTest(true)
 }

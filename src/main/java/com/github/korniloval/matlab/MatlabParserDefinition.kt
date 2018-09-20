@@ -45,7 +45,7 @@ class MatlabParserDefinition : ParserDefinition {
     override fun createLexer(p0: Project?): Lexer = MatlabLexer.getAdapter()
 
     override fun createElement(node: ASTNode?): PsiElement {
-        throw AssertionError("Unknown element type: ${node!!.elementType}")
+        return MatlabTypes.Factory.createElement(node)
     }
 
     override fun getCommentTokens(): TokenSet = COMMENTS

@@ -13,14 +13,14 @@ open class DoubleQuoteStringLiteralLexerTest : LexerTestCase() {
                 ""
                 """.trimIndent(),
                 """
-                MatlabTokenType.DOUBLE_QUOTE_STRING ('""')
+                DOUBLE_QUOTE_STRING ('""')
                 """.trimIndent())
 
         doTest("""
                 "hello"
                 """.trimIndent(),
                 """
-                MatlabTokenType.DOUBLE_QUOTE_STRING ('"hello"')
+                DOUBLE_QUOTE_STRING ('"hello"')
                 """.trimIndent())
     }
 
@@ -29,20 +29,20 @@ open class DoubleQuoteStringLiteralLexerTest : LexerTestCase() {
                 "\n"
                 """.trimIndent(),
                 """
-                MatlabTokenType.DOUBLE_QUOTE_STRING ('"')
+                DOUBLE_QUOTE_STRING ('"')
                 VALID_STRING_ESCAPE_TOKEN ('\n')
-                MatlabTokenType.DOUBLE_QUOTE_STRING ('"')
+                DOUBLE_QUOTE_STRING ('"')
                 """.trimIndent())
 
         doTest("""
                 "hello\"\\\n"
                 """.trimIndent(),
                 """
-                MatlabTokenType.DOUBLE_QUOTE_STRING ('"hello')
+                DOUBLE_QUOTE_STRING ('"hello')
                 VALID_STRING_ESCAPE_TOKEN ('\"')
                 VALID_STRING_ESCAPE_TOKEN ('\\')
                 VALID_STRING_ESCAPE_TOKEN ('\n')
-                MatlabTokenType.DOUBLE_QUOTE_STRING ('"')
+                DOUBLE_QUOTE_STRING ('"')
                 """.trimIndent())
     }
 
@@ -51,14 +51,14 @@ open class DoubleQuoteStringLiteralLexerTest : LexerTestCase() {
                 "
                 """.trimIndent(),
                 """
-                MatlabTokenType.DOUBLE_QUOTE_STRING ('"')
+                DOUBLE_QUOTE_STRING ('"')
                 """.trimIndent())
 
         doTest("""
                 "\
                 """.trimIndent(),
                 """
-                MatlabTokenType.DOUBLE_QUOTE_STRING ('"')
+                DOUBLE_QUOTE_STRING ('"')
                 INVALID_CHARACTER_ESCAPE_TOKEN ('\')
                 """.trimIndent())
 
@@ -66,7 +66,7 @@ open class DoubleQuoteStringLiteralLexerTest : LexerTestCase() {
                 "\\\"
                 """.trimIndent(),
                 """
-                MatlabTokenType.DOUBLE_QUOTE_STRING ('"')
+                DOUBLE_QUOTE_STRING ('"')
                 VALID_STRING_ESCAPE_TOKEN ('\\')
                 VALID_STRING_ESCAPE_TOKEN ('\"')
                 """.trimIndent())
@@ -75,9 +75,9 @@ open class DoubleQuoteStringLiteralLexerTest : LexerTestCase() {
                 "\e"
                 """.trimIndent(),
                 """
-                MatlabTokenType.DOUBLE_QUOTE_STRING ('"')
+                DOUBLE_QUOTE_STRING ('"')
                 INVALID_CHARACTER_ESCAPE_TOKEN ('\e')
-                MatlabTokenType.DOUBLE_QUOTE_STRING ('"')
+                DOUBLE_QUOTE_STRING ('"')
                 """.trimIndent())
     }
 }
