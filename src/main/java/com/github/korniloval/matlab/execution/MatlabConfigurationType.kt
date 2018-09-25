@@ -9,7 +9,7 @@ import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.project.Project
 
 class MatlabConfigurationType
-    : ConfigurationTypeBase("MatlabApplication", "Matlab", null, Icons.matlabIcon) {
+    : ConfigurationTypeBase("MatlabApplication", "Matlab", null, Icons.Matlab) {
     init {
         addFactory(object : ConfigurationFactory(this) {
             override fun createTemplateConfiguration(project: Project): RunConfiguration = MatlabRunConfiguration(project, this)

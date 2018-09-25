@@ -10,7 +10,7 @@ class MatlabFileType private constructor() : LanguageFileType(MatlabLanguage.INS
     }
 
     override fun getIcon(): Icon? {
-        return Icons.matlabIcon
+        return Icons.Matlab
     }
 
     override fun getName(): String {

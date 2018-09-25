@@ -5,6 +5,6 @@ import com.intellij.openapi.fileTypes.FileTypeFactory
 
 class MatlabFileTypeFactory : FileTypeFactory() {
     override fun createFileTypes(consumer: FileTypeConsumer) {
-        consumer.consume(MatlabFileType.INSTANCE)
+        consumer.consume(MatlabFileType.INSTANCE, MatlabFileType.INSTANCE.defaultExtension)
     }
 }
