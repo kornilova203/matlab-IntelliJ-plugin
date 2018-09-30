@@ -7,8 +7,6 @@ open class MatlabParserTest : ParsingTestCase("", "m", MatlabParserDefinition())
 
     override fun getTestDataPath(): String = "src/test/resources/parser"
 
-    override fun includeRanges(): Boolean = true
-
     fun testNumbers() = doTest(true)
     fun testFileOperations() = doTest(true)
     fun testWhileLoop() = doTest(true)
