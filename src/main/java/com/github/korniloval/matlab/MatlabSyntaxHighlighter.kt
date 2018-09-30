@@ -2,6 +2,7 @@ package com.github.korniloval.matlab
 
 import com.github.korniloval.matlab.lexer.MatlabHighlightingLexer
 import com.github.korniloval.matlab.psi.MatlabTypes
+import com.github.korniloval.matlab.psi.MatlabTypes.*
 import com.intellij.lexer.Lexer
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors.INVALID_STRING_ESCAPE
@@ -22,9 +23,11 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
         private val STRING = createTextAttributesKey("STRING", DefaultLanguageHighlighterColors.STRING)
         private val SEMICOLON = createTextAttributesKey("SEMICOLON", DefaultLanguageHighlighterColors.SEMICOLON)
         private val ID = createTextAttributesKey("ID", DefaultLanguageHighlighterColors.LOCAL_VARIABLE)
-        private val KEYWORD = createTextAttributesKey("IF", DefaultLanguageHighlighterColors.KEYWORD)
+        private val KEYWORD = createTextAttributesKey("KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
 
         private val BAD_CHAR_KEYS: Array<TextAttributesKey?> = arrayOf(BAD_CHARACTER)
+        private val VALID_STRING_ESCAPE_KEYS: Array<TextAttributesKey?> = arrayOf(VALID_STRING_ESCAPE)
+        private val INVALID_STRING_ESCAPE_KEYS: Array<TextAttributesKey?> = arrayOf(INVALID_STRING_ESCAPE)
         private val COMMENT_KEYS: Array<TextAttributesKey?> = arrayOf(COMMENT)
         private val STRING_KEYS: Array<TextAttributesKey?> = arrayOf(STRING)
         private val SEMICOLON_KEYS: Array<TextAttributesKey?> = arrayOf(SEMICOLON)
@@ -41,31 +44,22 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
         return when (tokenType) {
             MatlabTypes.COMMENT -> COMMENT_KEYS
 
-            MatlabTypes.SINGLE_QUOTE_STRING -> STRING_KEYS
-            MatlabTypes.DOUBLE_QUOTE_STRING -> STRING_KEYS
-            StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN -> arrayOf(VALID_STRING_ESCAPE)
-            StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN -> arrayOf(INVALID_STRING_ESCAPE)
+            SINGLE_QUOTE_STRING, DOUBLE_QUOTE_STRING -> STRING_KEYS
+
+            StringEscapesTokenTypes.VALID_STRING_ESCAPE_TOKEN -> VALID_STRING_ESCAPE_KEYS
+            StringEscapesTokenTypes.INVALID_CHARACTER_ESCAPE_TOKEN -> INVALID_STRING_ESCAPE_KEYS
 
             MatlabTypes.SEMICOLON -> SEMICOLON_KEYS
             MatlabTypes.IDENTIFIER -> ID_KEYS
 
-            MatlabTypes.FUNCTION -> KEYWORD_KEYS
-            MatlabTypes.END -> KEYWORD_KEYS
-            MatlabTypes.IF -> KEYWORD_KEYS
-            MatlabTypes.ELSE -> KEYWORD_KEYS
-            MatlabTypes.ELSEIF -> KEYWORD_KEYS
-            MatlabTypes.WHILE -> KEYWORD_KEYS
-            MatlabTypes.FOR -> KEYWORD_KEYS
-            MatlabTypes.CLASSDEF -> KEYWORD_KEYS
-            MatlabTypes.PROPERTIES -> KEYWORD_KEYS
-            MatlabTypes.METHODS -> KEYWORD_KEYS
-            MatlabTypes.EVENTS -> KEYWORD_KEYS
+            FUNCTION, END, IF, ELSE, ELSEIF, WHILE, SWITCH, CASE, OTHERWISE,
+            FOR, CLASSDEF, PROPERTIES, METHODS, EVENTS
+            -> KEYWORD_KEYS
 
-            MatlabTypes.INTEGER -> NUMBER_KEYS
-            MatlabTypes.FLOAT -> NUMBER_KEYS
-            MatlabTypes.FLOAT_EXPONENTIAL -> NUMBER_KEYS
+            INTEGER, FLOAT, FLOAT_EXPONENTIAL -> NUMBER_KEYS
 
             TokenType.BAD_CHARACTER -> BAD_CHAR_KEYS
+
             else -> EMPTY_KEYS
         }
     }

@@ -24,4 +24,5 @@ open class MatlabParserTest : ParsingTestCase("", "m", MatlabParserDefinition())
     fun testCellArray() = doTest(true)
     fun testMatrix() = doTest(true)
     fun testLambda() = doTest(true)
+    fun testSwitch() = doTest(true)
 }

@@ -70,6 +70,7 @@
 root ::= NEWLINE * (element NEWLINE *) * end?
 private element ::= ( el [ ';' | ',' ] ) | ';' | ',' { recoverWhile=element_recover_rule }
 private el ::= if_block
+  | switch_block
   | file_operation
   | for_loop
   | while_loop
@@ -77,7 +78,9 @@ private el ::= if_block
   | class_definition
   | expr
   | COMMENT
-private element_recover_rule ::= !( NEWLINE* ( end | elseif | else | methods | properties | events | ',' | ';' | el | <<eof>> ) )
+
+private element_recover_rule ::= !( NEWLINE* ( end | elseif | else | methods | properties | events | case
+  | otherwise | ',' | ';' | el | <<eof>> ) )
 
 private one_line_recovery ::= !( end | NEWLINE | '...' )
 
@@ -88,10 +91,10 @@ private not_el ::= !( NEWLINE* el )
 private not_end_or_eof_or_el ::= not_end_or_oef not_el
 private not_end_or_oef ::= !( NEWLINE* ( end | <<eof>> ) )
 
-if_block ::= if_token br* condition NEWLINE *
-  if_block_body
-  elseif_block* NEWLINE *
-  [else_block] NEWLINE *
+if_block ::= if_token br* condition NEWLINE*
+  if_block_body NEWLINE*
+  elseif_block* NEWLINE*
+  [else_block NEWLINE*]
   end { pin=1 }
 
 private if_token ::= if { recoverWhile = not_end_elseif_or_else_or_el }
@@ -109,6 +112,19 @@ else_block ::= else_token NEWLINE * if_block_body
 private else_token ::= else { recoverWhile=not_end_or_eof_or_el }
 
 private not_end_elseif_or_else_or_el ::= !( NEWLINE* ( end | elseif | else | el ) )
+
+switch_block ::= switch_token br* switch_expression NEWLINE*
+  case_block* NEWLINE*
+  [otherwise_block NEWLINE*]
+  end { pin=1 }
+private switch_token ::= switch { recoverWhile=switch_token_recovery }
+switch_expression ::= expr { recoverWhile=case_block_recovery }
+case_block ::= case NEWLINE* case_expression NEWLINE* <<block element>> { pin=1 recoverWhile=case_block_recovery }
+case_expression ::= expr { recoverWhile=case_expression_recovery }
+otherwise_block ::= otherwise NEWLINE* <<block element>> { pin=1 recoverWhile=case_block_recovery }
+private case_block_recovery ::= !( NEWLINE* ( case | otherwise | end ) )
+private case_expression_recovery ::= case_block_recovery !( NEWLINE* el )
+private switch_token_recovery ::= case_block_recovery !( br* expr )
 
 for_loop ::= for_token br* for_loop_interval ';'? NEWLINE*
     block_that_recovers_until_end
