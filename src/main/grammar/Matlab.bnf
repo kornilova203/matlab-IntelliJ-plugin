@@ -68,7 +68,7 @@
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?
-private element ::= ( el ( ';' | ',' )? ) | ';' | ',' { recoverWhile=element_recover_rule }
+private element ::= ( el [ ';' | ',' ] ) | ';' | ',' { recoverWhile=element_recover_rule }
 private el ::= if_block
   | file_operation
   | for_loop
@@ -77,57 +77,63 @@ private el ::= if_block
   | class_definition
   | expr
   | COMMENT
-private element_recover_rule ::= !( end | elseif | else | ',' | ';' | el | NEWLINE | <<eof>> )
+private element_recover_rule ::= !( NEWLINE* ( end | elseif | else | methods | properties | events | ',' | ';' | el | <<eof>> ) )
 
 private one_line_recovery ::= !( end | NEWLINE | '...' )
 
+meta block ::= (<<p>> NEWLINE *)*
+private block_that_recovers_until_end ::= <<block block_element>> { recoverWhile=not_end_or_oef }
+private block_element ::= element { recoverWhile=not_end_or_eof_or_el }
+private not_el ::= !( NEWLINE* el )
+private not_end_or_eof_or_el ::= not_end_or_oef not_el
+private not_end_or_oef ::= !( NEWLINE* ( end | <<eof>> ) )
+
 if_block ::= if_token br* condition NEWLINE *
-  (if_block_element NEWLINE *) *
+  if_block_body
   elseif_block* NEWLINE *
   [else_block] NEWLINE *
   end { pin=1 }
 
+private if_token ::= if { recoverWhile = not_end_elseif_or_else_or_el }
 condition ::= expr { recoverWhile=if_condition_recovery }
-private if_condition_recovery ::= !( NEWLINE* if_block_element | elseif_block | else_block | end )
+private if_condition_recovery ::= !( NEWLINE* ( end | elseif | else | el ) )
 
-private if_token ::= if { recoverWhile = not_elseif_or_else_or_element }
+private if_block_body ::= <<block if_block_element>> { recoverWhile=not_end_or_elseif_or_else }
+private if_block_element ::= element { recoverWhile=not_end_or_elseif_or_else_or_el }
+private not_end_or_elseif_or_else ::= !( NEWLINE* (end | elseif | else) )
+private not_end_or_elseif_or_else_or_el ::= not_end_or_elseif_or_else not_el
 
-elseif_block ::= elseif_token NEWLINE * (if_block_element NEWLINE *) *
-private elseif_token ::= elseif { recoverWhile = not_elseif_or_else_or_element }
-private if_block_element ::= element { recoverWhile = not_elseif_or_else_or_element }
-else_block ::= else_token NEWLINE * (block_element NEWLINE *)*
-private else_token ::= else { recoverWhile = not_end_or_element }
-private block_element ::= element { recoverWhile = not_end_or_element }
+elseif_block ::= elseif_token NEWLINE * if_block_body
+private elseif_token ::= elseif { recoverWhile=not_end_elseif_or_else_or_el }
+else_block ::= else_token NEWLINE * if_block_body
+private else_token ::= else { recoverWhile=not_end_or_eof_or_el }
 
-private not_elseif_or_else_or_element ::= one_line_recovery !( el | elseif | else )
-private not_end_or_element ::= !( el | end | NEWLINE )
+private not_end_elseif_or_else_or_el ::= !( NEWLINE* ( end | elseif | else | el ) )
 
 for_loop ::= for_token br* for_loop_interval ';'? NEWLINE*
-    (block_element NEWLINE *)*
+    block_that_recovers_until_end
     end { pin=1 }
 private for_loop_interval ::= assign_expr { recoverWhile=for_loop_interval_recovery }
-private for_loop_interval_recovery ::= !( el | end | NEWLINE | ';' )
-private for_token ::= for { recoverWhile=not_element }
+private for_loop_interval_recovery ::= !( NEWLINE* ( end | NEWLINE | ';' | el ) )
+private for_token ::= for { recoverWhile=not_el_one_line }
 
-private not_element ::= one_line_recovery !( el )
+private not_el_one_line ::= one_line_recovery !( el )
 
 while_loop ::= while_token br* while_loop_condition ';'? NEWLINE*
-    (block_element NEWLINE *)*
+    block_that_recovers_until_end
     end { pin=1 }
 while_loop_condition ::= expr { pin=1 recoverWhile=while_loop_recovery }
-private while_loop_recovery ::= !( NEWLINE* block_element | end | ';' )
+private while_loop_recovery ::= !( NEWLINE* ( end | ';' | el ) )
 private while_token ::= while { pin=1 recoverWhile=while_token_recovery }
 private while_token_recovery ::= !( br | while_loop_condition | NEWLINE )
 
 function_definition ::= function_token br* return_value_part? br* function_name br* parameters? NEWLINE*
-    block_body
-    ( end | <<eof>> ) { pin=1 }
+    block_that_recovers_until_end
+    NEWLINE* ( end | <<eof>> ) { pin=1 }
 private return_value_part ::= single_return_value_part  | multiple_return_values_part
 // note pin value
 private single_return_value_part ::= return_value br* '=' { pin=3 }
 private multiple_return_values_part ::= return_values br* '=' { pin=1 }
-block_body ::= (block_element NEWLINE *)* { recoverWhile=not_end }
-private not_end ::= !( end )
 private function_token ::= function { recoverWhile=not_element_or_squarebracket_or_equals }
 private not_element_or_squarebracket_or_equals ::= one_line_recovery !( el | '[' | '=' | IDENTIFIER )
 return_values ::= '[' br* return_values_list? br* ']' { pin=1 }
@@ -180,11 +186,10 @@ private properties_attributes_recovery ::= block_inside_class_recovery !( NEWLIN
 private properties_attribute_list ::= properties_attribute_list_item (',' properties_attribute_list_item ) * { recoverWhile=not_rparenth }
 properties_attribute_list_item ::= IDENTIFIER '=' expr { pin=1 recoverWhile=properties_attribute_list_item_recovery }
 private properties_attribute_list_item_recovery ::= block_inside_class_recovery !( properties_attribute_list_item | ',' | ')' )
-properties_block_body ::= (block_element NEWLINE *)* { recoverWhile=block_inside_class_recovery }
-private block_inside_class_recovery ::= !( NEWLINE* end
-  | NEWLINE* methods_block
-  | NEWLINE* properties_block
-  | NEWLINE* events_block )
+private properties_block_body ::= <<block properties_block_element>> { recoverWhile=block_inside_class_recovery }
+private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods | properties | events ) )
+private properties_block_element ::= element { recoverWhile=properties_block_element_recovery }
+private properties_block_element_recovery ::= block_inside_class_recovery not_el
 
 methods_block ::= methods_token br* methods_attributes? NEWLINE*
     methods_block_body NEWLINE*
@@ -193,8 +198,10 @@ private methods_token ::= methods { recoverWhile=not_end_or_methods_block_body }
 private not_end_or_methods_block_body ::= !( NEWLINE* end |  NEWLINE* methods_block_body )
 methods_attributes ::= '(' properties_attribute_list? ')' { pin=1 recoverWhile=methods_attributes_recovery }
 private methods_attributes_recovery ::= block_inside_class_recovery !( NEWLINE* methods_block_body )
-methods_block_body ::= (block_element NEWLINE *)* { recoverWhile=methods_block_body_recovery }
-private methods_block_body_recovery ::= !( NEWLINE* events_block | NEWLINE* end )
+private methods_block_body ::= <<block methods_block_element>> { recoverWhile=methods_block_body_recovery }
+private methods_block_element ::= element { recoverWhile=methods_block_element_recovery }
+private methods_block_body_recovery ::= !( NEWLINE* ( end | events ) )
+private methods_block_element_recovery ::= methods_block_body_recovery not_el
 
 events_block ::= events_token br* events_attributes? NEWLINE*
     events_block_body NEWLINE*
