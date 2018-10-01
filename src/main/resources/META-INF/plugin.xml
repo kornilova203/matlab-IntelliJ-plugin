@@ -37,6 +37,8 @@
         <quoteHandler fileType="Matlab" className="com.github.korniloval.matlab.editor.actions.MatlabQuoteHandler"/>
 
         <completion.contributor language="Matlab" implementationClass="com.github.korniloval.matlab.completion.MatlabCompletionContributor"/>
+        <lang.findUsagesProvider language="Matlab"
+                                 implementationClass="com.github.korniloval.matlab.MatlabFindUsagesProvider"/>
     </extensions>
 
 </idea-plugin>

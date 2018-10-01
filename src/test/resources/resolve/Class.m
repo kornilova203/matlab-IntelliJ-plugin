@@ -1,4 +1,4 @@
-classdef hit_list
+classdef <decl>hit_list
     properties
         bounds;     % Nx4 array of single. [min_x min_y width height]
         poselet_id; % Nx1 array of uint16. Unique ID of the detected poselet

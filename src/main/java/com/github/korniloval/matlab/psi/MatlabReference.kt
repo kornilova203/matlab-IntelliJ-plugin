@@ -2,25 +2,25 @@ package com.github.korniloval.matlab.psi
 
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiReference
 import com.intellij.psi.ResolveState
+import com.intellij.psi.impl.source.resolve.reference.impl.CachingReference
 import com.intellij.psi.util.PsiTreeUtil
 
 /**
  * @author Liudmila Kornilova
  **/
-class MatlabReference(val myElement: PsiElement, val implicit: Boolean) : PsiReference {
+class MatlabReference(val myElement: PsiElement) : CachingReference() {
 
     override fun getElement(): PsiElement = myElement
 
-    override fun resolve(): PsiElement? {
+    override fun resolveInner(): PsiElement? {
         val processor = MatlabResolvingScopeProcessor(this)
         val state = ResolveState.initial()
 
         val containingFile = myElement.containingFile
 
         PsiTreeUtil.treeWalkUp(processor, myElement, containingFile, state)
-        return processor.declaration
+        return if (processor.declaration == myElement) null else processor.declaration
     }
 
     override fun getVariants(): Array<Any> = emptyArray()
@@ -34,12 +34,6 @@ class MatlabReference(val myElement: PsiElement, val implicit: Boolean) : PsiRef
     }
 
     override fun bindToElement(element: PsiElement): PsiElement {
-        TODO("not implemented")
-    }
-
-    override fun isSoft(): Boolean = false
-
-    override fun isReferenceTo(element: PsiElement?): Boolean {
         TODO("not implemented")
     }
 }

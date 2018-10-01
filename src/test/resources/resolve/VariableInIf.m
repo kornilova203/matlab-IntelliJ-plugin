@@ -1,4 +1,4 @@
-a = 1;
+<decl>a = 1;
 if a == 1
     fprintf("1")
 else
