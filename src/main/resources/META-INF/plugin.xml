@@ -34,6 +34,7 @@
 
         <lang.braceMatcher language="Matlab"
                            implementationClass="com.github.korniloval.matlab.highlighting.MatlabPairedBraceMatcher"/>
+        <lang.commenter language="Matlab" implementationClass="com.github.korniloval.matlab.editor.actions.MatlabCommentHandler"/>
         <quoteHandler fileType="Matlab" className="com.github.korniloval.matlab.editor.actions.MatlabQuoteHandler"/>
 
         <completion.contributor language="Matlab" implementationClass="com.github.korniloval.matlab.completion.MatlabCompletionContributor"/>
