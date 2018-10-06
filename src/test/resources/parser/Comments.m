@@ -11,6 +11,18 @@ block comment
   %}
 %}
 
+%{
+%{ not start
+not start %{
+%}
+
+%{
+%} not end
+not end %}
+%}
+
+myVar %{
+
 42
 
 %{

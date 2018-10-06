@@ -34,6 +34,8 @@ NEWLINE=(\R( \t)*)
 WHITE_SPACE=[ \t\x0B\f]+ // do not match new line
 SINGLE_QUOTE='
 LINE_COMMENT=%.*
+BLOCK_COMMENT_PREFIX={WHITE_SPACE}* "%{" {WHITE_SPACE}*
+BLOCK_COMMENT_SUFFIX={WHITE_SPACE}* "%}" {WHITE_SPACE}*
 FLOAT=(([\d]*\.[\d]+)|([\d]+\.))i?
 FLOAT_EXPONENTIAL=(([\d]*\.[\d]+)|([\d]+\.)|\d+)e[\+-]?[\d]+i?
 IDENTIFIER = [:jletter:] [:jletterdigit:]*
@@ -123,13 +125,13 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   "]"                   { isTranspose = true; return RBRACKET; }
   "{"                   { isTranspose = false; return LBRACE; }
   "}"                   { isTranspose = false; return RBRACE; }
-  "%{"                  { isTranspose = false; blockCommentLevel = 1; yybegin(BLOCKCOMMENT_STATE); }
   "..."                 { isTranspose = false; return DOTS; }
   "."                   { isTranspose = false; return DOT; }
   "@"                   { isTranspose = false; return AT; }
 
   {NEWLINE}             { isTranspose = false; return NEWLINE; }
   {LINE_COMMENT}        { isTranspose = false; return COMMENT; }
+  ^{BLOCK_COMMENT_PREFIX}$ { isTranspose = false; blockCommentLevel = 1; yybegin(BLOCKCOMMENT_STATE); }
   {FLOAT_EXPONENTIAL}   { isTranspose = false; return FLOAT_EXPONENTIAL; }
   {FLOAT}               { isTranspose = false; return FLOAT; }
   {INTEGER}             { isTranspose = false; return INTEGER; }
@@ -151,17 +153,17 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 }
 
 <BLOCKCOMMENT_STATE> {
-    "%{"                { blockCommentLevel += 1; }
+    ^{BLOCK_COMMENT_PREFIX}$ { blockCommentLevel += 1; }
 
-    "%}"                { blockCommentLevel -= 1;
-                          if (blockCommentLevel == 0) {
-                              yybegin(YYINITIAL);
-                              return COMMENT;
-                          }
-                        }
-    <<EOF>>             { yybegin(YYINITIAL); return COMMENT; }
+    ^{BLOCK_COMMENT_SUFFIX}$ { blockCommentLevel -= 1;
+                               if (blockCommentLevel == 0) {
+                                   yybegin(YYINITIAL);
+                                   return COMMENT;
+                               }
+                             }
+    <<EOF>>                  { yybegin(YYINITIAL); return COMMENT; }
 
-    [^]                 {  }
+    [^]                      {  }
 }
 
 <FILE_NAME_STATE> {
