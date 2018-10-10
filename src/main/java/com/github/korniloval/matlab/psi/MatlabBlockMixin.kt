@@ -11,6 +11,7 @@ import com.intellij.psi.scope.PsiScopeProcessor
  **/
 open class MatlabBlockMixin(node: ASTNode) : ASTWrapperPsiElement(node), MatlabBlock {
     override fun processDeclarations(processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement?, place: PsiElement): Boolean {
-        return processDeclarations(this, processor, state)
+        processDeclarations(this, processor, state)
+        return true
     }
 }

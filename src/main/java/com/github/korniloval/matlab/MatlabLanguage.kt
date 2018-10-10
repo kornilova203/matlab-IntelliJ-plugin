@@ -6,4 +6,6 @@ class MatlabLanguage private constructor() : Language("Matlab") {
     companion object {
         val INSTANCE = MatlabLanguage()
     }
+
+    override fun isCaseSensitive(): Boolean = true
 }

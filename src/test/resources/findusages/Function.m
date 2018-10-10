@@ -1,6 +1,6 @@
 a = 1;
-function <decl>fun
+function <caret>fun
     fprintf("a = %d\n", a)
 end
 
-<ref>fun()
+fun()
