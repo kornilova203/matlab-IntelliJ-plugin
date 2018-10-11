@@ -13,6 +13,10 @@
 
     <change-notes><![CDATA[
     <ol>
+        <li>Add 'Comment with Block/Line Comment' actions</li>
+        <li>Resolve references in one file</li>
+        <li>Add keyword autocompletion</li>
+        <li>Fix block comment parsing</li>
     </ol>
     ]]>
     </change-notes>
