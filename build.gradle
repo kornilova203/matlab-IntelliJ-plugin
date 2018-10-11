@@ -6,7 +6,7 @@ plugins {
     id "org.jetbrains.grammarkit" version "2018.1.7"
 }
 
-version = "0.3-SNAPSHOT"
+version = "0.3"
 
 repositories {
     mavenCentral()
