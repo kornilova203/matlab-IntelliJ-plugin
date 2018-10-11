@@ -95,7 +95,7 @@ private not_el ::= !( NEWLINE* el )
 private not_end_or_eof_or_el ::= not_end_or_oef not_el
 private not_end_or_oef ::= !( NEWLINE* ( end | <<eof>> ) )
 
-if_block ::= if_token br* condition NEWLINE*
+if_block ::= if_token br* condition ','? NEWLINE*
   if_block_body NEWLINE*
   elseif_block* NEWLINE*
   [else_block NEWLINE*]
@@ -103,7 +103,7 @@ if_block ::= if_token br* condition NEWLINE*
 
 private if_token ::= if { recoverWhile = not_end_elseif_or_else_or_el }
 condition ::= expr { recoverWhile=if_condition_recovery }
-private if_condition_recovery ::= !( NEWLINE* ( end | elseif | else | el ) )
+private if_condition_recovery ::= !( NEWLINE* ( ',' | end | elseif | else | el ) )
 
 private if_block_body ::= <<block if_block_element>> { recoverWhile=not_end_or_elseif_or_else }
 private if_block_element ::= element { recoverWhile=not_end_or_elseif_or_else_or_el }
@@ -130,20 +130,20 @@ private case_block_recovery ::= !( NEWLINE* ( case | otherwise | end ) )
 private case_expression_recovery ::= case_block_recovery !( NEWLINE* el )
 private switch_token_recovery ::= case_block_recovery !( br* expr )
 
-for_loop ::= for_token br* for_loop_interval ';'? NEWLINE*
+for_loop ::= for_token br* for_loop_interval [ ';' | ',' ] NEWLINE*
     block_that_recovers_until_end
     end { pin=1 }
 private for_loop_interval ::= assign_expr { recoverWhile=for_loop_interval_recovery }
-private for_loop_interval_recovery ::= !( NEWLINE* ( end | NEWLINE | ';' | el ) )
+private for_loop_interval_recovery ::= !( NEWLINE* ( end | NEWLINE | ';' | ',' | el ) )
 private for_token ::= for { recoverWhile=not_el_one_line }
 
 private not_el_one_line ::= one_line_recovery !( el )
 
-while_loop ::= while_token br* while_loop_condition ';'? NEWLINE*
+while_loop ::= while_token br* while_loop_condition [ ';' | ',' ] NEWLINE*
     block_that_recovers_until_end
     end { pin=1 }
 while_loop_condition ::= expr { pin=1 recoverWhile=while_loop_recovery }
-private while_loop_recovery ::= !( NEWLINE* ( end | ';' | el ) )
+private while_loop_recovery ::= !( NEWLINE* ( end | ';' | ',' | el ) )
 private while_token ::= while { pin=1 recoverWhile=while_token_recovery }
 private while_token_recovery ::= !( br | while_loop_condition | NEWLINE )
 
