@@ -5,11 +5,13 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
 class CompletionTest : LightPlatformCodeInsightFixtureTestCase() {
     override fun getTestDataPath(): String = "src/test/resources/completion"
 
-    fun testF() = doTest("function", "elseif", "for", "classdef", "if")
+    fun testF() = doTest("function", "for", "classdef", "if")
+    fun testIf() = doTest("function", "for", "classdef", "if", "end", "while")
+    fun testWhileCondition() = doTest()
 
     private fun doTest(vararg completionVariants: String) {
         myFixture.testCompletionVariants(getTestFilePath(), *completionVariants)
     }
 
-    private fun getTestFilePath(): String = testDataPath + "/" + getTestName(true) + ".m"
+    private fun getTestFilePath(): String = testDataPath + "/" + getTestName(false) + ".m"
 }
