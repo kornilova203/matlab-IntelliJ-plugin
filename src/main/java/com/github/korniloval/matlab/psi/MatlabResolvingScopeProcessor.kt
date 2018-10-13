@@ -1,6 +1,7 @@
 package com.github.korniloval.matlab.psi
 
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveState
 import com.intellij.psi.scope.PsiScopeProcessor
@@ -28,5 +29,12 @@ class MatlabResolvingScopeProcessor(private val myReference: MatlabReference) : 
 
     companion object {
         private val LOG = Logger.getInstance(MatlabReference::class.java)
+    }
+
+    override fun <T : Any?> getHint(hintKey: Key<T>): T? {
+        return null
+    }
+
+    override fun handleEvent(event: PsiScopeProcessor.Event, associated: Any?) {
     }
 }
