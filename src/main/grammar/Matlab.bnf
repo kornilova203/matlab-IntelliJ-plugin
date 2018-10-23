@@ -70,6 +70,14 @@
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?
+
+private meta p_opt_list ::= '(' br* [ !')' <<list <<item>>>> br* ] ')' { pin=1 }
+private meta list ::= <<list_item <<item>>>> (br* ',' br* <<list_item <<item>>>>)* { recoverWhile=not_rparenth }
+private not_rparenth ::= !( ')' )
+private meta list_item ::= {} <<item>> { pin=1 recoverWhile=not_rparenth_or_comma }
+private not_rparenth_or_comma ::= !( ')' | ',' )
+private one_line_recovery ::= !( end | NEWLINE | '...' )
+
 private element ::= ( el [ ';' | ',' ] ) | ';' | ',' { recoverWhile=element_recover_rule }
 private el ::= if_block
   | switch_block
@@ -83,8 +91,6 @@ private el ::= if_block
 
 private element_recover_rule ::= !( NEWLINE* ( end | elseif | else | methods | properties | events | case
   | otherwise | ',' | ';' | el | <<eof>> ) )
-
-private one_line_recovery ::= !( end | NEWLINE | '...' )
 
 ref ::= IDENTIFIER
 
@@ -152,24 +158,21 @@ function_declaration ::= function_token br* return_value_part? br* function_ref 
     NEWLINE* ( end | <<eof>> ) { pin=1 }
 private return_value_part ::= single_return_value_part  | multiple_return_values_part
 // note pin value
-private single_return_value_part ::= return_value br* '=' { pin=3 }
-private multiple_return_values_part ::= return_values br* '=' { pin=1 }
+private single_return_value_part ::= ret_value br* '=' { pin=3 }
+private multiple_return_values_part ::= ret_values br* '=' { pin=1 }
 private function_token ::= function { recoverWhile=not_element_or_squarebracket_or_equals }
 private not_element_or_squarebracket_or_equals ::= one_line_recovery !( el | '[' | '=' | IDENTIFIER )
-return_values ::= '[' br* return_values_list? br* ']' { pin=1 }
-private return_values_list ::= return_values_list_item (br* ',' br* return_values_list_item)* {recoverWhile=return_values_list_recovery }
-private return_values_list_recovery ::= !( br* ']' | br* '=' | br* NEWLINE )
-private return_values_list_item ::= ref { recoverWhile=not_expr_or_coma_or_rbracket }
-private not_expr_or_coma_or_rbracket ::= !( ',' | ']' | '=' | IDENTIFIER | NEWLINE )
-return_value ::= ref { recoverWhile=not_expr_or_equal }
+ret_values ::= '[' br* ret_values_list? br* ']' { pin=1 extends=return_values elementType=return_values }
+fake return_values ::= ref*
+private ret_values_list ::= ref (br* ','? br* ref)* {recoverWhile=ret_values_list_recovery }
+private ret_values_list_recovery ::= !( br* ']' | br* '=' | br* NEWLINE )
+ret_value ::= ref { recoverWhile=not_expr_or_equal extends=return_values elementType=return_values }
 private not_expr_or_equal ::=!( IDENTIFIER | expr | '=' | NEWLINE )
 private function_ref ::= ref { recoverWhile=not_element_or_lparenth }
 private not_element_or_lparenth ::= one_line_recovery !( el | '(' )
-parameters ::= '(' br* parameters_list? br* ')' { pin=1 }
-private parameters_list ::= parameter (br* ',' br* parameter)* { pin=1 recoverWhile=not_rparenth }
-private not_rparenth ::= one_line_recovery !( ')' )
-parameter ::= ref { recoverWhile=not_expr_or_coma_or_rparenth }
-private not_expr_or_coma_or_rparenth ::= one_line_recovery !( expr | ',' | ')' )
+parameters ::= <<p_opt_list parameter>> { extends=parameters_list }
+fake parameters_list ::= parameter*
+parameter ::= ref
 
 class_declaration ::= classdef_token br* class_attributes? br* class_name br* super_classes? NEWLINE*
     (( properties_block | methods_block | events_block ) NEWLINE*)*
@@ -178,11 +181,9 @@ private classdef_token ::= classdef { recoverWhile=classdef_token_recovery }
 
 private not_properties_or_methods_or_end ::= !( NEWLINE* properties_block | NEWLINE* methods_block | NEWLINE* end )
 
-class_attributes ::= '(' class_attribute_list? ')' { pin=1 recoverWhile=class_attributes_recovery }
+class_attributes ::= <<p_opt_list class_attribute_list_item>> { recoverWhile=class_attributes_recovery }
 private class_attributes_recovery ::= block_inside_class_recovery !( br* class_ref )
-class_attribute_list ::= class_attribute_list_item (',' class_attribute_list_item) * { recoverWhile=class_attribute_list_recovery }
-private class_attribute_list_recovery ::= not_properties_or_methods_or_end !( br* ')' )
-class_attribute_list_item ::= ref '=' expr { pin=1 recoverWhile=not_expr_or_coma_or_rparenth }
+class_attribute_list_item ::= ref '=' expr { pin=1 }
 
 private class_name ::= class_ref { recoverWhile=class_ref_recovery }
 private class_ref ::= ref
@@ -202,11 +203,9 @@ properties_block ::= properties_token br* properties_attributes? NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
 private properties_token ::= properties { recoverWhile=properties_token_recovery }
 private properties_token_recovery ::= block_inside_class_recovery !( NEWLINE* properties_block_body )
-properties_attributes ::= '(' properties_attribute_list? ')' { pin=1 recoverWhile=properties_attributes_recovery }
+properties_attributes ::= <<p_opt_list properties_attribute_list_item>> { recoverWhile=properties_attributes_recovery }
 private properties_attributes_recovery ::= block_inside_class_recovery !( NEWLINE* properties_block_body )
-private properties_attribute_list ::= properties_attribute_list_item (',' properties_attribute_list_item ) * { recoverWhile=not_rparenth }
-properties_attribute_list_item ::= ref '=' expr { pin=1 recoverWhile=properties_attribute_list_item_recovery }
-private properties_attribute_list_item_recovery ::= block_inside_class_recovery !( properties_attribute_list_item | ',' | ')' )
+properties_attribute_list_item ::= ref '=' expr { pin=1 }
 private properties_block_body ::= <<block properties_block_element>> { recoverWhile=block_inside_class_recovery }
 private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods | properties | events ) )
 private properties_block_element ::= element { recoverWhile=properties_block_element_recovery }
@@ -217,7 +216,7 @@ methods_block ::= methods_token br* methods_attributes? NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
 private methods_token ::= methods { recoverWhile=not_end_or_methods_block_body }
 private not_end_or_methods_block_body ::= !( NEWLINE* end |  NEWLINE* methods_block_body )
-methods_attributes ::= '(' properties_attribute_list? ')' { pin=1 recoverWhile=methods_attributes_recovery }
+methods_attributes ::= <<p_opt_list properties_attribute_list_item>> { recoverWhile=methods_attributes_recovery }
 private methods_attributes_recovery ::= block_inside_class_recovery !( NEWLINE* methods_block_body )
 private methods_block_body ::= <<block methods_block_element>> { recoverWhile=methods_block_body_recovery }
 private methods_block_element ::= element { recoverWhile=methods_block_element_recovery }
@@ -229,17 +228,15 @@ events_block ::= events_token br* events_attributes? NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
 private events_token ::= events { recoverWhile=events_token_recovery }
 private events_token_recovery ::= !( br* events_attributes | NEWLINE* end | NEWLINE* events_list )
-events_attributes ::= '(' properties_attribute_list? ')' { pin=1 recoverWhile=events_attributes_recovery }
+events_attributes ::= <<p_opt_list properties_attribute_list_item>> { pin=1 recoverWhile=events_attributes_recovery }
 private events_attributes_recovery ::= block_inside_class_recovery !( NEWLINE* events_list )
 events_list ::= (ref NEWLINE*)* { recoverWhile=events_block_body_recovery }
 private events_block_body_recovery ::= !( NEWLINE* end )
 
-function_call_or_matrix_element_access ::= ref br* '(' br* arguments? br* ')' { pin=3 }
-arguments ::= argument ( br* ',' br* argument)* { recoverWhile=arguments_recovery }
-private arguments_recovery ::= !( br* ')' )
-argument ::= ( matrix_index | expr ) { recoverWhile=argument_recovery }
+function_call_or_matrix_element_access ::= ref br* arguments
+arguments ::= <<p_opt_list argument>>
+argument ::= matrix_index | expr
 matrix_index ::= ( end '-' expr | ':' end | ':' | end )
-private argument_recovery ::= !( br | expr | matrix_index | ',' | ')' )
 
 ;{
     name(".*literal")='literal'
@@ -389,12 +386,11 @@ private br ::= '...' NEWLINE { pin=1 }
 
 function_ref_expr ::= '@' function_ref { pin=1 }
 
-lambda_expr ::= at_token br* '(' br* lambda_arguments br* ')' lambda_body { pin=3 }
+lambda_expr ::= at_token br* lambda_arguments lambda_body { pin=3 }
 private at_token ::= '@' { recoverWhile=at_token_recovery }
 private at_token_recovery ::= !( br* '(' | ';' | !( '...' ) NEWLINE )
-lambda_arguments ::= lambda_argument ( br* ',' br* lambda_argument)* { recoverWhile=arguments_recovery }
-lambda_argument ::= expr { recoverWhile=lambda_argument_recovery }
-private lambda_argument_recovery ::= !( br | expr | ',' | ')' )
+lambda_arguments ::= <<p_opt_list lambda_argument>>
+lambda_argument ::= expr
 lambda_body ::= expr { recoverWhile=lambda_body_recovery }
 private lambda_body_recovery ::= !( NEWLINE | br* ';' | br* ',' )
 

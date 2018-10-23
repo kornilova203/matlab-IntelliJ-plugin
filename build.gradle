@@ -13,7 +13,7 @@ repositories {
 }
 
 intellij {
-    version = "2018.2.3"
+    version = "2018.2.5"
     updateSinceUntilBuild = false
     downloadSources = true
     pluginName = "Matlab Support"
@@ -46,8 +46,6 @@ task generateMatlabLexer(type: GenerateLexer) {
     source = "src/main/grammar/MatlabLexer.flex"
     targetDir = "src/main/gen/com/github/korniloval/matlab/lexer"
     targetClass = "MatlabLexer"
-
-    // if set, plugin will remove a lexer output file before generating new one. Default: false
     purgeOldFiles = true
 }
 
@@ -55,8 +53,6 @@ task generateSingleQuoteStringLexer(type: GenerateLexer) {
     source = "src/main/grammar/SingleQuoteStringLexer.flex"
     targetDir = "src/main/gen/com/github/korniloval/matlab/lexer"
     targetClass = "SingleQuoteStringLexer"
-
-    // if set, plugin will remove a lexer output file before generating new one. Default: false
     purgeOldFiles = true
 }
 
@@ -65,8 +61,6 @@ task generateMatlabParser(type: GenerateParser) {
     targetRoot = "src/main/gen/"
     pathToParser = "/com/github/korniloval/matlab/MatlabParser.java"
     pathToPsiRoot = "/com/github/korniloval/matlab/psi"
-
-    // if set, plugin will remove a parser output file and psi output directory before generating new ones. Default: false
     purgeOldFiles = true
 }
 

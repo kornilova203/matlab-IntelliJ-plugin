@@ -14,7 +14,6 @@ abstract class MatlabFunctionDeclarationMixin(node: ASTNode) : ASTWrapperPsiElem
     override fun getIdentifier(): MatlabRef? = (this as? MatlabFunctionDeclarationImpl)?.ref
 
     private val returnValuesRefList: List<MatlabRef> by lazy {
-        returnValue?.let { return@lazy listOf(it.ref) }
         returnValues?.let { return@lazy it.refList }
         return@lazy emptyList<MatlabRef>()
     }

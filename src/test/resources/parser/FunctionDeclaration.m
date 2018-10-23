@@ -10,3 +10,4 @@ function r = fun(obj)
 end
 
 function r = fun(obj) a = 5 end
+function [a b] = f end
