@@ -1,5 +1,2 @@
-.idea/
-.gradle/
-build/
-lib/
-src/main/gen/
+/gen/
+/.idea/dictionaries/
