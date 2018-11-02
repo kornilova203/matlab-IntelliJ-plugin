@@ -1,8 +1,6 @@
 # Matlab support for IntelliJ
 Matlab syntax highlighting plugin for JetBrains IDEs.
 
-[![Build Status](https://travis-ci.com/kornilova-l/matlab-IntelliJ-plugin.svg?branch=master)](https://travis-ci.com/kornilova-l/matlab-IntelliJ-plugin)
-
 ![Screenshot of Matlab plugin](screenshots/screen.png)
 
 https://plugins.jetbrains.com/plugin/10941-matlab-support
