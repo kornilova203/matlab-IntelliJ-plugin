@@ -236,7 +236,7 @@ private events_block_body_recovery ::= !( NEWLINE* end )
 function_call_or_matrix_element_access ::= ref br* arguments
 arguments ::= <<p_opt_list argument>>
 argument ::= matrix_index | expr
-matrix_index ::= ( end '-' expr | ':' end | ':' | end )
+matrix_index ::= ( end ( '-' | '+' ) expr | ':' end | ':' | end )
 
 ;{
     name(".*literal")='literal'

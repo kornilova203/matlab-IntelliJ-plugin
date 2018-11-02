@@ -7,3 +7,4 @@ a(end)
 a(1:2:end)
 a(1:end, 2) = [0, 0 ,0]
 a(1:end-1)
+a(1:4,end+(1:diff))
