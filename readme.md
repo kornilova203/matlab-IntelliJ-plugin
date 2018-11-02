@@ -42,24 +42,5 @@ Contributions in Java are also welcomed.
 
 To build a jar with Matlab Plugin click **Build | Prepare Plugin ... For Deployment**.
 
-### Run IntelliJ IDEA with the plugin
-```bash
-# Linux
-./gradlew runIde
-
-# Windows
-gradlew.bat runIde
-```
-
-### Build jar with the plugin
-```bash
-# Linux
-./gradlew buildPlugin
-
-# Windows
-gradlew.bat buildPlugin
-```
-Jar will be outputted to `build/distributions` directory.
-
 
  [Octave]: https://www.gnu.org/software/octave/
