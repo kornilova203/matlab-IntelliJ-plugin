@@ -118,7 +118,7 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   "<"                   { isTranspose = false; return LESS; }
   "=="                  { isTranspose = false; return EQUAL; }
   "~="                  { isTranspose = false; return NOT_EQUAL; }
-  ","                   { isTranspose = false; return COMA; }
+  ","                   { isTranspose = false; return COMMA; }
   ":"                   { isTranspose = false; return COLON; }
   ";"                   { isTranspose = false; return SEMICOLON; }
   "["                   { isTranspose = false; return LBRACKET; }
@@ -126,7 +126,6 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   "{"                   { isTranspose = false; return LBRACE; }
   "}"                   { isTranspose = false; return RBRACE; }
   "..."                 { isTranspose = false; return DOTS; }
-  "."                   { isTranspose = false; return DOT; }
   "@"                   { isTranspose = false; return AT; }
 
   {NEWLINE}             { isTranspose = false; return NEWLINE; }
