@@ -67,6 +67,7 @@
     mixin("class_declaration")="com.github.korniloval.matlab.psi.MatlabClassDeclarationMixin"
     mixin("function_declaration")="com.github.korniloval.matlab.psi.MatlabFunctionDeclarationMixin"
     mixin("block")="com.github.korniloval.matlab.psi.MatlabBlockMixin"
+    mixin("for_loop")="com.github.korniloval.matlab.psi.MatlabForLoopMixin"
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?
@@ -136,10 +137,10 @@ private case_block_recovery ::= !( NEWLINE* ( case | otherwise | end ) )
 private case_expression_recovery ::= case_block_recovery !( NEWLINE* el )
 private switch_token_recovery ::= case_block_recovery !( br* expr )
 
-for_loop ::= for_token br* for_loop_interval [ ';' | ',' ] NEWLINE*
+for_loop ::= for_token br* for_loop_range [ ';' | ',' ] NEWLINE*
     block_that_recovers_until_end
     end { pin=1 }
-private for_loop_interval ::= assign_expr { recoverWhile=for_loop_interval_recovery }
+for_loop_range ::= assign_expr { recoverWhile=for_loop_interval_recovery }
 private for_loop_interval_recovery ::= !( NEWLINE* ( end | NEWLINE | ';' | ',' | el ) )
 private for_token ::= for { recoverWhile=not_el_one_line }
 

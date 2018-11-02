@@ -21,6 +21,7 @@ class ResolveTest : ResolveTestCase() {
     fun testClass() = doTest("hit_list")
     fun testReturnValue() = doTest("retVal")
     fun testParameter() = doTest("param")
+    fun testForLoop() = doTest("ii")
 
     private fun doTest(name: String) {
         val (ref, decl) = getExpectedDeclaration()

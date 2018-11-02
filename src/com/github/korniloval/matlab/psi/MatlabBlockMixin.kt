@@ -9,7 +9,7 @@ import com.intellij.psi.scope.PsiScopeProcessor
 /**
  * @author Liudmila Kornilova
  **/
-open class MatlabBlockMixin(node: ASTNode) : ASTWrapperPsiElement(node), MatlabBlock {
+abstract class MatlabBlockMixin(node: ASTNode) : ASTWrapperPsiElement(node), MatlabBlock {
     override fun processDeclarations(processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement?, place: PsiElement): Boolean {
         processDeclarations(this, processor, state)
         return true
