@@ -1,8 +1,6 @@
 # Matlab support for IntelliJ
 Matlab syntax highlighting plugin for JetBrains IDEs.
 
-[![Build Status](https://travis-ci.com/kornilova-l/matlab-IntelliJ-plugin.svg?branch=master)](https://travis-ci.com/kornilova-l/matlab-IntelliJ-plugin)
-
 ![Screenshot of Matlab plugin](screenshots/screen.png)
 
 https://plugins.jetbrains.com/plugin/10941-matlab-support
@@ -28,6 +26,21 @@ Note: currently `Program arguments` field in configuration is ignored.
 ## Development
 
 For easier development install [Grammar-Kit](https://plugins.jetbrains.com/plugin/6606-grammar-kit) plugin.
+
+This project uses IntelliJ IDEA build system.  
+Follow steps below to start working on the plugin:
+1. Clone it and open in IntelliJ IDEA.
+2. Open **File | Project Structure**, go to **Project** tab and fix project SDK (see [Setting Up a Development Environment](http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/setting_up_environment.html)). I suggest using recent IDEA Community as project SDK.
+3. Generate Matlab lexers. Open [MatlabLexer.flex](grammar/MatlabLexer.flex) and click **Run JFlex Generator** from context menu, do the same for [SingleQuoteStringLexer.flex](grammar/SingleQuoteStringLexer.flex).
+4. Generate Matlab parser. Open [Matlab.bnf](grammar/Matlab.bnf) and run **Generate Parser Code** from context menu.
+5. Run/Debug **IDEA with Matlab Plugin** configuration.
+
+If you have any issue with setting up development environment then please create an issue.
+
+The project is written in Kotlin. It's pretty easy to learn. To get started you may quickly look through [Basic Syntax](https://kotlinlang.org/docs/reference/basic-syntax.html) and [Classes and Inheritance](https://kotlinlang.org/docs/reference/classes.html).  
+Contributions in Java are also welcomed.
+
+To build a jar with Matlab Plugin click **Build | Prepare Plugin ... For Deployment**.
 
 ### Run IntelliJ IDEA with the plugin
 ```bash
