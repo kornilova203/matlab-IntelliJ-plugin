@@ -45,6 +45,7 @@
                                 implementationClass="com.github.korniloval.matlab.completion.MatlabKeywordCompletionContributor"/>
         <lang.findUsagesProvider language="Matlab"
                                  implementationClass="com.github.korniloval.matlab.MatlabFindUsagesProvider"/>
+        <annotator language="Matlab" implementationClass="com.github.korniloval.matlab.highlighting.MatlabAnnotator"/>
     </extensions>
 
 </idea-plugin>
