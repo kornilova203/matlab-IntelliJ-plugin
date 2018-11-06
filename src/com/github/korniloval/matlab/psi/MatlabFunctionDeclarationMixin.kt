@@ -30,7 +30,7 @@ abstract class MatlabFunctionDeclarationMixin(node: ASTNode) : ASTWrapperPsiElem
         for (matlabRef in parametersRefList) {
             if (!processor.execute(matlabRef, state)) return false
         }
-        return true
+        return false
     }
 
     override val implicit: Boolean = false

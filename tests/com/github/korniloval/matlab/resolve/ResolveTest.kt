@@ -18,6 +18,7 @@ class ResolveTest : ResolveTestCase() {
     fun testVariableUnresolved() = doTestUnresolved()
     fun testFunction() = doTest("fun")
     fun testFunctionUnresolved() = doTestUnresolved()
+    fun testVarInsideFunctionUnresolved() = doTestUnresolved()
     fun testClass() = doTest("hit_list")
     fun testReturnValue() = doTest("retVal")
     fun testParameter() = doTest("param")
