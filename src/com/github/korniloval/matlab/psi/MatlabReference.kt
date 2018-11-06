@@ -15,15 +15,12 @@ class MatlabReference(val myElement: PsiElement) : CachingReference() {
 
     override fun resolveInner(): PsiElement? {
         val processor = MatlabResolvingScopeProcessor(this)
-        val state = ResolveState.initial()
-
         val containingFile = myElement.containingFile
-
-        PsiTreeUtil.treeWalkUp(processor, myElement, containingFile, state)
+        PsiTreeUtil.treeWalkUp(processor, myElement, containingFile, ResolveState.initial())
         return if (processor.declaration == myElement) null else processor.declaration
     }
 
-    override fun getVariants(): Array<Any> = emptyArray()
+    override fun getVariants(): Array<PsiElement> = emptyArray()
 
     override fun getRangeInElement(): TextRange = TextRange.create(0, myElement.textRange.endOffset - myElement.textRange.startOffset)
 

@@ -43,6 +43,8 @@
 
         <completion.contributor language="Matlab"
                                 implementationClass="com.github.korniloval.matlab.completion.MatlabKeywordCompletionContributor"/>
+        <completion.contributor language="Matlab"
+                                implementationClass="com.github.korniloval.matlab.completion.MatlabReferenceCompletionContributor"/>
         <lang.findUsagesProvider language="Matlab"
                                  implementationClass="com.github.korniloval.matlab.MatlabFindUsagesProvider"/>
         <annotator language="Matlab" implementationClass="com.github.korniloval.matlab.highlighting.MatlabAnnotator"/>

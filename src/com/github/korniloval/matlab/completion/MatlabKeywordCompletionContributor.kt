@@ -11,12 +11,14 @@ import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns.and
 import com.intellij.util.ProcessingContext
 
-@Suppress("PrivatePropertyName")
 class MatlabKeywordCompletionContributor : CompletionContributor() {
-    private val M = psiElement().withLanguage(MatlabLanguage.INSTANCE)
-    private val IDENT = psiElement(MatlabTypes.IDENTIFIER).withSuperParent(2, MatlabRefExpr::class.java)
-    private val AT_TOP_LEVEL = and(M, IDENT.withSuperParent(3, MatlabFile::class.java))
-    private val IN_BLOCK = and(M, IDENT.withSuperParent(3, MatlabBlock::class.java))
+
+    companion object {
+        val M = psiElement().withLanguage(MatlabLanguage.INSTANCE)
+        private val IDENT = psiElement(MatlabTypes.IDENTIFIER).withSuperParent(2, MatlabRefExpr::class.java)
+        private val AT_TOP_LEVEL = and(M, IDENT.withSuperParent(3, MatlabFile::class.java))
+        private val IN_BLOCK = and(M, IDENT.withSuperParent(3, MatlabBlock::class.java))
+    }
 
     init {
         extend(CompletionType.BASIC,
