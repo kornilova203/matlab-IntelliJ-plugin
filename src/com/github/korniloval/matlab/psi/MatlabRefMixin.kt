@@ -3,16 +3,16 @@ package com.github.korniloval.matlab.psi
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
-import com.intellij.psi.PsiNamedElement
+import com.intellij.psi.PsiNameIdentifierOwner
 
 /**
  * @author Liudmila Kornilova
  **/
-abstract class MatlabRefMixin(node: ASTNode) : ASTWrapperPsiElement(node), MatlabRef, PsiNamedElement {
+abstract class MatlabRefMixin(node: ASTNode) : ASTWrapperPsiElement(node), MatlabRef, PsiNameIdentifierOwner {
 
     override fun setName(name: String): PsiElement {
-        // todo
-        return this
+        val ref = MatlabPsiUtil.createRefFromText(project, name)
+        return this.replace(ref)
     }
 
     override fun getReference(): MatlabReference? {
@@ -20,4 +20,6 @@ abstract class MatlabRefMixin(node: ASTNode) : ASTWrapperPsiElement(node), Matla
     }
 
     override fun getName(): String? = text
+
+    override fun getNameIdentifier(): PsiElement? = this
 }

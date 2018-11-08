@@ -29,7 +29,7 @@ class ResolveTest : ResolveTestCase() {
         val element = ref.resolve()
         assertNotNull(element)
         assertEquals(name, element!!.text)
-        TestCase.assertEquals(element, decl.myElement)
+        TestCase.assertEquals(element, decl.element)
     }
 
     private fun doTestUnresolved() {

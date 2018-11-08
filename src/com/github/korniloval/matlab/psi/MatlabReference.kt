@@ -1,19 +1,18 @@
 package com.github.korniloval.matlab.psi
 
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
+import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveState
-import com.intellij.psi.impl.source.resolve.reference.impl.CachingReference
 import com.intellij.psi.util.PsiTreeUtil
 
 /**
  * @author Liudmila Kornilova
  **/
-class MatlabReference(val myElement: PsiElement) : CachingReference() {
+class MatlabReference(myElement: MatlabRef) : PsiReferenceBase<MatlabRef>(myElement) {
 
-    override fun getElement(): PsiElement = myElement
+    override fun resolve(): MatlabRef? = resolveInner()
 
-    override fun resolveInner(): PsiElement? {
+    private fun resolveInner(): MatlabRef? {
         val processor = MatlabResolvingScopeProcessor(this)
         val containingFile = myElement.containingFile
         PsiTreeUtil.treeWalkUp(processor, myElement, containingFile, ResolveState.initial())
@@ -21,16 +20,4 @@ class MatlabReference(val myElement: PsiElement) : CachingReference() {
     }
 
     override fun getVariants(): Array<PsiElement> = emptyArray()
-
-    override fun getRangeInElement(): TextRange = TextRange.create(0, myElement.textRange.endOffset - myElement.textRange.startOffset)
-
-    override fun getCanonicalText(): String = myElement.text
-
-    override fun handleElementRename(newElementName: String): PsiElement {
-        TODO("not implemented")
-    }
-
-    override fun bindToElement(element: PsiElement): PsiElement {
-        TODO("not implemented")
-    }
 }

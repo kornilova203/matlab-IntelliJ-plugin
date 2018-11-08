@@ -13,7 +13,7 @@ class MatlabResolvingScopeProcessor(private val myReference: MatlabReference) : 
 
     override fun execute(refInDeclaration: PsiElement, state: ResolveState): Boolean {
         if (refInDeclaration !is MatlabRefMixin) return true
-        if (refInDeclaration.text == myReference.myElement.text) {
+        if (refInDeclaration.text == myReference.element.text) {
             this.declaration = refInDeclaration
             return false
         }
