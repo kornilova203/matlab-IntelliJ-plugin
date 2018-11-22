@@ -1,7 +1,7 @@
 {
   parserClass="com.github.korniloval.matlab.MatlabParser"
 
-  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+  extends="com.github.korniloval.matlab.psi.MatlabCompositePsiElement"
 
   psiClassPrefix="Matlab"
   psiImplClassSuffix="Impl"
