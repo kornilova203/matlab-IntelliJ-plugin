@@ -12,7 +12,7 @@ class MatlabReferenceCompletionContributor : CompletionContributor() {
         extend(CompletionType.BASIC,
                 M,
                 object : CompletionProvider<CompletionParameters>() {
-                    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext?, result: CompletionResultSet) {
+                    override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
                         val processor = MatlabCompletionScopeProcessor(result)
                         val position = parameters.originalPosition ?: return
                         PsiTreeUtil.treeWalkUp(processor, position, parameters.originalFile, ResolveState.initial())

@@ -2,10 +2,7 @@ package com.github.korniloval.matlab.execution
 
 import com.intellij.execution.Executor
 import com.intellij.execution.configuration.EnvironmentVariablesComponent
-import com.intellij.execution.configurations.ConfigurationFactory
-import com.intellij.execution.configurations.LocatableConfigurationBase
-import com.intellij.execution.configurations.RunConfiguration
-import com.intellij.execution.configurations.RunProfileState
+import com.intellij.execution.configurations.*
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.options.SettingsEditor
@@ -16,7 +13,7 @@ import java.lang.Boolean.parseBoolean
 import java.util.*
 
 class MatlabRunConfiguration(project: Project, configurationFactory: ConfigurationFactory) :
-        LocatableConfigurationBase(project, configurationFactory, "Matlab run configuration"), MatlabRunConfigurationsParams {
+        LocatableConfigurationBase<RunConfigurationOptions>(project, configurationFactory, "Matlab run configuration"), MatlabRunConfigurationsParams {
 
     private var workingDir: String? = null
     private var programParams: String? = null
