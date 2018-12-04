@@ -17,7 +17,7 @@ abstract class MatlabFunctionDeclarationMixin(elementType: IElementType) : Matla
         return emptyList()
     }
 
-    private fun parametersRefList(): List<MatlabRef> {
+    private fun parametersRefList(): List<MatlabRef?> {
         parameters?.let { return it.parameterList.map { parameter -> parameter.ref } }
         return emptyList()
     }
@@ -27,7 +27,9 @@ abstract class MatlabFunctionDeclarationMixin(elementType: IElementType) : Matla
             if (!processor.execute(matlabRef, state)) return false
         }
         for (matlabRef in parametersRefList()) {
-            if (!processor.execute(matlabRef, state)) return false
+            if (matlabRef != null) {
+                if (!processor.execute(matlabRef, state)) return false
+            }
         }
         return false
     }
