@@ -42,5 +42,10 @@ Contributions in Java are also welcomed.
 
 To build a jar with Matlab Plugin click **Build | Prepare Plugin ... For Deployment**.
 
+### Tips for plugin developers
+
+1. _View PSI Structure._
+  When you start IDEA by running __IDEA with Matlab Plugin__ configuration you may open a matlab file in the IDE and run **View PSI Structure of Current File..** (this action is available because IDE is started with `idea.is.internal=true` vm option).
+
 
  [Octave]: https://www.gnu.org/software/octave/
