@@ -311,7 +311,6 @@ private primary_group ::= literal_expr
   | function_ref_expr
   | cell_array_access_expr
 
-
 literal_expr ::= number_literal
   | string_literal
   | boolean_literal
@@ -328,8 +327,7 @@ private matrix_content ::= matrix_row ( sep* ';' NEWLINE* sep* matrix_row)* { re
 private not_rbracket ::= one_line_recovery !( ']' )
 matrix_row ::= matrix_item ( sep* (',' sep*)?  matrix_item)* { recoverWhile=not_rbracket_or_semicolon }
 private not_rbracket_or_semicolon ::= not_rbracket !( ';' )
-matrix_item ::= expr { recoverWhile=not_rbracket_or_semicolon_or_comma }
-private not_rbracket_or_semicolon_or_comma ::= not_rbracket_or_semicolon !( ',' | matrix_item)
+matrix_item ::= '~' | expr
 
 cell_array_literal ::= '{' cell_array_content? '}' { pin=1 }
 private cell_array_content ::= cell_array_row ( sep* ';' sep* cell_array_row )* { recoverWhile=cell_array_content_recovery }
