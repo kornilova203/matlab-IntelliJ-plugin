@@ -11,3 +11,5 @@ end
 
 function r = fun(obj) a = 5 end
 function [a b] = f end
+
+function res = istensor(~) end

@@ -173,7 +173,7 @@ private function_ref ::= ref { recoverWhile=not_element_or_lparenth }
 private not_element_or_lparenth ::= one_line_recovery !( el | '(' )
 parameters ::= <<p_opt_list parameter>> { extends=parameters_list }
 fake parameters_list ::= parameter*
-parameter ::= ref
+parameter ::= ref | '~'
 
 class_declaration ::= classdef_token br* class_attributes? br* class_name br* super_classes? NEWLINE*
     (( properties_block | methods_block | events_block ) NEWLINE*)*
