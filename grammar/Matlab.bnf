@@ -61,6 +61,7 @@
       RBRACE='}'
       TILDA='~'
       AT='@'
+      QUESTION_MARK='?'
     ]
 
     mixin(".*ref")="com.github.korniloval.matlab.psi.MatlabRefMixin"
@@ -154,10 +155,11 @@ private while_loop_recovery ::= !( NEWLINE* ( end | ';' | ',' | el ) )
 private while_token ::= while { pin=1 recoverWhile=while_token_recovery }
 private while_token_recovery ::= !( br | while_loop_condition | NEWLINE )
 
-function_declaration ::= function_token br* return_value_part? br* function_ref br* parameters? NEWLINE*
+function_declaration ::= function_token br* return_value_part? br* getter_or_setter_modifier? function_ref br* parameters? NEWLINE*
     block_that_recovers_until_end
     NEWLINE* ( end | <<eof>> ) { pin=1 }
-private return_value_part ::= single_return_value_part  | multiple_return_values_part
+getter_or_setter_modifier ::= IDENTIFIER '.'
+private return_value_part ::= single_return_value_part | multiple_return_values_part
 // note pin value
 private single_return_value_part ::= ret_value br* '=' { pin=3 }
 private multiple_return_values_part ::= ret_values br* '=' { pin=1 }
@@ -206,7 +208,7 @@ private properties_token ::= properties { recoverWhile=properties_token_recovery
 private properties_token_recovery ::= block_inside_class_recovery !( NEWLINE* properties_block_body )
 properties_attributes ::= <<p_opt_list properties_attribute_list_item>> { recoverWhile=properties_attributes_recovery }
 private properties_attributes_recovery ::= block_inside_class_recovery !( NEWLINE* properties_block_body )
-properties_attribute_list_item ::= ref '=' expr { pin=1 }
+properties_attribute_list_item ::= ref ['=' expr] { pin(".*")=1 }
 private properties_block_body ::= <<block properties_block_element>> { recoverWhile=block_inside_class_recovery }
 private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods | properties | events ) )
 private properties_block_element ::= element { recoverWhile=properties_block_element_recovery }
@@ -220,9 +222,9 @@ private not_end_or_methods_block_body ::= !( NEWLINE* end |  NEWLINE* methods_bl
 methods_attributes ::= <<p_opt_list properties_attribute_list_item>> { recoverWhile=methods_attributes_recovery }
 private methods_attributes_recovery ::= block_inside_class_recovery !( NEWLINE* methods_block_body )
 private methods_block_body ::= <<block methods_block_element>> { recoverWhile=methods_block_body_recovery }
-private methods_block_element ::= element { recoverWhile=methods_block_element_recovery }
+private methods_block_element ::= function_declaration { recoverWhile=methods_block_element_recovery }
 private methods_block_body_recovery ::= !( NEWLINE* ( end | events ) )
-private methods_block_element_recovery ::= methods_block_body_recovery not_el
+private methods_block_element_recovery ::= methods_block_body_recovery !( NEWLINE* function )
 
 events_block ::= events_token br* events_attributes? NEWLINE*
     events_list NEWLINE*
@@ -288,6 +290,7 @@ private unary_group ::= unary_plus_expr
   | transpose_expr
   | nonconjugate_transpose_expr
   | unary_negation_expr
+  | meta_class_expr
 
 private mul_group ::= mul_expr
   | element_wise_mul_expr
@@ -371,6 +374,7 @@ unary_plus_expr ::= '+' br* expr
 transpose_expr ::= expr br* TRANSPOSE
 nonconjugate_transpose_expr ::= expr br* DOT_TRANSPOSE
 unary_negation_expr ::= '~' br* expr
+meta_class_expr ::= '?' br* ref_expr
 
 rdiv_expr ::= expr '/' expr
 element_wise_rdiv_expr ::= expr './' expr

@@ -127,6 +127,7 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   "}"                   { isTranspose = false; return RBRACE; }
   "..."                 { isTranspose = false; return DOTS; }
   "@"                   { isTranspose = false; return AT; }
+  "?"                   { isTranspose = false; return QUESTION_MARK; }
 
   {NEWLINE}             { isTranspose = false; return NEWLINE; }
   {LINE_COMMENT}        { isTranspose = false; return COMMENT; }

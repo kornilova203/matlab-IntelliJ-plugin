@@ -26,7 +26,43 @@ classdef ClassWithChangedOrder
          r = [obj.Value] * n;
       end
    end
-   properties
+   properties (Dependent)
          Value
+   end
+end
+
+classdef C
+    properties (SetAccess = ?EnvelopeStageManager, GetAccess=public)
+        % empty
+    end
+end
+
+classdef SquareArea
+   properties
+      Width
+      Height
+   end
+   properties (Dependent)
+      Area
+   end
+   methods
+      function a = get.Area(obj)
+         a = obj.Width * obj.Height;
+      end
+   end
+end
+
+classdef MyClass
+   properties
+      Prop1
+   end
+   methods
+      function obj = set.Prop1(obj,value)
+         if (value > 0)
+            obj.Prop1 = value;
+         else
+            error('Property value must be positive')
+         end
+      end
    end
 end
