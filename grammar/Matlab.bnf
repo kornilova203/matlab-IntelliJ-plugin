@@ -305,11 +305,11 @@ private primary_group ::= literal_expr
   | method_access_expr
   | property_access_expr
   | function_expr
+  | cell_array_access_expr
   | ref_expr
   | paren_expr
   | lambda_expr
   | function_ref_expr
-  | cell_array_access_expr
 
 literal_expr ::= number_literal
   | string_literal
@@ -338,7 +338,10 @@ cell_array_item ::= expr { recoverWhile=cell_array_item_recovery }
 private cell_array_item_recovery ::= !( sep* ',' | sep* ';' | '}' | cell_array_item )
 
 
-cell_array_access_expr ::= expr '{' ( matrix_index | expr ) '}'
+cell_array_access_expr ::= expr '{' cell_array_access_item_list '}'
+private cell_array_access_item_list ::= cell_array_access_item ( br* ',' br* cell_array_access_item )* { recoverWhile=not_brace }
+private cell_array_access_item ::= ( matrix_index | expr )
+private not_brace ::= !('}')
 
 range_expr ::= expr ':' ( expr ':' )? ( expr | end )
 

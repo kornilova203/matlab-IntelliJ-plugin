@@ -3,3 +3,4 @@ C = {'one', 'two', 'three';
 
 C{1}
 C{:end}
+t = V{:,ii};
