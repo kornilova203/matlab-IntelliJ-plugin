@@ -55,4 +55,10 @@
         <lang.ast.factory language="Matlab" implementationClass="com.github.korniloval.matlab.MatlabASTFactory"/>
     </extensions>
 
+    <project-components>
+        <component>
+            <implementation-class>com.github.korniloval.matlab.MatlabBlockHighlighterFactory</implementation-class>
+        </component>
+    </project-components>
+
 </idea-plugin>
