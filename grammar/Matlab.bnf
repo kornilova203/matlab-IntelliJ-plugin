@@ -65,6 +65,7 @@
     ]
 
     mixin(".*ref")="com.github.korniloval.matlab.psi.MatlabRefMixin"
+    mixin("identifier_token")="com.github.korniloval.matlab.psi.MatlabIdentifierTokenMixin"
     mixin("class_declaration")="com.github.korniloval.matlab.psi.MatlabClassDeclarationMixin"
     mixin("function_declaration")="com.github.korniloval.matlab.psi.MatlabFunctionDeclarationMixin"
     mixin("block")="com.github.korniloval.matlab.psi.MatlabBlockMixin"
@@ -171,7 +172,9 @@ private ret_values_list ::= ref (br* ','? br* ref)* {recoverWhile=ret_values_lis
 private ret_values_list_recovery ::= !( br* ']' | br* '=' | br* NEWLINE )
 ret_value ::= ref { recoverWhile=not_expr_or_equal extends=return_values elementType=return_values }
 private not_expr_or_equal ::=!( IDENTIFIER | expr | '=' | NEWLINE )
-private function_ref ::= ref { recoverWhile=not_element_or_lparenth }
+private function_ref ::= ref | end_ref { recoverWhile=not_element_or_lparenth }
+end_ref ::= identifier_token { elementType=ref }
+identifier_token ::= end
 private not_element_or_lparenth ::= one_line_recovery !( el | '(' )
 parameters ::= <<p_opt_list parameter>> { extends=parameters_list }
 fake parameters_list ::= parameter*
@@ -236,7 +239,7 @@ private events_attributes_recovery ::= block_inside_class_recovery !( NEWLINE* e
 events_list ::= (ref NEWLINE*)* { recoverWhile=events_block_body_recovery }
 private events_block_body_recovery ::= !( NEWLINE* end )
 
-function_call_or_matrix_element_access ::= ref br* arguments
+function_call_or_matrix_element_access ::= (ref | end_ref) br* arguments
 arguments ::= <<p_opt_list argument>>
 argument ::= matrix_index | expr
 matrix_index ::= ( end ( '-' | '+' ) expr | ':' end | ':' | end )

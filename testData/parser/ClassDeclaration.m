@@ -64,5 +64,10 @@ classdef MyClass
             error('Property value must be positive')
          end
       end
+      function outIndex = end(obj,~,~)
+        outIndex = obj.Nvalues;
+        assert(outIndex>0, 'Invalid use of method end() for empty vector');
+        end(A,1,2)
+      end
    end
 end
