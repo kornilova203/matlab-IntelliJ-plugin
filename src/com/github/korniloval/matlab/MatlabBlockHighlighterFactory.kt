@@ -12,6 +12,7 @@ import com.intellij.codeInsight.daemon.impl.UpdateHighlightersUtil
 import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.colors.CodeInsightColors
+import com.intellij.openapi.editor.colors.EditorColors
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
@@ -124,12 +125,13 @@ class MatlabBlockHighlighterFactory(registrar: TextEditorHighlightingPassRegistr
                 addElementsInChildren(switch, delimiters, MatlabCaseBlock::class.java, CASE)
                 addElementsInChildren(switch, delimiters, MatlabOtherwiseBlock::class.java, OTHERWISE)
                 possiblyAddRanges(delimiters)
+                isMatched = true
             }
         }
     }
 
     companion object {
-        private val MATCHED = HighlightInfoType.HighlightInfoTypeImpl(HighlightInfoType.SYMBOL_TYPE_SEVERITY, CodeInsightColors.MATCHED_BRACE_ATTRIBUTES)
+        private val MATCHED = HighlightInfoType.HighlightInfoTypeImpl(HighlightInfoType.SYMBOL_TYPE_SEVERITY, EditorColors.IDENTIFIER_UNDER_CARET_ATTRIBUTES)
         private val UNMATCHED = HighlightInfoType.HighlightInfoTypeImpl(HighlightSeverity.ERROR, CodeInsightColors.UNMATCHED_BRACE_ATTRIBUTES)
     }
 }
