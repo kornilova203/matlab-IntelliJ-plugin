@@ -10,6 +10,9 @@ import com.intellij.codeInsight.daemon.impl.HighlightInfo
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType
 import com.intellij.codeInsight.daemon.impl.UpdateHighlightersUtil
 import com.intellij.lang.annotation.HighlightSeverity
+import com.intellij.openapi.components.BaseComponent
+import com.intellij.openapi.components.NamedComponent
+import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.colors.CodeInsightColors
 import com.intellij.openapi.editor.colors.EditorColors
@@ -27,7 +30,7 @@ import com.intellij.util.containers.ContainerUtil
 /**
  * @author Liudmila Kornilova
  **/
-class MatlabBlockHighlighterFactory(registrar: TextEditorHighlightingPassRegistrar) : TextEditorHighlightingPassFactory {
+class MatlabBlockHighlighterFactory(registrar: TextEditorHighlightingPassRegistrar) : TextEditorHighlightingPassFactory, BaseComponent, ProjectComponent, NamedComponent {
     init {
         registrar.registerTextEditorHighlightingPass(this, null, intArrayOf(Pass.UPDATE_ALL), false, -1)
     }
@@ -134,4 +137,10 @@ class MatlabBlockHighlighterFactory(registrar: TextEditorHighlightingPassRegistr
         private val MATCHED = HighlightInfoType.HighlightInfoTypeImpl(HighlightInfoType.SYMBOL_TYPE_SEVERITY, EditorColors.IDENTIFIER_UNDER_CARET_ATTRIBUTES)
         private val UNMATCHED = HighlightInfoType.HighlightInfoTypeImpl(HighlightSeverity.ERROR, CodeInsightColors.UNMATCHED_BRACE_ATTRIBUTES)
     }
+
+    override fun initComponent() {}
+    override fun disposeComponent() {}
+    override fun projectClosed() {}
+    override fun projectOpened() {}
+    override fun getComponentName(): String = javaClass.name
 }
