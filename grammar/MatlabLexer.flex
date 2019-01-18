@@ -13,6 +13,7 @@ import static com.github.korniloval.matlab.psi.MatlabTypes.*;
 %{
     private boolean isTranspose = false;
     private int blockCommentLevel = 0;
+    private boolean lineCommentStarted = false;
 
     public static FlexAdapter getAdapter() {
         return new FlexAdapter(new MatlabLexer());
@@ -49,6 +50,7 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 
 %state STRING_SINGLE_STATE
 %state BLOCKCOMMENT_STATE
+%state LINECOMMENT_STATE
 %state FILE_NAME_STATE
 
 %%
@@ -125,7 +127,8 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   "]"                   { isTranspose = true; return RBRACKET; }
   "{"                   { isTranspose = false; return LBRACE; }
   "}"                   { isTranspose = false; return RBRACE; }
-  "..."                 { isTranspose = false; return DOTS; }
+  "..." / {WHITE_SPACE}? \n   { isTranspose = false; return ELLIPSIS; }
+  "..."                 { isTranspose = false; yybegin(LINECOMMENT_STATE); return ELLIPSIS; }
   "@"                   { isTranspose = false; return AT; }
   "?"                   { isTranspose = false; return QUESTION_MARK; }
 
@@ -150,6 +153,14 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
     /* line should not consume \n character */
     . / \n                               { yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }
     .                                    {  }
+}
+
+<LINECOMMENT_STATE> {
+    <<EOF>>                              { yybegin(YYINITIAL); lineCommentStarted = false; return COMMENT; }
+    /* comment should not consume \n character */
+    . / \n                               { yybegin(YYINITIAL); lineCommentStarted = false; return COMMENT; }
+    {WHITE_SPACE}                        { if (!lineCommentStarted) return WHITE_SPACE; }
+    .                                    { lineCommentStarted = true; }
 }
 
 <BLOCKCOMMENT_STATE> {

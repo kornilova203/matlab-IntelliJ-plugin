@@ -1,5 +1,8 @@
 % line comment
 
+y = 1 ... comment
+    -1
+
 %{
 block comment
 %}

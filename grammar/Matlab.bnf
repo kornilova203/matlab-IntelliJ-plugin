@@ -27,7 +27,7 @@
       IDENTIFIER='regexp:[a-zA-Z][a-zA-Z0-9_]*'
       INTEGER='regexp:[0-9]+i?'
 
-      DOTS='...'
+      ELLIPSIS='...'
       DOT='.'
       COMMA=','
       LPARENTH='('
@@ -74,11 +74,13 @@
 
 root ::= NEWLINE * (element NEWLINE *) * end?
 
-private meta p_opt_list ::= '(' br* [ !')' <<list <<item>>>> br* ] ')' { pin=1 }
-private meta list ::= <<list_item <<item>>>> (br* ',' br* <<list_item <<item>>>>)* { recoverWhile=not_rparenth }
-private not_rparenth ::= !( ')' )
+private meta p_opt_list ::= '(' new_lines? [ !')' <<list <<item>>>> new_lines? ] ')' { pin=1 }
+private new_lines ::= br+ | NEWLINE
+private meta list ::= <<list_item <<item>>>> (br* ',' br* <<list_item <<item>>>>)* { recoverWhile=not_br_or_rparenth }
+private not_br_or_rparenth ::= !( ')' | '...' | NEWLINE )
 private meta list_item ::= {} <<item>> { pin=1 recoverWhile=not_rparenth_or_comma }
-private not_rparenth_or_comma ::= !( ')' | ',' )
+private not_rparenth_or_comma ::= !( ')' | ',' | '...' | NEWLINE )
+
 private one_line_recovery ::= !( end | NEWLINE | '...' )
 
 private element ::= ( el [ ';' | ',' ] ) | ';' | ',' { recoverWhile=element_recover_rule }
