@@ -70,6 +70,7 @@
     mixin("function_declaration")="com.github.korniloval.matlab.psi.MatlabFunctionDeclarationMixin"
     mixin("block")="com.github.korniloval.matlab.psi.MatlabBlockMixin"
     mixin("for_loop")="com.github.korniloval.matlab.psi.MatlabForLoopMixin"
+    mixin("lambda_expr")="com.github.korniloval.matlab.psi.MatlabLambdaExprMixin"
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?
@@ -225,6 +226,7 @@ matrix_index ::= ( end ( '-' | '+' ) expr | ':' end | ':' | end )
     extends("range_expr")=expr
     extends("function_expr")=expr
     extends("paren_expr")=expr
+    extends("lambda_expr")=expr
     extends("binary_expr")=expr
     extends(".*_expr")=binary_expr
     mixin("assign_expr")="com.github.korniloval.matlab.psi.MatlabAssignExprMixin"
@@ -366,13 +368,8 @@ private br ::= '...' NEWLINE { pin=1 }
 
 function_ref_expr ::= '@' function_ref { pin=1 }
 
-lambda_expr ::= at_token br* lambda_arguments lambda_body { pin=3 }
-private at_token ::= '@' { recoverWhile=at_token_recovery }
-private at_token_recovery ::= !( br* '(' | ';' | !( '...' ) NEWLINE )
-lambda_arguments ::= <<p_opt_list lambda_argument>>
-lambda_argument ::= expr
-lambda_body ::= expr { recoverWhile=lambda_body_recovery }
-private lambda_body_recovery ::= !( NEWLINE | br* ';' | br* ',' )
+lambda_expr ::= '@' br* parameters lambda_body { pin=3 }
+lambda_body ::= expr
 
 file_operation ::= file_operation_token br* FILE_NAME br* variables? { pin=1 }
 private file_operation_token ::= LOAD | DIR | LS | CD { recoverWhile=load_token_recovery }

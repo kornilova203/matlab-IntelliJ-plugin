@@ -23,6 +23,7 @@ class ResolveTest : ResolveTestCase() {
     fun testReturnValue() = doTest("retVal")
     fun testParameter() = doTest("param")
     fun testForLoop() = doTest("ii")
+    fun testLambdaParameter() = doTest("x")
 
     private fun doTest(name: String) {
         val (ref, decl) = getExpectedDeclaration()
