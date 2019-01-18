@@ -1,7 +1,7 @@
 <idea-plugin>
-    <id>com.github.com.kornilovaL</id>
+    <id>MatlabSupport</id>
     <name>Matlab Support</name>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.5-SNAPSHOT</version>
 
     <vendor url="https://github.com/kornilova-l" email="kornilova203@gmail.com"/>
 
@@ -12,10 +12,9 @@
 
     <change-notes><![CDATA[
     <ol>
-        <li>Add 'Comment with Block/Line Comment' actions</li>
-        <li>Resolve references in one file</li>
-        <li>Add keyword autocompletion</li>
-        <li>Fix block comment parsing</li>
+        <li>Rename</li>
+        <li>Identifiers autocompletion</li>
+        <li>Parser fixes</li>
     </ol>
     ]]>
     </change-notes>
