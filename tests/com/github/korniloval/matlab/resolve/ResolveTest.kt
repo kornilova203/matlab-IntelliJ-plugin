@@ -24,6 +24,7 @@ class ResolveTest : ResolveTestCase() {
     fun testParameter() = doTest("param")
     fun testForLoop() = doTest("ii")
     fun testLambdaParameter() = doTest("x")
+    fun testVariableUsedInLambda() = doTest("a")
 
     private fun doTest(name: String) {
         val (ref, decl) = getExpectedDeclaration()

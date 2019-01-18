@@ -17,6 +17,6 @@ abstract class MatlabLambdaExprMixin(elementType: IElementType) : MatlabComposit
                 if (!processor.execute(matlabRef, state)) return false
             }
         }
-        return false
+        return true
     }
 }
