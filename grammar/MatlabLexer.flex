@@ -3,6 +3,7 @@ package com.github.korniloval.matlab.lexer;
 import com.intellij.lexer.FlexAdapter;
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
+import java.util.Stack;
 
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
@@ -11,9 +12,8 @@ import static com.github.korniloval.matlab.psi.MatlabTypes.*;
 %%
 
 %{
-    private boolean isTranspose = false;
+    private Stack<Integer> stack = new Stack<>();
     private int blockCommentLevel = 0;
-    private boolean lineCommentStarted = false;
 
     public static FlexAdapter getAdapter() {
         return new FlexAdapter(new MatlabLexer());
@@ -21,6 +21,44 @@ import static com.github.korniloval.matlab.psi.MatlabTypes.*;
 
     private MatlabLexer() {
         this(null);
+    }
+
+    private void yypushState(int newState) {
+      stack.push(yystate());
+      yybegin(newState);
+    }
+
+    private void yypopState() {
+        if (stack.isEmpty()) return;
+        yybegin(stack.pop());
+    }
+
+    private void stopLookForCtrans() {
+        if (yystate() == LOOK_FOR_CTRANS) yypopState();
+    }
+
+    private void lookForCtrans() {
+        if (yystate() != LOOK_FOR_CTRANS) yypushState(LOOK_FOR_CTRANS);
+    }
+
+    private void startWsDoesNotMatter() {
+        if (yystate() == LOOK_FOR_CTRANS) yypopState();
+        yypushState(YYINITIAL);
+    }
+
+    private void stopWsDoesNotMatter() {
+        if (yystate() == LOOK_FOR_CTRANS) yypopState();
+        if (yystate() == YYINITIAL) yypopState();
+    }
+
+    private void startWsMatters() {
+        if (yystate() == LOOK_FOR_CTRANS) yypopState();
+        yypushState(WS_MATTERS);
+    }
+
+    private void stopWsMatters() {
+        if (yystate() == LOOK_FOR_CTRANS) yypopState();
+        if (yystate() == WS_MATTERS) yypopState();
     }
 %}
 
@@ -48,119 +86,133 @@ DOUBLE_QUOTE_STRING = \" ([^\\\"\r\n] | {ESCAPE_SEQUENCE})* \"?
 /* single quote literal allows single \ character. Sequence '' gives single quote */
 SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 
-%state STRING_SINGLE_STATE
+%state WS_MATTERS
+%state LOOK_FOR_CTRANS
+%state SINGLE_QOUTE_STRING_STATE
 %state BLOCKCOMMENT_STATE
+%state LOOK_FOR_LINECOMMENT
 %state LINECOMMENT_STATE
 %state FILE_NAME_STATE
 
 %%
-<YYINITIAL> {
-  {WHITE_SPACE}         { isTranspose = false; return WHITE_SPACE; }
+<YYINITIAL,WS_MATTERS,LOOK_FOR_CTRANS> {
+  {WHITE_SPACE}         { if (yystate() == LOOK_FOR_CTRANS &&
+                                    !stack.isEmpty() &&
+                                    stack.peek() == WS_MATTERS) {
+                                yypopState();
+                           }
+                            return WHITE_SPACE;
+                        }
 
-  {SINGLE_QUOTE}$       { if (isTranspose) {
-                              isTranspose = false;
-                              return TRANSPOSE;
+  {SINGLE_QUOTE} / \n   { if (yystate() == LOOK_FOR_CTRANS) {
+                              return TRANS;
                           } else {
                               return SINGLE_QUOTE_STRING;
                           }
                         }
 
-  {SINGLE_QUOTE}        { if (isTranspose) {
-                              isTranspose = false;
-                              return TRANSPOSE;
-                          } else {
-                              yybegin(STRING_SINGLE_STATE);
-                          }
+  {SINGLE_QUOTE}        { if (yystate() == LOOK_FOR_CTRANS) {
+                                return CTRANS;
+                            } else {
+                                yypushState(SINGLE_QOUTE_STRING_STATE);
+                            }
                         }
 
-  function              { isTranspose = false; return FUNCTION; }
-  elseif                { isTranspose = false; return ELSEIF; }
-  else                  { isTranspose = false; return ELSE; }
-  end                   { isTranspose = false; return END; }
-  if                    { isTranspose = false; return IF; }
-  for                   { isTranspose = false; return FOR; }
-  while                 { isTranspose = false; return WHILE; }
-  classdef              { isTranspose = false; return CLASSDEF; }
-  properties            { isTranspose = false; return PROPERTIES; }
-  methods               { isTranspose = false; return METHODS; }
-  events                { isTranspose = false; return EVENTS; }
-  switch                { isTranspose = false; return SWITCH; }
-  case                  { isTranspose = false; return CASE; }
-  otherwise             { isTranspose = false; return OTHERWISE; }
-  load/" "+[^ (]        { isTranspose = false; yybegin(FILE_NAME_STATE); return LOAD; }
-  dir/" "+[^ (]         { isTranspose = false; yybegin(FILE_NAME_STATE); return DIR; }
-  ls/" "+[^ (]          { isTranspose = false; yybegin(FILE_NAME_STATE); return LS; }
-  cd/" "+[^ (]          { isTranspose = false; yybegin(FILE_NAME_STATE); return CD; }
-  true                  { return TRUE; }
-  false                 { return FALSE; }
+  function              { stopLookForCtrans(); return FUNCTION; }
+  elseif                { stopLookForCtrans(); return ELSEIF; }
+  else                  { stopLookForCtrans(); return ELSE; }
+  end                   { stopLookForCtrans(); return END; }
+  if                    { stopLookForCtrans(); return IF; }
+  for                   { stopLookForCtrans(); return FOR; }
+  while                 { stopLookForCtrans(); return WHILE; }
+  classdef              { stopLookForCtrans(); return CLASSDEF; }
+  properties            { stopLookForCtrans(); return PROPERTIES; }
+  methods               { stopLookForCtrans(); return METHODS; }
+  events                { stopLookForCtrans(); return EVENTS; }
+  switch                { stopLookForCtrans(); return SWITCH; }
+  case                  { stopLookForCtrans(); return CASE; }
+  otherwise             { stopLookForCtrans(); return OTHERWISE; }
+  load/" "+[^ (]        { stopLookForCtrans(); yypushState(FILE_NAME_STATE); return LOAD; }
+  dir/" "+[^ (]         { stopLookForCtrans(); yypushState(FILE_NAME_STATE); return DIR; }
+  ls/" "+[^ (]          { stopLookForCtrans(); yypushState(FILE_NAME_STATE); return LS; }
+  cd/" "+[^ (]          { stopLookForCtrans(); yypushState(FILE_NAME_STATE); return CD; }
+  true                  { lookForCtrans(); return TRUE; }
+  false                 { lookForCtrans(); return FALSE; }
 
-  "("                   { isTranspose = false; return LPARENTH; }
-  ")"                   { isTranspose = true; return RPARENTH; }
-  "."                   { isTranspose = false; return DOT; }
-  "<="                  { isTranspose = false; return LESS_OR_EQUAL; }
-  "-"                   { isTranspose = false; return MINUS; }
-  "+"                   { isTranspose = false; return PLUS; }
-  "./"                  { isTranspose = false; return DOT_RDIV; }
-  "/"                   { isTranspose = false; return RDIV; }
-  "\\"                  { isTranspose = false; return LDIV; }
-  ".\\"                 { isTranspose = false; return DOT_LDIV; }
-  ".*"                  { isTranspose = false; return DOT_MUL; }
-  "*"                   { isTranspose = false; return MUL; }
-  ".^"                  { isTranspose = false; return DOT_POW; }
-  "^"                   { isTranspose = false; return POW; }
-  "&&"                  { isTranspose = false; return AND; }
-  "&"                   { isTranspose = false; return MATRIX_AND; }
-  "||"                  { isTranspose = false; return OR; }
-  "|"                   { isTranspose = false; return MATRIX_OR; }
-  ".'"                  { isTranspose = false; return DOT_TRANSPOSE; }
-  "~"                   { isTranspose = false; return TILDA; }
-  "="                   { isTranspose = false; return ASSIGN; }
-  ">="                  { isTranspose = false; return MORE_OR_EQUAL; }
-  ">"                   { isTranspose = false; return MORE; }
-  "<"                   { isTranspose = false; return LESS; }
-  "=="                  { isTranspose = false; return EQUAL; }
-  "~="                  { isTranspose = false; return NOT_EQUAL; }
-  ","                   { isTranspose = false; return COMMA; }
-  ":"                   { isTranspose = false; return COLON; }
-  ";"                   { isTranspose = false; return SEMICOLON; }
-  "["                   { isTranspose = false; return LBRACKET; }
-  "]"                   { isTranspose = true; return RBRACKET; }
-  "{"                   { isTranspose = false; return LBRACE; }
-  "}"                   { isTranspose = false; return RBRACE; }
-  "..." / {WHITE_SPACE}? \n   { isTranspose = false; return ELLIPSIS; }
-  "..."                 { isTranspose = false; yybegin(LINECOMMENT_STATE); return ELLIPSIS; }
-  "@"                   { isTranspose = false; return AT; }
-  "?"                   { isTranspose = false; return QUESTION_MARK; }
+  "("                   { startWsDoesNotMatter(); return LPARENTH; }
+  ")"                   { stopWsDoesNotMatter(); lookForCtrans(); return RPARENTH; }
+  "."                   { stopLookForCtrans(); return DOT; }
+  "<="                  { stopLookForCtrans(); return LESS_OR_EQUAL; }
+  "-"                   { stopLookForCtrans(); return MINUS; }
+  "+"                   { stopLookForCtrans(); return PLUS; }
+  "./"                  { stopLookForCtrans(); return DOT_RDIV; }
+  "/"                   { stopLookForCtrans(); return RDIV; }
+  "\\"                  { stopLookForCtrans(); return LDIV; }
+  ".\\"                 { stopLookForCtrans(); return DOT_LDIV; }
+  ".*"                  { stopLookForCtrans(); return DOT_MUL; }
+  "*"                   { stopLookForCtrans(); return MUL; }
+  ".^"                  { stopLookForCtrans(); return DOT_POW; }
+  "^"                   { stopLookForCtrans(); return POW; }
+  "&&"                  { stopLookForCtrans(); return AND; }
+  "&"                   { stopLookForCtrans(); return MATRIX_AND; }
+  "||"                  { stopLookForCtrans(); return OR; }
+  "|"                   { stopLookForCtrans(); return MATRIX_OR; }
+  ".'"                  { stopLookForCtrans(); return TRANS; }
+  "~"                   { stopLookForCtrans(); return TILDA; }
+  "="                   { stopLookForCtrans(); return ASSIGN; }
+  ">="                  { stopLookForCtrans(); return MORE_OR_EQUAL; }
+  ">"                   { stopLookForCtrans(); return MORE; }
+  "<"                   { stopLookForCtrans(); return LESS; }
+  "=="                  { stopLookForCtrans(); return EQUAL; }
+  "~="                  { stopLookForCtrans(); return NOT_EQUAL; }
+  ","                   { stopLookForCtrans(); return COMMA; }
+  ":"                   { stopLookForCtrans(); return COLON; }
+  ";"                   { stopLookForCtrans(); return SEMICOLON; }
+  "["                   { startWsMatters(); return LBRACKET; }
+  "]"                   { stopWsMatters(); lookForCtrans(); return RBRACKET; }
+  "{"                   { startWsMatters(); return LBRACE; }
+  "}"                   { stopWsMatters(); lookForCtrans(); return RBRACE; }
+  "..." / {WHITE_SPACE}? \n   { stopLookForCtrans(); return ELLIPSIS; }
+  "..."                 { stopLookForCtrans(); yypushState(LOOK_FOR_LINECOMMENT); return ELLIPSIS; }
+  "@"                   { stopLookForCtrans(); return AT; }
+  "?"                   { stopLookForCtrans(); return QUESTION_MARK; }
 
-  {NEWLINE}             { isTranspose = false; return NEWLINE; }
-  {LINE_COMMENT}        { isTranspose = false; return COMMENT; }
-  ^{BLOCK_COMMENT_PREFIX}$ { isTranspose = false; blockCommentLevel = 1; yybegin(BLOCKCOMMENT_STATE); }
-  {FLOAT_EXPONENTIAL}   { isTranspose = false; return FLOAT_EXPONENTIAL; }
-  {FLOAT}               { isTranspose = false; return FLOAT; }
-  {INTEGER}             { isTranspose = false; return INTEGER; }
-  {IDENTIFIER}          { isTranspose = true; return IDENTIFIER; }
-  {DOUBLE_QUOTE_STRING} { return DOUBLE_QUOTE_STRING; }
+  {NEWLINE}             { stopLookForCtrans(); return NEWLINE; }
+  {LINE_COMMENT}        { stopLookForCtrans(); return COMMENT; }
+  ^{BLOCK_COMMENT_PREFIX}$ { stopLookForCtrans(); blockCommentLevel = 1; yypushState(BLOCKCOMMENT_STATE); }
+  {FLOAT_EXPONENTIAL}   { stopLookForCtrans(); return FLOAT_EXPONENTIAL; }
+  {FLOAT}               { stopLookForCtrans(); return FLOAT; }
+  {INTEGER}             { stopLookForCtrans(); return INTEGER; }
+  {IDENTIFIER}          { lookForCtrans(); return IDENTIFIER; }
+  {DOUBLE_QUOTE_STRING} { lookForCtrans(); return DOUBLE_QUOTE_STRING; }
 
   <<EOF>>               { return null; }
 }
 
-<STRING_SINGLE_STATE> {
-    {SINGLE_QUOTE_EXCAPE_SEQUENCE} / \n  { yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }
+<SINGLE_QOUTE_STRING_STATE> {
+    {SINGLE_QUOTE_EXCAPE_SEQUENCE} / \n  { yypopState(); return SINGLE_QUOTE_STRING; }
     {SINGLE_QUOTE_EXCAPE_SEQUENCE}       {  }
-    "'"                                  { yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }
-    <<EOF>>                              { yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }
+    "'"                                  { yypopState(); lookForCtrans(); return SINGLE_QUOTE_STRING; }
+    <<EOF>>                              { yypopState(); return SINGLE_QUOTE_STRING; }
 
     /* line should not consume \n character */
-    . / \n                               { yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }
+    . / \n                               { yypopState(); return SINGLE_QUOTE_STRING; }
     .                                    {  }
 }
 
+<LOOK_FOR_LINECOMMENT,LINECOMMENT_STATE> {
+    <<EOF>>                              { yypopState(); return COMMENT; }
+}
+
+<LOOK_FOR_LINECOMMENT> {
+    {WHITE_SPACE}                        { return WHITE_SPACE; }
+    .                                    { yypopState(); yypushState(LINECOMMENT_STATE); }
+}
+
 <LINECOMMENT_STATE> {
-    <<EOF>>                              { yybegin(YYINITIAL); lineCommentStarted = false; return COMMENT; }
     /* comment should not consume \n character */
-    . / \n                               { yybegin(YYINITIAL); lineCommentStarted = false; return COMMENT; }
-    {WHITE_SPACE}                        { if (!lineCommentStarted) return WHITE_SPACE; }
-    .                                    { lineCommentStarted = true; }
+    . / \n                               { yypopState(); return COMMENT; }
+    .                                    {  }
 }
 
 <BLOCKCOMMENT_STATE> {
@@ -168,20 +220,20 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 
     ^{BLOCK_COMMENT_SUFFIX}$ { blockCommentLevel -= 1;
                                if (blockCommentLevel == 0) {
-                                   yybegin(YYINITIAL);
+                                   yypopState();
                                    return COMMENT;
                                }
                              }
-    <<EOF>>                  { yybegin(YYINITIAL); return COMMENT; }
+    <<EOF>>                  { yypopState(); return COMMENT; }
 
     [^]                      {  }
 }
 
 <FILE_NAME_STATE> {
     /* stop consuming filename when find newline */
-    [^(]/[\n ]        { yybegin(YYINITIAL); return FILE_NAME; }
-    "("               { yybegin(YYINITIAL); }
-    <<EOF>>           { yybegin(YYINITIAL); return FILE_NAME; }
+    [^(]/[\n ]        { yypopState(); return FILE_NAME; }
+    "("               { yypopState(); }
+    <<EOF>>           { yypopState(); return FILE_NAME; }
     .                 {  }
 }
 
