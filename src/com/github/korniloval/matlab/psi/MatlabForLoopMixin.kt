@@ -13,7 +13,6 @@ abstract class MatlabForLoopMixin(elementType: IElementType) : MatlabCompositePs
     override fun processDeclarations(processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement?, place: PsiElement): Boolean {
         val interval = PsiTreeUtil.getChildOfType(this, MatlabForLoopRange::class.java) ?: return true
         val assignExpr = PsiTreeUtil.getChildOfType(interval, MatlabAssignExpr::class.java) ?: return true
-        val refExpr = assignExpr.left as? MatlabRefExpr ?: return true
-        return processor.execute(refExpr.ref, state)
+        return processor.execute(assignExpr, state)
     }
 }

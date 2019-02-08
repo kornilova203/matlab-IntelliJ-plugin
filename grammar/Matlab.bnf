@@ -1,5 +1,6 @@
 {
   parserClass="com.github.korniloval.matlab.MatlabParser"
+  parserUtilClass="com.github.korniloval.matlab.MatlabParserUtil"
 
   extends="com.github.korniloval.matlab.psi.MatlabCompositePsiElement"
 
@@ -64,10 +65,11 @@
       QUESTION_MARK='?'
     ]
 
-    mixin(".*ref")="com.github.korniloval.matlab.psi.MatlabRefMixin"
-    mixin("identifier_token")="com.github.korniloval.matlab.psi.MatlabIdentifierTokenMixin"
-    mixin("class_declaration")="com.github.korniloval.matlab.psi.MatlabClassDeclarationMixin"
+    mixin("ref_expr")="com.github.korniloval.matlab.psi.MatlabRefExprMixin"
+    mixin("class_declaration")="com.github.korniloval.matlab.psi.MatlabDeclarationBase"
     mixin("function_declaration")="com.github.korniloval.matlab.psi.MatlabFunctionDeclarationMixin"
+    mixin("parameter")="com.github.korniloval.matlab.psi.MatlabDeclarationBase"
+    mixin("ret_value")="com.github.korniloval.matlab.psi.MatlabDeclarationBase"
     mixin("block")="com.github.korniloval.matlab.psi.MatlabBlockMixin"
     mixin("for_loop")="com.github.korniloval.matlab.psi.MatlabForLoopMixin"
     mixin("lambda_expr")="com.github.korniloval.matlab.psi.MatlabLambdaExprMixin"
@@ -97,8 +99,6 @@ private el ::= if_block
 
 private element_recover_rule ::= !( NEWLINE* ( end | elseif | else | methods | properties | events | case
   | otherwise | ',' | ';' | el | <<eof>> ) )
-
-ref ::= IDENTIFIER
 
 meta block ::= (<<p>> NEWLINE *)*
 private block_that_recovers_until_end ::= <<block block_element>> { recoverWhile=not_end_or_oef }
@@ -148,41 +148,35 @@ while_loop ::= while br* while_loop_condition [ ';' | ',' ] NEWLINE*
     end { pin=1 }
 while_loop_condition ::= expr
 
-function_declaration ::= function_token br* return_value_part? br* getter_or_setter_modifier? function_ref br* parameters? NEWLINE*
+function_declaration ::= function br* return_value_part? br* getter_or_setter_modifier? <<parseIdentifierOrRemapEndToken>> br* parameters? NEWLINE*
     block_that_recovers_until_end
     NEWLINE* ( end | <<eof>> ) { pin=1 }
 getter_or_setter_modifier ::= IDENTIFIER '.'
 private return_value_part ::= single_return_value_part | multiple_return_values_part
 // note pin value
-private single_return_value_part ::= ret_value br* '=' { pin=3 }
-private multiple_return_values_part ::= ret_values br* '=' { pin=1 }
-private function_token ::= function { recoverWhile=not_element_or_squarebracket_or_equals }
-private not_element_or_squarebracket_or_equals ::= one_line_recovery !( el | '[' | '=' | IDENTIFIER )
-ret_values ::= '[' br* ret_values_list? br* ']' { pin=1 extends=return_values elementType=return_values }
-fake return_values ::= ref*
-private ret_values_list ::= ref (br* ','? br* ref)* {recoverWhile=ret_values_list_recovery }
+private single_return_value_part ::= single_ret_value br* '=' { pin=3 }
+private multiple_return_values_part ::= multiple_ret_values br* '=' { pin=1 }
+multiple_ret_values ::= '[' br* ret_values_list? br* ']' { pin=1 extends=return_values elementType=return_values }
+fake return_values ::= ret_value*
+private ret_values_list ::= ret_value (br* ','? br* ret_value)* {recoverWhile=ret_values_list_recovery }
 private ret_values_list_recovery ::= !( br* ']' | br* '=' | br* NEWLINE )
-ret_value ::= ref { recoverWhile=not_expr_or_equal extends=return_values elementType=return_values }
+single_ret_value ::= ret_value { recoverWhile=not_expr_or_equal extends=return_values elementType=return_values }
+ret_value ::= IDENTIFIER
 private not_expr_or_equal ::=!( IDENTIFIER | expr | '=' | NEWLINE )
-private function_ref ::= ref | end_ref { recoverWhile=not_element_or_lparenth }
-end_ref ::= identifier_token { elementType=ref }
-identifier_token ::= end
-private not_element_or_lparenth ::= one_line_recovery !( el | '(' )
 parameters ::= <<p_opt_list parameter>> { extends=parameters_list }
 fake parameters_list ::= parameter*
-parameter ::= ref | '~'
+parameter ::= IDENTIFIER | '~'
 
-class_declaration ::= classdef br* class_attributes? br* class_ref br* super_classes? NEWLINE*
+class_declaration ::= classdef br* class_attributes? br* IDENTIFIER br* super_classes? NEWLINE*
     (( properties_block | methods_block | events_block ) NEWLINE*)*
     end { pin=1 }
 
-private class_ref ::= ref
 class_attributes ::= <<p_opt_list class_attribute_list_item>>
-class_attribute_list_item ::= ref '=' expr { pin=1 }
+class_attribute_list_item ::= ref_expr '=' expr { pin=1 }
 
 super_classes ::= '<' br* super_classes_list { pin=1 recoverWhile=not_properties_or_methods_or_end }
 private super_classes_list ::= super_classes_list_item ('&' super_classes_list_item) *
-private super_classes_list_item ::= class_ref { recoverWhile=not_ampersand_or_super_class_or_properties_or_methods_or_end }
+private super_classes_list_item ::= ref_expr { recoverWhile=not_ampersand_or_super_class_or_properties_or_methods_or_end }
 private not_ampersand_or_super_class_or_properties_or_methods_or_end ::= !( br* '&' | br* super_classes_list_item | NEWLINE* properties_block | NEWLINE* methods_block | NEWLINE* end )
 private not_properties_or_methods_or_end ::= !( NEWLINE* properties | NEWLINE* methods | NEWLINE* end )
 
@@ -190,7 +184,7 @@ properties_block ::= properties br* properties_attributes? NEWLINE*
     properties_block_body NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
 properties_attributes ::= <<p_opt_list properties_attribute_list_item>>
-properties_attribute_list_item ::= ref ['=' expr] { pin(".*")=1 }
+properties_attribute_list_item ::= ref_expr ['=' expr] { pin(".*")=1 }
 private properties_block_body ::= <<block element>> { recoverWhile=block_inside_class_recovery }
 private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods | properties | events ) )
 
@@ -209,13 +203,8 @@ events_block ::= events br* events_attributes? NEWLINE*
     events_list NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
 events_attributes ::= <<p_opt_list properties_attribute_list_item>>
-events_list ::= (ref NEWLINE*)* { recoverWhile=events_block_body_recovery }
+events_list ::= (ref_expr NEWLINE*)* { recoverWhile=events_block_body_recovery }
 private events_block_body_recovery ::= !( NEWLINE* end )
-
-function_call_or_matrix_element_access ::= (ref | end_ref) br* arguments
-arguments ::= <<p_opt_list argument>>
-argument ::= matrix_index | expr
-matrix_index ::= ( end ( '-' | '+' ) expr | ':' end | ':' | end )
 
 ;{
     name(".*literal")='literal'
@@ -228,6 +217,7 @@ matrix_index ::= ( end ( '-' | '+' ) expr | ':' end | ':' | end )
     extends("paren_expr")=expr
     extends("lambda_expr")=expr
     extends("binary_expr")=expr
+    extends("ref_expr")=expr
     extends(".*_expr")=binary_expr
     mixin("assign_expr")="com.github.korniloval.matlab.psi.MatlabAssignExprMixin"
 }
@@ -282,8 +272,7 @@ private add_group ::= plus_expr
   | minus_expr
 
 private primary_group ::= literal_expr
-  | method_access_expr
-  | property_access_expr
+  | qualified_expr
   | function_expr
   | cell_array_access_expr
   | ref_expr
@@ -325,10 +314,14 @@ private not_brace ::= !('}')
 range_expr ::= expr ':' ( expr ':' )? ( expr | end )
 
 function_expr ::= function_call_or_matrix_element_access
+private function_call_or_matrix_element_access ::= ref_expr_allowing_end br* arguments
+ref_expr_allowing_end ::= <<parseIdentifierOrRemapEndToken>> {elementType=ref_expr}
+arguments ::= <<p_opt_list argument>>
+argument ::= matrix_index | expr
+matrix_index ::= ( end ( '-' | '+' ) expr | ':' end | ':' | end )
 
 paren_expr ::= '(' br* expr? br* ')' { pin=1 }
 
-// todo: check priority
 not_equal_expr ::= expr br* '~=' br* expr
 equal_expr ::= expr br* '==' br* expr
 less_expr ::= expr br* '<' br* expr
@@ -336,15 +329,13 @@ less_or_equal_expr ::= expr br* '<=' br* expr
 more_expr ::= expr br* '>' br* expr
 more_or_equal_expr ::= expr br* '>=' br* expr
 
-// todo: check priority
 or_expr ::= expr br* '||' br* expr
 matrix_or_expr ::= expr br* '|' br* expr
 and_expr ::= expr br* '&&' br* expr
 matrix_and_expr ::= expr br* '&' br* expr
 
-method_access_expr ::= expr '.' function_call_or_matrix_element_access
-property_access_expr ::= expr '.' ref
-ref_expr ::= ref
+qualified_expr ::= expr '.' expr
+ref_expr ::= IDENTIFIER
 unary_min_expr ::= '-' br* expr
 unary_plus_expr ::= '+' br* expr
 transpose_expr ::= expr br* TRANSPOSE
@@ -366,7 +357,7 @@ plus_expr ::= expr br* '+' br* expr
 
 private br ::= '...' NEWLINE { pin=1 }
 
-function_ref_expr ::= '@' function_ref { pin=1 }
+function_ref_expr ::= '@' ref_expr { pin=1 }
 
 lambda_expr ::= '@' br* parameters lambda_body { pin=3 }
 lambda_body ::= expr

@@ -1,8 +1,10 @@
 package com.github.korniloval.matlab.highlighting
 
-import com.github.korniloval.matlab.psi.*
+import com.github.korniloval.matlab.psi.MatlabClassDeclaration
+import com.github.korniloval.matlab.psi.MatlabFunctionDeclaration
+import com.github.korniloval.matlab.psi.MatlabLambdaExpr
+import com.github.korniloval.matlab.psi.MatlabParameters
 import com.github.korniloval.matlab.psi.MatlabTypes.*
-import com.intellij.lang.ASTNode
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
@@ -21,23 +23,17 @@ class MatlabAnnotator : Annotator {
     }
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        psiTraverser().withRoot(element).forEach {
-            if (it is MatlabRef) {
-                when (it.parent) {
-                    is MatlabFunctionDeclaration -> holder.createInfoAnnotation(it, null).textAttributes = FUNCTION_DECLARATION
-                    is MatlabClassDeclaration -> holder.createInfoAnnotation(it, null).textAttributes = CLASS_DECLARATION
+        psiTraverser().withRoot(element).forEach { el ->
+            val type = el.node.elementType
+            if (type == AT && el.parent is MatlabLambdaExpr) {
+                holder.createInfoAnnotation(el as PsiElement, null).textAttributes = LAMBDA_PARENTH
+            } else if (type == LPARENTH || type == RPARENTH) {
+                if (el.parent is MatlabParameters && el.parent.parent is MatlabLambdaExpr) {
+                    holder.createInfoAnnotation(el as PsiElement, null).textAttributes = LAMBDA_PARENTH
                 }
-            }
-            if (it is ASTNode) {
-                val type = it.elementType
-                if (type == AT && it.parent is MatlabLambdaExpr) {
-                    holder.createInfoAnnotation(it as PsiElement, null).textAttributes = LAMBDA_PARENTH
-
-                } else if (type == LPARENTH || type == RPARENTH) {
-                    if (it.parent is MatlabParameters && it.parent.parent is MatlabLambdaExpr) {
-                        holder.createInfoAnnotation(it as PsiElement, null).textAttributes = LAMBDA_PARENTH
-                    }
-                }
+            } else if (type == IDENTIFIER) {
+                if (el.parent is MatlabFunctionDeclaration) holder.createInfoAnnotation(el, null).textAttributes = FUNCTION_DECLARATION
+                if (el.parent is MatlabClassDeclaration) holder.createInfoAnnotation(el, null).textAttributes = CLASS_DECLARATION
             }
         }
     }

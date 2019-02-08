@@ -8,7 +8,7 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
 class FindUsagesTest : LightPlatformCodeInsightFixtureTestCase() {
     override fun getTestDataPath(): String = "testData/findusages/"
 
-    fun testVariable() = doTest(1)
+    fun testVariable() = doTest(2)
     fun testFunction() = doTest(1)
 
     private fun doTest(usagesCount: Int) {

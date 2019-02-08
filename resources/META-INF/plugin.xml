@@ -47,7 +47,7 @@
         <lang.findUsagesProvider language="Matlab"
                                  implementationClass="com.github.korniloval.matlab.MatlabFindUsagesProvider"/>
         <annotator language="Matlab" implementationClass="com.github.korniloval.matlab.highlighting.MatlabAnnotator"/>
-        <lang.elementManipulator forClass="com.github.korniloval.matlab.psi.impl.MatlabRefImpl"
+        <lang.elementManipulator forClass="com.github.korniloval.matlab.psi.impl.MatlabRefExprImpl"
                                  implementationClass="com.github.korniloval.matlab.psi.MatlabElementManipulator"/>
         <lang.refactoringSupport language="Matlab"
                                  implementationClass="com.github.korniloval.matlab.refactoring.MatlabRefactoringSupportProvider"/>

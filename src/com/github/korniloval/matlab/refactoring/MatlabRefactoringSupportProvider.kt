@@ -1,6 +1,6 @@
 package com.github.korniloval.matlab.refactoring
 
-import com.github.korniloval.matlab.psi.MatlabRef
+import com.github.korniloval.matlab.psi.MatlabRefExpr
 import com.intellij.lang.refactoring.RefactoringSupportProvider
 import com.intellij.psi.PsiElement
 
@@ -9,6 +9,6 @@ import com.intellij.psi.PsiElement
  **/
 class MatlabRefactoringSupportProvider : RefactoringSupportProvider() {
     override fun isMemberInplaceRenameAvailable(element: PsiElement, context: PsiElement?): Boolean {
-        return element is MatlabRef
+        return element is MatlabRefExpr
     }
 }

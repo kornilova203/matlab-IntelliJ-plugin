@@ -12,10 +12,7 @@ abstract class MatlabLambdaExprMixin(elementType: IElementType) : MatlabComposit
 
     override fun processDeclarations(processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement?, place: PsiElement): Boolean {
         parameters.parameterList.forEach { parameter ->
-            val matlabRef = parameter.ref
-            if (matlabRef != null) {
-                if (!processor.execute(matlabRef, state)) return false
-            }
+            if (!processor.execute(parameter, state)) return false
         }
         return true
     }

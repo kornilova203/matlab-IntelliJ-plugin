@@ -9,12 +9,12 @@ import com.intellij.psi.scope.PsiScopeProcessor
  * @author Liudmila Kornilova
  **/
 class MatlabResolvingScopeProcessor(private val myReference: MatlabReference) : PsiScopeProcessor {
-    var declaration: MatlabRefMixin? = null
+    var declaration: MatlabDeclaration? = null
 
-    override fun execute(refInDeclaration: PsiElement, state: ResolveState): Boolean {
-        if (refInDeclaration !is MatlabRefMixin) return true
-        if (refInDeclaration.text == myReference.element.text) {
-            this.declaration = refInDeclaration
+    override fun execute(decl: PsiElement, state: ResolveState): Boolean {
+        if (decl !is MatlabDeclaration) return true
+        if (decl.name == myReference.element.text) {
+            this.declaration = decl
             return false
         }
         return true

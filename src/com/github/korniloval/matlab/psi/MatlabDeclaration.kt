@@ -1,10 +1,8 @@
 package com.github.korniloval.matlab.psi
 
+import com.intellij.psi.PsiNameIdentifierOwner
+
 /**
  * @author Liudmila Kornilova
  **/
-interface MatlabDeclaration {
-    fun getIdentifier(): MatlabRef?
-
-    val implicit: Boolean
-}
+interface MatlabDeclaration : PsiNameIdentifierOwner
