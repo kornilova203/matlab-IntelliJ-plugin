@@ -18,6 +18,6 @@ abstract class MatlabFunctionDeclarationMixin(elementType: IElementType) : Matla
         parameters?.parameterList?.forEach { parameter ->
             if (!processor.execute(parameter, state)) return false
         }
-        return false
+        return true
     }
 }

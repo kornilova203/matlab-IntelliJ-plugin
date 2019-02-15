@@ -1,5 +1,6 @@
 package com.github.korniloval.matlab.psi
 
+import com.github.korniloval.matlab.MatlabReference
 import com.intellij.openapi.util.Key
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveState

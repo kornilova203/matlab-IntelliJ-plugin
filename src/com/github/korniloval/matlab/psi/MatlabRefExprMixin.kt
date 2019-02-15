@@ -1,5 +1,6 @@
 package com.github.korniloval.matlab.psi
 
+import com.github.korniloval.matlab.MatlabReference
 import com.intellij.psi.tree.IElementType
 
 /**

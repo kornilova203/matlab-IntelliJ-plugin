@@ -4,3 +4,4 @@ if <ref>a == 1
 else
     fprintf("%d", a)
 end
+a = 1;

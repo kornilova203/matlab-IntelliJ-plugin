@@ -1,7 +1,7 @@
 package com.github.korniloval.matlab.resolve
 
+import com.github.korniloval.matlab.MatlabReference
 import com.github.korniloval.matlab.psi.MatlabDeclaration
-import com.github.korniloval.matlab.psi.MatlabReference
 import com.intellij.psi.PsiElement
 import com.intellij.testFramework.ResolveTestCase
 import java.io.File
@@ -15,9 +15,13 @@ class ResolveTest : ResolveTestCase() {
     fun testVariable() = doTest("a")
     fun testVariableInIf() = doTest("a")
     fun testVariableInCondition() = doTest("a")
+    fun testVariableInAssignment() = doTest("a")
     fun testVariableUnresolved() = doTestUnresolved()
     fun testFunction() = doTest("fun")
     fun testFunctionUnresolved() = doTestUnresolved()
+    fun testFunctionInFunction() = doTest("fun")
+    fun testFunctionInBlock() = doTest("fun")
+    fun testFunctionInBlockUnresolved() = doTestUnresolved()
     fun testVarInsideFunctionUnresolved() = doTestUnresolved()
     fun testClass() = doTest("hit_list")
     fun testReturnValue() = doTest("retVal")

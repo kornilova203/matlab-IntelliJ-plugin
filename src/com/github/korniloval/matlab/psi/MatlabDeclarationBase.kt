@@ -8,6 +8,9 @@ import com.intellij.psi.tree.IElementType
  * @author Liudmila Kornilova
  **/
 abstract class MatlabDeclarationBase(elementType: IElementType) : MatlabCompositePsiElement(elementType), MatlabDeclaration {
+
+    override val visibleOutsideFunction = true
+
     override fun getNameIdentifier(): PsiElement? = getChildOfType(this, MatlabTypes.IDENTIFIER)
 
     override fun getName(): String? = nameIdentifier?.text

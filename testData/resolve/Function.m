@@ -4,3 +4,7 @@ function <decl>fun
 end
 
 <ref>fun()
+
+function fun
+    fprintf("a = %d\n", a)
+end

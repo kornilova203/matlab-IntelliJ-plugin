@@ -5,4 +5,6 @@ import com.intellij.psi.PsiNameIdentifierOwner
 /**
  * @author Liudmila Kornilova
  **/
-interface MatlabDeclaration : PsiNameIdentifierOwner
+interface MatlabDeclaration : PsiNameIdentifierOwner {
+    val visibleOutsideFunction: Boolean
+}

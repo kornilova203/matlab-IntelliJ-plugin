@@ -1,5 +1,8 @@
-package com.github.korniloval.matlab.psi
+package com.github.korniloval.matlab
 
+import com.github.korniloval.matlab.psi.MatlabDeclaration
+import com.github.korniloval.matlab.psi.MatlabRefExpr
+import com.github.korniloval.matlab.psi.MatlabResolvingScopeProcessor
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiReferenceBase
 import com.intellij.psi.ResolveState
@@ -11,7 +14,7 @@ import com.intellij.psi.util.PsiTreeUtil
  **/
 class MatlabReference(myElement: MatlabRefExpr) : PsiReferenceBase<MatlabRefExpr>(myElement) {
     companion object {
-        private const val USE_CACHE = true
+        private const val USE_CACHE = false
         private val RESOLVER = ResolveCache.AbstractResolver { ref: MatlabReference, _: Boolean -> ref.resolveInner() }
     }
 

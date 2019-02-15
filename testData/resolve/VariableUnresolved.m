@@ -3,3 +3,5 @@ if a == 1
 else
     fprintf("%d", <ref>a)
 end
+
+a = 1
