@@ -1,6 +1,6 @@
 package com.github.korniloval.matlab
 
-import com.github.korniloval.matlab.psi.MatlabRef
+import com.github.korniloval.matlab.psi.MatlabDeclaration
 import com.intellij.lang.cacheBuilder.WordsScanner
 import com.intellij.lang.findUsages.FindUsagesProvider
 import com.intellij.psi.PsiElement
@@ -19,5 +19,5 @@ class MatlabFindUsagesProvider : FindUsagesProvider {
 
     override fun getHelpId(psiElement: PsiElement): String? = null
 
-    override fun canFindUsagesFor(psiElement: PsiElement): Boolean = psiElement is MatlabRef
+    override fun canFindUsagesFor(psiElement: PsiElement): Boolean = psiElement is MatlabDeclaration
 }

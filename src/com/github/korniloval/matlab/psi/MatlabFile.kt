@@ -8,26 +8,25 @@ import com.intellij.psi.FileViewProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveState
 import com.intellij.psi.scope.PsiScopeProcessor
-import java.util.function.Consumer
 
-fun processChildren(parent: PsiElement, consumer: Consumer<PsiElement>) {
+fun processChildren(parent: PsiElement, consumer: (PsiElement) -> Unit) {
     var child = parent.firstChild
     while (child != null) {
-        consumer.accept(child)
+        consumer(child)
         child = child.nextSibling
     }
 }
 
 fun processDeclarations(parent: PsiElement, processor: PsiScopeProcessor, state: ResolveState): Boolean {
     var shouldContinue = true
-    processChildren(parent, Consumer { child ->
-        if (shouldContinue && child is MatlabDeclaration) {
-            val identifier = child.getIdentifier()
-            if (identifier != null) {
-                shouldContinue = processor.execute(identifier, state)
+    processChildren(parent) { child ->
+        if (child is MatlabDeclaration) {
+            if (!processor.execute(child, state)) {
+                shouldContinue = false
+                return@processChildren
             }
         }
-    })
+    }
     return shouldContinue
 }
 
@@ -37,6 +36,7 @@ class MatlabFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, Mat
     override fun toString(): String = "Matlab File"
 
     override fun processDeclarations(processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement?, place: PsiElement): Boolean {
-        return processDeclarations(this, processor, state)
+        processDeclarations(this, processor, state)
+        return false
     }
 }

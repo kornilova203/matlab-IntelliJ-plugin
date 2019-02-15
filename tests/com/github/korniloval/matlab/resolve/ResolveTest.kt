@@ -1,9 +1,9 @@
 package com.github.korniloval.matlab.resolve
 
+import com.github.korniloval.matlab.psi.MatlabDeclaration
 import com.github.korniloval.matlab.psi.MatlabReference
 import com.intellij.psi.PsiElement
 import com.intellij.testFramework.ResolveTestCase
-import junit.framework.TestCase
 import java.io.File
 
 private const val DECL_MARKER = "<decl>"
@@ -28,10 +28,10 @@ class ResolveTest : ResolveTestCase() {
 
     private fun doTest(name: String) {
         val (ref, decl) = getExpectedDeclaration()
-        val element = ref.resolve()
-        assertNotNull(element)
-        assertEquals(name, element!!.text)
-        TestCase.assertEquals(element, decl.element)
+        val resolvedDecl = ref.resolve()
+        assertNotNull("Declaration not found", resolvedDecl)
+        assertEquals(name, resolvedDecl?.nameIdentifier?.text)
+        assertEquals(resolvedDecl, decl)
     }
 
     private fun doTestUnresolved() {
@@ -44,13 +44,13 @@ class ResolveTest : ResolveTestCase() {
         return ref.resolve()
     }
 
-    private fun getExpectedDeclaration(): Pair<MatlabReference, MatlabReference> {
+    private fun getExpectedDeclaration(): Pair<MatlabReference, MatlabDeclaration> {
         val fileName = getTestName(false) + ".m"
         val file = File(testDataPath + getTestName(false) + ".m")
         return getExpectedDeclaration(file.readText(), fileName)
     }
 
-    private fun getExpectedDeclaration(fileText: String, fileName: String): Pair<MatlabReference, MatlabReference> {
+    private fun getExpectedDeclaration(fileText: String, fileName: String): Pair<MatlabReference, MatlabDeclaration> {
         var declOffset = fileText.indexOf(DECL_MARKER)
         var refOffset = fileText.indexOf(MARKER)
         val clearText: String
@@ -62,7 +62,12 @@ class ResolveTest : ResolveTestCase() {
             declOffset -= MARKER.length
         }
         myFile = createFile(fileName, clearText)
-        return myFile.findReferenceAt(refOffset) as MatlabReference to myFile.findReferenceAt(declOffset) as MatlabReference
+
+        var el = myFile.findElementAt(declOffset)
+        while (el != null && el !is MatlabDeclaration) {
+            el = el.parent
+        }
+        return myFile.findReferenceAt(refOffset) as MatlabReference to el as MatlabDeclaration
     }
 
     private fun cutText(text: String, firstMarkerOffset: Int, firstMarkerLength: Int, secondMarkerOffset: Int, secondMarkerLength: Int): String {

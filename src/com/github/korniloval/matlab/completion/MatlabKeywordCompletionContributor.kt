@@ -15,9 +15,9 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
 
     companion object {
         val M = psiElement().withLanguage(MatlabLanguage.INSTANCE)
-        private val IDENT = psiElement(MatlabTypes.IDENTIFIER).withSuperParent(2, MatlabRefExpr::class.java)
-        private val AT_TOP_LEVEL = and(M, IDENT.withSuperParent(3, MatlabFile::class.java))
-        private val IN_BLOCK = and(M, IDENT.withSuperParent(3, MatlabBlock::class.java))
+        private val IDENT = psiElement(MatlabTypes.IDENTIFIER).withParent(MatlabRefExpr::class.java)
+        private val AT_TOP_LEVEL = and(M, IDENT.withSuperParent(2, MatlabFile::class.java))
+        private val IN_BLOCK = and(M, IDENT.withSuperParent(2, MatlabBlock::class.java))
     }
 
     init {
