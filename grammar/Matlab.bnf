@@ -88,7 +88,7 @@ private not_rparenth_or_comma ::= !( ')' | ',' | '...' | NEWLINE )
 
 private one_line_recovery ::= !( end | NEWLINE | '...' )
 
-private element ::= ( el [ ';' | ',' ] ) | ';' | ',' { recoverWhile=element_recover_rule }
+private element ::= ( el [ ';' | ',' ] ) | ';' | ','
 private el ::= if_block
   | switch_block
   | file_operation
@@ -99,36 +99,23 @@ private el ::= if_block
   | expr
   | COMMENT
 
-private element_recover_rule ::= !( NEWLINE* ( end | elseif | else | methods | properties | events | case
-  | otherwise | ',' | ';' | el | <<eof>> ) )
-
 meta block ::= (<<p>> NEWLINE *)*
-private block_that_recovers_until_end ::= <<block block_element>> { recoverWhile=not_end_or_oef }
-private block_element ::= element { recoverWhile=not_end_or_eof_or_el }
-private not_el ::= !( NEWLINE* el )
-private not_end_or_eof_or_el ::= not_end_or_oef not_el
+private block_that_recovers_until_end ::= <<block element>> { recoverWhile=not_end_or_oef }
 private not_end_or_oef ::= !( NEWLINE* ( end | <<eof>> ) )
 
-if_block ::= if_token br* condition ','? NEWLINE*
+if_block ::= if br* condition ','? NEWLINE*
   if_block_body NEWLINE*
   elseif_block* NEWLINE*
   [else_block NEWLINE*]
   end { pin=1 }
 
-private if_token ::= if { recoverWhile = not_end_elseif_or_else_or_el }
 condition ::= expr
 
-private if_block_body ::= <<block if_block_element>> { recoverWhile=not_end_or_elseif_or_else }
-private if_block_element ::= element { recoverWhile=not_end_or_elseif_or_else_or_el }
+private if_block_body ::= <<block element>> { recoverWhile=not_end_or_elseif_or_else }
 private not_end_or_elseif_or_else ::= !( NEWLINE* (end | elseif | else) )
-private not_end_or_elseif_or_else_or_el ::= not_end_or_elseif_or_else not_el
 
-elseif_block ::= elseif_token NEWLINE * if_block_body
-private elseif_token ::= elseif { recoverWhile=not_end_elseif_or_else_or_el }
-else_block ::= else_token NEWLINE * if_block_body
-private else_token ::= else { recoverWhile=not_end_or_eof_or_el }
-
-private not_end_elseif_or_else_or_el ::= !( NEWLINE* ( end | elseif | else | el ) )
+elseif_block ::= elseif NEWLINE * if_block_body
+else_block ::= else NEWLINE* if_block_body
 
 switch_block ::= switch br* switch_expression NEWLINE*
   case_block* NEWLINE*
@@ -190,11 +177,9 @@ properties_attribute_list_item ::= ref_expr ['=' expr] { pin(".*")=1 }
 private properties_block_body ::= <<block element>> { recoverWhile=block_inside_class_recovery }
 private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods | properties | events ) )
 
-methods_block ::= methods_token br* methods_attributes? NEWLINE*
+methods_block ::= methods br* methods_attributes? NEWLINE*
     methods_block_body NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
-private methods_token ::= methods { recoverWhile=not_end_or_methods_block_body }
-private not_end_or_methods_block_body ::= !( NEWLINE* end |  NEWLINE* methods_block_body )
 methods_attributes ::= <<p_opt_list properties_attribute_list_item>>
 private methods_block_body ::= <<block methods_block_element>> { recoverWhile=methods_block_body_recovery }
 private methods_block_element ::= function_declaration { recoverWhile=methods_block_element_recovery }
@@ -365,8 +350,6 @@ function_ref_expr ::= '@' ref_expr { pin=1 }
 lambda_expr ::= '@' br* parameters lambda_body { pin=3 }
 lambda_body ::= expr
 
-file_operation ::= file_operation_token br* FILE_NAME br* variables? { pin=1 }
-private file_operation_token ::= LOAD | DIR | LS | CD { recoverWhile=load_token_recovery }
-private load_token_recovery ::= !( br* NEWLINE | br* FILE_NAME )
+file_operation ::= (LOAD | DIR | LS | CD) br* FILE_NAME br* variables? { pin=1 }
 variables ::= variable+
 private variable ::= IDENTIFIER
