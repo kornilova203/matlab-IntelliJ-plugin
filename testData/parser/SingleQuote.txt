@@ -371,5 +371,5 @@ Matlab File
                                                             MatlabMatrixItemImpl(MATRIX_ITEM)
                                                               MatlabLiteralExprImpl(LITERAL_EXPR)
                                                                 PsiElement(SINGLE_QUOTE_STRING)('' var'')
-                                                          PsiErrorElement:']' expected
+                                                          PsiErrorElement:'...', NEWLINE or ']' expected
                                                             <empty list>

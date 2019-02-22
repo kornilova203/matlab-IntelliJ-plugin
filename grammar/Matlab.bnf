@@ -292,7 +292,8 @@ private number_literal ::= FLOAT | FLOAT_EXPONENTIAL | INTEGER
 private string_literal ::= DOUBLE_QUOTE_STRING | SINGLE_QUOTE_STRING
 private boolean_literal ::= TRUE | FALSE
 
-matrix_literal ::= '[' matrix_content? ']' { pin=1 }
+matrix_literal ::= '[' empty_lines matrix_content? empty_lines ']' { pin=1 }
+private empty_lines ::= (NEWLINE | br)*
 private sep ::= (br | NEWLINE)
 private matrix_content ::= matrix_row ( sep* ';' NEWLINE* sep* matrix_row)* { recoverWhile=not_rbracket }
 private not_rbracket ::= one_line_recovery !( ']' )
@@ -300,11 +301,11 @@ matrix_row ::= matrix_item ( sep* (',' sep*)?  matrix_item)* { recoverWhile=not_
 private not_rbracket_or_semicolon ::= not_rbracket !( ';' )
 matrix_item ::= '~' | expr
 
-cell_array_literal ::= '{' cell_array_content? '}' { pin=1 }
+cell_array_literal ::= '{' empty_lines cell_array_content? empty_lines '}' { pin=1 }
 private cell_array_content ::= cell_array_row ( sep* ';' sep* cell_array_row )* { recoverWhile=cell_array_content_recovery }
-private cell_array_content_recovery ::= !( '}' )
+private cell_array_content_recovery ::= one_line_recovery !( '}' )
 cell_array_row ::= cell_array_item ( sep* (',' sep*)? cell_array_item )* { recoverWhile=cell_array_row_recovery }
-private cell_array_row_recovery ::= !( '}' | sep* ';' )
+private cell_array_row_recovery ::= one_line_recovery !( '}' | sep* ';' )
 cell_array_item ::= expr
 
 
