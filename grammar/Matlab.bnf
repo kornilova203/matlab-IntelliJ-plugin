@@ -69,6 +69,7 @@
 
     mixin("ref_expr")="com.github.korniloval.matlab.psi.MatlabRefExprMixin"
     mixin("class_declaration")="com.github.korniloval.matlab.psi.MatlabDeclarationBase"
+    mixin("catch_block")="com.github.korniloval.matlab.psi.MatlabCatchBlockMixin"
     mixin("function_declaration")="com.github.korniloval.matlab.psi.MatlabFunctionDeclarationMixin"
     mixin("parameter")="com.github.korniloval.matlab.psi.MatlabDeclarationBase"
     mixin("ret_value")="com.github.korniloval.matlab.psi.MatlabDeclarationBase"
@@ -91,6 +92,7 @@ private one_line_recovery ::= !( end | NEWLINE | '...' )
 private element ::= ( el [ ';' | ',' ] ) | ';' | ','
 private el ::= if_block
   | switch_block
+  | try_block
   | file_operation
   | for_loop
   | while_loop
@@ -126,6 +128,13 @@ case_block ::= case NEWLINE* case_expression NEWLINE* <<block element>> { pin=1 
 case_expression ::= expr
 otherwise_block ::= otherwise NEWLINE* <<block element>> { pin=1 recoverWhile=case_block_recovery }
 private case_block_recovery ::= !( NEWLINE* ( case | otherwise | end ) )
+
+try_block ::= try empty_lines
+  <<block element>>
+  catch_block?
+  end
+  {pin=1}
+catch_block ::= catch [ br* IDENTIFIER ] empty_lines <<block element>> {pin=1}
 
 for_loop ::= for br* for_loop_range [ ';' | ',' ] NEWLINE*
     block_that_recovers_until_end

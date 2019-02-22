@@ -93,6 +93,18 @@ class MatlabBlockHighlighterFactory(registrar: TextEditorHighlightingPassRegistr
                 possiblyAddRanges(delimiters)
             }
 
+            override fun visitTryBlock(o: MatlabTryBlock) {
+                super.visitTryBlock(o)
+                val delimiters = getFirstAndEnd(o)
+                addElementsInChildren(o, delimiters, MatlabCatchBlock::class.java, CATCH)
+                possiblyAddRanges(delimiters)
+            }
+
+            override fun visitCatchBlock(o: MatlabCatchBlock) {
+                super.visitCatchBlock(o)
+                if (o.parent is MatlabTryBlock) o.parent.accept(this)
+            }
+
             private fun <T : PsiElement> addElementsInChildren(o: PsiElement, delimiters: MutableList<PsiElement>, clazz: Class<T>, type: IElementType) {
                 PsiTreeUtil.getChildrenOfType(o, clazz)?.forEach { child ->
                     (child as? CompositeElement)?.findPsiChildByType(type)?.let { delimiters.add(it) }
@@ -101,12 +113,12 @@ class MatlabBlockHighlighterFactory(registrar: TextEditorHighlightingPassRegistr
 
             override fun visitElseBlock(o: MatlabElseBlock) {
                 super.visitElseBlock(o)
-                (o.parent as? MatlabIfBlock)?.let { visitIfBlock(it) }
+                if (o.parent is MatlabIfBlock) o.parent.accept(this)
             }
 
             override fun visitElseifBlock(o: MatlabElseifBlock) {
                 super.visitElseifBlock(o)
-                (o.parent as? MatlabIfBlock)?.let { visitIfBlock(it) }
+                if (o.parent is MatlabIfBlock) o.parent.accept(this)
             }
 
             override fun visitFunctionDeclaration(o: MatlabFunctionDeclaration) {

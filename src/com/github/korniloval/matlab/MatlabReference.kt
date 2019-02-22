@@ -14,7 +14,7 @@ import com.intellij.psi.util.PsiTreeUtil
  **/
 class MatlabReference(myElement: MatlabRefExpr) : PsiReferenceBase<MatlabRefExpr>(myElement) {
     companion object {
-        private const val USE_CACHE = false
+        private const val USE_CACHE = true
         private val RESOLVER = ResolveCache.AbstractResolver { ref: MatlabReference, _: Boolean -> ref.resolveInner() }
     }
 

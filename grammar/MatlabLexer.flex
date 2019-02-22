@@ -135,6 +135,8 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   switch                { stopLookForCtrans(); return SWITCH; }
   case                  { stopLookForCtrans(); return CASE; }
   otherwise             { stopLookForCtrans(); return OTHERWISE; }
+  try                   { stopLookForCtrans(); return TRY; }
+  catch                 { stopLookForCtrans(); return CATCH; }
   load/" "+[^ (]        { stopLookForCtrans(); yypushState(FILE_NAME_STATE); return LOAD; }
   dir/" "+[^ (]         { stopLookForCtrans(); yypushState(FILE_NAME_STATE); return DIR; }
   ls/" "+[^ (]          { stopLookForCtrans(); yypushState(FILE_NAME_STATE); return LS; }
