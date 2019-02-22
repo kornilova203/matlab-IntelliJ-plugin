@@ -13,7 +13,6 @@ import static com.github.korniloval.matlab.psi.MatlabTypes.*;
 
 %{
     private Stack<Integer> stack = new Stack<>();
-    private int blockCommentLevel = 0;
 
     public static FlexAdapter getAdapter() {
         return new FlexAdapter(new MatlabLexer());
@@ -31,6 +30,10 @@ import static com.github.korniloval.matlab.psi.MatlabTypes.*;
     private void yypopState() {
         if (stack.isEmpty()) return;
         yybegin(stack.pop());
+    }
+
+    private void yyclearStack() {
+        while (!stack.isEmpty()) stack.pop();
     }
 
     private void stopLookForCtrans() {
@@ -179,7 +182,7 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 
   {NEWLINE}             { stopLookForCtrans(); return NEWLINE; }
   {LINE_COMMENT}        { stopLookForCtrans(); return COMMENT; }
-  ^{BLOCK_COMMENT_PREFIX}$ { stopLookForCtrans(); blockCommentLevel = 1; yypushState(BLOCKCOMMENT_STATE); }
+  ^{BLOCK_COMMENT_PREFIX}$ { stopLookForCtrans(); yypushState(BLOCKCOMMENT_STATE); }
   {FLOAT_EXPONENTIAL}   { stopLookForCtrans(); return FLOAT_EXPONENTIAL; }
   {FLOAT}               { stopLookForCtrans(); return FLOAT; }
   {INTEGER}             { stopLookForCtrans(); return INTEGER; }
@@ -193,7 +196,7 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
     {SINGLE_QUOTE_EXCAPE_SEQUENCE} / \n  { yypopState(); return SINGLE_QUOTE_STRING; }
     {SINGLE_QUOTE_EXCAPE_SEQUENCE}       {  }
     "'"                                  { yypopState(); lookForCtrans(); return SINGLE_QUOTE_STRING; }
-    <<EOF>>                              { yypopState(); return SINGLE_QUOTE_STRING; }
+    <<EOF>>                              { yyclearStack(); yybegin(YYINITIAL); return SINGLE_QUOTE_STRING; }
 
     /* line should not consume \n character */
     . / \n                               { yypopState(); return SINGLE_QUOTE_STRING; }
@@ -201,7 +204,7 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 }
 
 <LOOK_FOR_LINECOMMENT,LINECOMMENT_STATE> {
-    <<EOF>>                              { yypopState(); return COMMENT; }
+    <<EOF>>                              { yyclearStack(); yybegin(YYINITIAL); return COMMENT; }
 }
 
 <LOOK_FOR_LINECOMMENT> {
@@ -216,15 +219,12 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 }
 
 <BLOCKCOMMENT_STATE> {
-    ^{BLOCK_COMMENT_PREFIX}$ { blockCommentLevel += 1; }
+    ^{BLOCK_COMMENT_PREFIX}$ { yypushState(BLOCKCOMMENT_STATE); }
 
-    ^{BLOCK_COMMENT_SUFFIX}$ { blockCommentLevel -= 1;
-                               if (blockCommentLevel == 0) {
-                                   yypopState();
-                                   return COMMENT;
-                               }
+    ^{BLOCK_COMMENT_SUFFIX}$ { yypopState();
+                               if (yystate() != BLOCKCOMMENT_STATE) return COMMENT;
                              }
-    <<EOF>>                  { yypopState(); return COMMENT; }
+    <<EOF>>                  { yyclearStack(); yybegin(YYINITIAL); return COMMENT; }
 
     [^]                      {  }
 }
@@ -233,7 +233,7 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
     /* stop consuming filename when find newline */
     [^(]/[\n ]        { yypopState(); return FILE_NAME; }
     "("               { yypopState(); }
-    <<EOF>>           { yypopState(); return FILE_NAME; }
+    <<EOF>>           { yyclearStack(); yybegin(YYINITIAL); return FILE_NAME; }
     .                 {  }
 }
 
