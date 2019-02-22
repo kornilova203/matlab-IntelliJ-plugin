@@ -63,6 +63,8 @@
       TILDA='~'
       AT='@'
       QUESTION_MARK='?'
+      CTRANS="'"
+      TRANS=".'"
     ]
 
     mixin("ref_expr")="com.github.korniloval.matlab.psi.MatlabRefExprMixin"
@@ -254,8 +256,8 @@ private logic_group ::= or_expr
 
 private unary_group ::= unary_plus_expr
   | unary_min_expr
+  | ctranspose_expr
   | transpose_expr
-  | nonconjugate_transpose_expr
   | unary_negation_expr
   | meta_class_expr
 
@@ -338,8 +340,8 @@ qualified_expr ::= expr '.' expr
 ref_expr ::= IDENTIFIER
 unary_min_expr ::= '-' br* expr
 unary_plus_expr ::= '+' br* expr
-transpose_expr ::= expr br* TRANSPOSE
-nonconjugate_transpose_expr ::= expr br* DOT_TRANSPOSE
+ctranspose_expr ::= expr br* "'"
+transpose_expr ::= expr br* ".'"
 unary_negation_expr ::= '~' br* expr
 meta_class_expr ::= '?' br* ref_expr
 
