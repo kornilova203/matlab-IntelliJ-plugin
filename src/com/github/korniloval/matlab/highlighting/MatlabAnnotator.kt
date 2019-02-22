@@ -1,5 +1,6 @@
 package com.github.korniloval.matlab.highlighting
 
+import com.github.korniloval.matlab.MatlabElementTypes.*
 import com.github.korniloval.matlab.psi.MatlabClassDeclaration
 import com.github.korniloval.matlab.psi.MatlabFunctionDeclaration
 import com.github.korniloval.matlab.psi.MatlabLambdaExpr
@@ -20,6 +21,7 @@ class MatlabAnnotator : Annotator {
         val FUNCTION_DECLARATION = createTextAttributesKey("MATLAB.FUNC_DECLARATION", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION)
         val CLASS_DECLARATION = createTextAttributesKey("MATLAB.CLASS_DECLARATION", DefaultLanguageHighlighterColors.CLASS_NAME)
         val LAMBDA_PARENTH = createTextAttributesKey("MATLAB.LAMBDA_PARENTH", DefaultLanguageHighlighterColors.METADATA)
+        val KEYWORD = createTextAttributesKey("MATLAB.KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
     }
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -34,6 +36,8 @@ class MatlabAnnotator : Annotator {
             } else if (type == IDENTIFIER) {
                 if (el.parent is MatlabFunctionDeclaration) holder.createInfoAnnotation(el, null).textAttributes = FUNCTION_DECLARATION
                 if (el.parent is MatlabClassDeclaration) holder.createInfoAnnotation(el, null).textAttributes = CLASS_DECLARATION
+            } else if (type == METHODS || type == EVENTS || type == PROPERTIES) {
+                holder.createInfoAnnotation(el, null).textAttributes = KEYWORD
             }
         }
     }

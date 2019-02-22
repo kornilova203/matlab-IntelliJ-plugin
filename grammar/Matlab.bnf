@@ -13,6 +13,10 @@
   elementTypeClass="com.github.korniloval.matlab.psi.MatlabElementType"
   tokenTypeClass="com.github.korniloval.matlab.psi.MatlabTokenType"
 
+  parserImports=[
+    "static com.github.korniloval.matlab.MatlabElementTypes.*"
+  ]
+
   tokens=[
       /* following regexps are copied from MatlabLexer.flex to enable live preview support */
       NEWLINE='regexp:(\R( \t)*)'
@@ -42,7 +46,9 @@
       LDIV='\'
       DOT_LDIV='.\'
       PLUS='+'
+      PLUSPLUS='++'
       MINUS='-'
+      MINUSMINUS='--'
       POW='^'
       DOT_POW='.^'
       ASSIGN='='
@@ -80,8 +86,7 @@
 
 root ::= NEWLINE * (element NEWLINE *) * end?
 
-private meta p_opt_list ::= '(' new_lines? [ !')' <<list <<item>>>> new_lines? ] ')' { pin=1 }
-private new_lines ::= br+ | NEWLINE
+private meta p_opt_list ::= '(' sep [ !')' <<list <<item>>>> sep ] ')' { pin=1 }
 private meta list ::= <<list_item <<item>>>> (br* ',' br* <<list_item <<item>>>>)* { recoverWhile=not_br_or_rparenth }
 private not_br_or_rparenth ::= !( ')' | '...' | NEWLINE )
 private meta list_item ::= {} <<item>> { pin=1 recoverWhile=not_rparenth_or_comma }
@@ -129,12 +134,12 @@ case_expression ::= expr
 otherwise_block ::= otherwise NEWLINE* <<block element>> { pin=1 recoverWhile=case_block_recovery }
 private case_block_recovery ::= !( NEWLINE* ( case | otherwise | end ) )
 
-try_block ::= try empty_lines
+try_block ::= try sep
   <<block element>>
   catch_block?
   end
   {pin=1}
-catch_block ::= catch [ br* IDENTIFIER ] empty_lines <<block element>> {pin=1}
+catch_block ::= catch [ br* IDENTIFIER ] sep <<block element>> {pin=1}
 
 for_loop ::= for br* for_loop_range [ ';' | ',' ] NEWLINE*
     block_that_recovers_until_end
@@ -172,32 +177,31 @@ class_declaration ::= classdef br* class_attributes? br* IDENTIFIER br* super_cl
 class_attributes ::= <<p_opt_list class_attribute_list_item>>
 class_attribute_list_item ::= ref_expr '=' expr { pin=1 }
 
-super_classes ::= '<' br* super_classes_list { pin=1 recoverWhile=not_properties_or_methods_or_end }
+super_classes ::= '<' br* super_classes_list { pin=1 }
 private super_classes_list ::= super_classes_list_item ('&' super_classes_list_item) *
 private super_classes_list_item ::= ref_expr { recoverWhile=not_ampersand_or_super_class_or_properties_or_methods_or_end }
 private not_ampersand_or_super_class_or_properties_or_methods_or_end ::= !( br* '&' | br* super_classes_list_item | NEWLINE* properties_block | NEWLINE* methods_block | NEWLINE* end )
-private not_properties_or_methods_or_end ::= !( NEWLINE* properties | NEWLINE* methods | NEWLINE* end )
 
-properties_block ::= properties br* properties_attributes? NEWLINE*
+properties_block ::= properties_token br* properties_attributes? NEWLINE*
     properties_block_body NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
+private properties_token ::= <<parseIdentifierAsKeyword 'PROPERTIES'>>
 properties_attributes ::= <<p_opt_list properties_attribute_list_item>>
 properties_attribute_list_item ::= ref_expr ['=' expr] { pin(".*")=1 }
 private properties_block_body ::= <<block element>> { recoverWhile=block_inside_class_recovery }
-private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods | properties | events ) )
+private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods_token | properties_token | events_token ) )
 
-methods_block ::= methods br* methods_attributes? NEWLINE*
+methods_block ::= methods_token br* methods_attributes? NEWLINE*
     methods_block_body NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
+private methods_token ::= <<parseIdentifierAsKeyword 'METHODS'>>
 methods_attributes ::= <<p_opt_list properties_attribute_list_item>>
-private methods_block_body ::= <<block methods_block_element>> { recoverWhile=methods_block_body_recovery }
-private methods_block_element ::= function_declaration { recoverWhile=methods_block_element_recovery }
-private methods_block_body_recovery ::= !( NEWLINE* ( end | events ) )
-private methods_block_element_recovery ::= methods_block_body_recovery !( NEWLINE* function )
+private methods_block_body ::= <<block element>> { recoverWhile=block_inside_class_recovery }
 
-events_block ::= events br* events_attributes? NEWLINE*
+events_block ::= events_token br* events_attributes? NEWLINE*
     events_list NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
+private events_token ::= <<parseIdentifierAsKeyword 'EVENTS'>>
 events_attributes ::= <<p_opt_list properties_attribute_list_item>>
 events_list ::= (ref_expr NEWLINE*)* { recoverWhile=events_block_body_recovery }
 private events_block_body_recovery ::= !( NEWLINE* end )
@@ -248,7 +252,11 @@ private logic_group ::= or_expr
   | and_expr
   | matrix_and_expr
 
-private unary_group ::= unary_plus_expr
+private unary_group ::= unary_inc_expr
+  | unary_dec_expr
+  | unary_prefix_dec_expr
+  | unary_prefix_inc_expr
+  | unary_plus_expr
   | unary_min_expr
   | ctranspose_expr
   | transpose_expr
@@ -269,6 +277,7 @@ private add_group ::= plus_expr
 
 private primary_group ::= literal_expr
   | qualified_expr
+  | direct_function_expr
   | function_expr
   | cell_array_access_expr
   | ref_expr
@@ -278,44 +287,43 @@ private primary_group ::= literal_expr
 
 literal_expr ::= number_literal
   | string_literal
-  | boolean_literal
   | matrix_literal
   | cell_array_literal
 
 private number_literal ::= FLOAT | FLOAT_EXPONENTIAL | INTEGER
 private string_literal ::= DOUBLE_QUOTE_STRING | SINGLE_QUOTE_STRING
-private boolean_literal ::= TRUE | FALSE
 
-matrix_literal ::= '[' empty_lines matrix_content? empty_lines ']' { pin=1 }
-private empty_lines ::= (NEWLINE | br)*
-private sep ::= (br | NEWLINE)
-private matrix_content ::= matrix_row ( sep* ';' NEWLINE* sep* matrix_row)* { recoverWhile=not_rbracket }
+matrix_literal ::= '[' sep matrix_content? sep ']' { pin=1 }
+private sep ::= (br | NEWLINE)*
+private matrix_content ::= matrix_row ( sep ';' NEWLINE* sep matrix_row )* sep ';'? { recoverWhile=not_rbracket }
 private not_rbracket ::= one_line_recovery !( ']' )
-matrix_row ::= matrix_item ( sep* (',' sep*)?  matrix_item)* { recoverWhile=not_rbracket_or_semicolon }
+matrix_row ::= matrix_item ( sep (',' sep)?  matrix_item)* { recoverWhile=not_rbracket_or_semicolon }
 private not_rbracket_or_semicolon ::= not_rbracket !( ';' )
 matrix_item ::= '~' | expr
 
-cell_array_literal ::= '{' empty_lines cell_array_content? empty_lines '}' { pin=1 }
-private cell_array_content ::= cell_array_row ( sep* ';' sep* cell_array_row )* { recoverWhile=cell_array_content_recovery }
+cell_array_literal ::= '{' sep cell_array_content? sep '}' { pin=1 }
+private cell_array_content ::= cell_array_row ( sep ';' sep cell_array_row )* [sep ';'] { recoverWhile=cell_array_content_recovery }
 private cell_array_content_recovery ::= one_line_recovery !( '}' )
-cell_array_row ::= cell_array_item ( sep* (',' sep*)? cell_array_item )* { recoverWhile=cell_array_row_recovery }
-private cell_array_row_recovery ::= one_line_recovery !( '}' | sep* ';' )
+cell_array_row ::= cell_array_item ( sep (',' sep)? cell_array_item )* { recoverWhile=cell_array_row_recovery }
+private cell_array_row_recovery ::= one_line_recovery !( '}' | sep ';' )
 cell_array_item ::= expr
 
-
-cell_array_access_expr ::= expr '{' cell_array_access_item_list '}'
-private cell_array_access_item_list ::= cell_array_access_item ( br* ',' br* cell_array_access_item )* { recoverWhile=not_brace }
+cell_array_access_expr ::= expr '{' sep cell_array_access_item_list sep '}'
+private cell_array_access_item_list ::= cell_array_access_item ( br* ',' br* cell_array_access_item )* sep ';'? { recoverWhile=not_brace }
 private cell_array_access_item ::= ( matrix_index | expr )
 private not_brace ::= !('}')
 
 range_expr ::= expr ':' ( expr ':' )? ( expr | end )
 
-function_expr ::= function_call_or_matrix_element_access
+direct_function_expr ::= function_call_or_matrix_element_access { elementType=function_expr }
+function_expr ::= expr br* arguments
 private function_call_or_matrix_element_access ::= ref_expr_allowing_end br* arguments
 ref_expr_allowing_end ::= <<parseIdentifierOrRemapEndToken>> {elementType=ref_expr}
 arguments ::= <<p_opt_list argument>>
-argument ::= matrix_index | expr
-matrix_index ::= ( end ( '-' | '+' ) expr | ':' end | ':' | end )
+argument ::= matrix_index | simple_matrix_index | expr
+simple_matrix_index ::= matrix_index_item {elementType=matrix_index}
+private matrix_index_item ::= end br* ( '-' | '+' ) br* expr | end
+matrix_index ::= [matrix_index_item | expr] (sep ':' sep [matrix_index_item | expr])+
 
 paren_expr ::= '(' br* expr? br* ')' { pin=1 }
 
@@ -334,6 +342,10 @@ matrix_and_expr ::= expr br* '&' br* expr
 qualified_expr ::= expr '.' expr
 ref_expr ::= IDENTIFIER
 unary_min_expr ::= '-' br* expr
+unary_dec_expr ::= expr br* '--'
+unary_prefix_dec_expr ::= '--' br* expr
+unary_inc_expr ::= expr br* '++'
+unary_prefix_inc_expr ::= '++' br* expr
 unary_plus_expr ::= '+' br* expr
 ctranspose_expr ::= expr br* "'"
 transpose_expr ::= expr br* ".'"
@@ -356,7 +368,7 @@ private br ::= '...' NEWLINE { pin=1 }
 
 function_ref_expr ::= '@' ref_expr { pin=1 }
 
-lambda_expr ::= '@' br* parameters lambda_body { pin=3 }
+lambda_expr ::= '@' br* parameters br* lambda_body { pin=3 }
 lambda_body ::= expr
 
 file_operation ::= (LOAD | DIR | LS | CD) br* FILE_NAME br* variables? { pin=1 }

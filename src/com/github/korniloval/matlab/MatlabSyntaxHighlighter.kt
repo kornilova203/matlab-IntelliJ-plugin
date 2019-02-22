@@ -53,7 +53,7 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
             MatlabTypes.IDENTIFIER -> ID_KEYS
 
             FUNCTION, END, IF, ELSE, ELSEIF, WHILE, SWITCH, CASE, OTHERWISE,
-            FOR, CLASSDEF, PROPERTIES, METHODS, EVENTS, TRY, CATCH
+            FOR, CLASSDEF, TRY, CATCH
             -> KEYWORD_KEYS
 
             INTEGER, FLOAT, FLOAT_EXPONENTIAL -> NUMBER_KEYS

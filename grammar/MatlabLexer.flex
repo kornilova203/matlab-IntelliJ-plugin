@@ -129,9 +129,6 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   for                   { stopLookForCtrans(); return FOR; }
   while                 { stopLookForCtrans(); return WHILE; }
   classdef              { stopLookForCtrans(); return CLASSDEF; }
-  properties            { stopLookForCtrans(); return PROPERTIES; }
-  methods               { stopLookForCtrans(); return METHODS; }
-  events                { stopLookForCtrans(); return EVENTS; }
   switch                { stopLookForCtrans(); return SWITCH; }
   case                  { stopLookForCtrans(); return CASE; }
   otherwise             { stopLookForCtrans(); return OTHERWISE; }
@@ -141,15 +138,15 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   dir/" "+[^ (]         { stopLookForCtrans(); yypushState(FILE_NAME_STATE); return DIR; }
   ls/" "+[^ (]          { stopLookForCtrans(); yypushState(FILE_NAME_STATE); return LS; }
   cd/" "+[^ (]          { stopLookForCtrans(); yypushState(FILE_NAME_STATE); return CD; }
-  true                  { lookForCtrans(); return TRUE; }
-  false                 { lookForCtrans(); return FALSE; }
 
   "("                   { startWsDoesNotMatter(); return LPARENTH; }
   ")"                   { stopWsDoesNotMatter(); lookForCtrans(); return RPARENTH; }
   "."                   { stopLookForCtrans(); return DOT; }
   "<="                  { stopLookForCtrans(); return LESS_OR_EQUAL; }
   "-"                   { stopLookForCtrans(); return MINUS; }
+  "--"                  { stopLookForCtrans(); return MINUSMINUS; }
   "+"                   { stopLookForCtrans(); return PLUS; }
+  "++"                  { stopLookForCtrans(); return PLUSPLUS; }
   "./"                  { stopLookForCtrans(); return DOT_RDIV; }
   "/"                   { stopLookForCtrans(); return RDIV; }
   "\\"                  { stopLookForCtrans(); return LDIV; }

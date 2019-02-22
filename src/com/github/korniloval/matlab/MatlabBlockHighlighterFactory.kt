@@ -105,6 +105,24 @@ class MatlabBlockHighlighterFactory(registrar: TextEditorHighlightingPassRegistr
                 if (o.parent is MatlabTryBlock) o.parent.accept(this)
             }
 
+            override fun visitSwitchBlock(o: MatlabSwitchBlock) {
+                super.visitSwitchBlock(o)
+                val delimiters = getFirstAndEnd(o)
+                addElementsInChildren(o, delimiters, MatlabCaseBlock::class.java, CASE)
+                addElementsInChildren(o, delimiters, MatlabOtherwiseBlock::class.java, OTHERWISE)
+                possiblyAddRanges(delimiters)
+            }
+
+            override fun visitCaseBlock(o: MatlabCaseBlock) {
+                super.visitCaseBlock(o)
+                if (o.parent is MatlabSwitchBlock) o.parent.accept(this)
+            }
+
+            override fun visitOtherwiseBlock(o: MatlabOtherwiseBlock) {
+                super.visitOtherwiseBlock(o)
+                if (o.parent is MatlabSwitchBlock) o.parent.accept(this)
+            }
+
             private fun <T : PsiElement> addElementsInChildren(o: PsiElement, delimiters: MutableList<PsiElement>, clazz: Class<T>, type: IElementType) {
                 PsiTreeUtil.getChildrenOfType(o, clazz)?.forEach { child ->
                     (child as? CompositeElement)?.findPsiChildByType(type)?.let { delimiters.add(it) }
@@ -132,16 +150,6 @@ class MatlabBlockHighlighterFactory(registrar: TextEditorHighlightingPassRegistr
             override fun visitClassDeclaration(o: MatlabClassDeclaration) = highlightFirstAndEnd(o)
             override fun visitForLoop(o: MatlabForLoop) = highlightFirstAndEnd(o)
             override fun visitWhileLoop(o: MatlabWhileLoop) = highlightFirstAndEnd(o)
-            override fun visitSwitchBlock(o: MatlabSwitchBlock) = highlightFirstAndEnd(o)
-
-            override fun visitCaseBlock(o: MatlabCaseBlock) {
-                val switch = o.parent as? MatlabSwitchBlock ?: return
-                val delimiters = mutableListOf<PsiElement>()
-                addElementsInChildren(switch, delimiters, MatlabCaseBlock::class.java, CASE)
-                addElementsInChildren(switch, delimiters, MatlabOtherwiseBlock::class.java, OTHERWISE)
-                possiblyAddRanges(delimiters)
-                isMatched = true
-            }
         }
     }
 

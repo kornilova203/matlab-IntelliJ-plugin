@@ -23,3 +23,5 @@ s = struct( 'a', 1
 s = struct(
  'a', 1
 )
+a = false()
+a{1}('p1','p2')
