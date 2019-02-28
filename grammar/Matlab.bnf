@@ -98,7 +98,7 @@ private element ::= ( el [ ';' | ',' ] ) | ';' | ','
 private el ::= if_block
   | switch_block
   | try_block
-  | global_block
+  | global_variable_declarations
   | file_operation
   | for_loop
   | while_loop
@@ -111,7 +111,7 @@ meta block ::= (<<p>> NEWLINE *)*
 private block_that_recovers_until_end ::= <<block element>> { recoverWhile=not_end_or_oef }
 private not_end_or_oef ::= !( NEWLINE* ( end | <<eof>> ) )
 
-global_block ::= global br* IDENTIFIER (br* IDENTIFIER)* [',' | sep] { pin=1 }
+global_variable_declarations ::= global br* IDENTIFIER (br* IDENTIFIER)* { pin=1 }
 
 if_block ::= if br* condition ','? NEWLINE*
   if_block_body NEWLINE*

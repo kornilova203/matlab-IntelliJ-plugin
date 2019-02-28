@@ -1,5 +1,5 @@
 Matlab File
-  MatlabGlobalBlockImpl(GLOBAL_BLOCK)
+  MatlabGlobalVariableDeclarationsImpl(GLOBAL_VARIABLE_DECLARATIONS)
     PsiElement(global)('global')
     PsiWhiteSpace(' ')
     PsiElement(IDENTIFIER)('a')
@@ -10,7 +10,7 @@ Matlab File
   PsiElement(;)(';')
   PsiElement(NEWLINE)('\n')
   PsiElement(NEWLINE)('\n')
-  MatlabGlobalBlockImpl(GLOBAL_BLOCK)
+  MatlabGlobalVariableDeclarationsImpl(GLOBAL_VARIABLE_DECLARATIONS)
     PsiElement(global)('global')
     PsiWhiteSpace(' ')
     PsiElement(IDENTIFIER)('d')
@@ -26,4 +26,3 @@ Matlab File
     PsiElement(IDENTIFIER)('f')
     PsiWhiteSpace(' ')
     PsiElement(IDENTIFIER)('g')
-    PsiElement(NEWLINE)('\n')
