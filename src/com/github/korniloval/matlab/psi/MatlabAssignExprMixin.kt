@@ -1,5 +1,6 @@
 package com.github.korniloval.matlab.psi
 
+import com.github.korniloval.matlab.psi.MatlabPsiUtil.identifier
 import com.github.korniloval.matlab.psi.impl.MatlabBinaryExprImpl
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveState
@@ -14,7 +15,7 @@ abstract class MatlabAssignExprMixin(elementType: IElementType) : MatlabBinaryEx
     override val visibleOutsideFunction = false
 
     override fun getNameIdentifier(): PsiElement? {
-        (left as? MatlabRefExpr)?.let { return it.identifier }
+        (left as? MatlabRefExpr)?.let { return it.identifier() }
         return null
     }
 

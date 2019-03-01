@@ -86,11 +86,15 @@
 
 root ::= NEWLINE * (element NEWLINE *) * end?
 
-private meta p_opt_list ::= '(' sep [ !')' <<list <<item>>>> sep ] ')' { pin=1 }
-private meta list ::= <<list_item <<item>>>> (br* ',' br* <<list_item <<item>>>>)* { recoverWhile=not_br_or_rparenth }
-private not_br_or_rparenth ::= !( ')' | '...' | NEWLINE )
+private meta p_opt_list ::= '(' [ !')' <<list <<item>>>> sep ] ')' { pin=1 }
+private meta list ::= sep <<list_item <<item>>>> (sep ',' sep <<list_item <<item>>>>)* sep { recoverWhile=not_rparenth }
+private not_rparenth ::= !( ')' )
 private meta list_item ::= {} <<item>> { pin=1 recoverWhile=not_rparenth_or_comma }
 private not_rparenth_or_comma ::= !( ')' | ',' | '...' | NEWLINE )
+private meta comma_list ::= <<comma_list_item <<item>>>> (br* ',' br* <<comma_list_item <<item>>>>)*
+private meta comma_list_item ::= {} <<item>> { pin=1 }
+external ident ::= parseIdentifier
+external ws ::= parseWhiteSpace br
 
 private one_line_recovery ::= !( end | NEWLINE | '...' )
 
@@ -111,7 +115,7 @@ meta block ::= (<<p>> NEWLINE *)*
 private block_that_recovers_until_end ::= <<block element>> { recoverWhile=not_end_or_oef }
 private not_end_or_oef ::= !( NEWLINE* ( end | <<eof>> ) )
 
-global_variable_declarations ::= global br* IDENTIFIER (br* IDENTIFIER)* { pin=1 }
+global_variable_declarations ::= global br* ident (br* ident)* { pin=1 }
 
 if_block ::= if br* condition ','? NEWLINE*
   if_block_body NEWLINE*
@@ -142,7 +146,7 @@ try_block ::= try sep
   catch_block?
   end
   {pin=1}
-catch_block ::= catch [ br* IDENTIFIER ] sep <<block element>> {pin=1}
+catch_block ::= catch [ br* ident ] sep <<block element>> {pin=1}
 
 for_loop ::= for br* for_loop_range [ ';' | ',' ] NEWLINE*
     block_that_recovers_until_end
@@ -154,10 +158,10 @@ while_loop ::= while br* while_loop_condition [ ';' | ',' ] NEWLINE*
     end { pin=1 }
 while_loop_condition ::= expr
 
-function_declaration ::= function br* return_value_part? br* getter_or_setter_modifier? <<parseIdentifierOrRemapEndToken>> br* parameters? NEWLINE*
+function_declaration ::= function br* return_value_part? br* getter_or_setter_modifier? <<withOn 'ALLOW_END_AS_IDENTIFIER' ident>> br* parameters? NEWLINE*
     block_that_recovers_until_end
     NEWLINE* ( end | <<eof>> ) { pin=1 }
-getter_or_setter_modifier ::= IDENTIFIER '.'
+getter_or_setter_modifier ::= ident '.'
 private return_value_part ::= single_return_value_part | multiple_return_values_part
 // note pin value
 private single_return_value_part ::= single_ret_value br* '=' { pin=3 }
@@ -167,13 +171,13 @@ fake return_values ::= ret_value*
 private ret_values_list ::= ret_value (br* ','? br* ret_value)* {recoverWhile=ret_values_list_recovery }
 private ret_values_list_recovery ::= !( br* ']' | br* '=' | br* NEWLINE )
 single_ret_value ::= ret_value { recoverWhile=not_expr_or_equal extends=return_values elementType=return_values }
-ret_value ::= IDENTIFIER
-private not_expr_or_equal ::=!( IDENTIFIER | expr | '=' | NEWLINE )
+ret_value ::= ident
+private not_expr_or_equal ::=!( ident | expr | '=' | NEWLINE )
 parameters ::= <<p_opt_list parameter>> { extends=parameters_list }
 fake parameters_list ::= parameter*
-parameter ::= IDENTIFIER | '~'
+parameter ::= ident | '~'
 
-class_declaration ::= classdef br* class_attributes? br* IDENTIFIER br* super_classes? NEWLINE*
+class_declaration ::= classdef br* class_attributes? br* ident br* super_classes? NEWLINE*
     (( properties_block | methods_block | events_block ) NEWLINE*)*
     end { pin=1 }
 
@@ -185,27 +189,25 @@ private super_classes_list ::= super_classes_list_item ('&' super_classes_list_i
 private super_classes_list_item ::= ref_expr { recoverWhile=not_ampersand_or_super_class_or_properties_or_methods_or_end }
 private not_ampersand_or_super_class_or_properties_or_methods_or_end ::= !( br* '&' | br* super_classes_list_item | NEWLINE* properties_block | NEWLINE* methods_block | NEWLINE* end )
 
-properties_block ::= properties_token br* properties_attributes? NEWLINE*
+properties_block ::= properties_token br* attributes? NEWLINE*
     properties_block_body NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
 private properties_token ::= <<parseIdentifierAsKeyword 'PROPERTIES'>>
-properties_attributes ::= <<p_opt_list properties_attribute_list_item>>
-properties_attribute_list_item ::= ref_expr ['=' expr] { pin(".*")=1 }
+attributes ::= <<p_opt_list attribute>>
+attribute ::= {} ref_expr [ sep '=' sep expr ] { pin(".*")=2 }
 private properties_block_body ::= <<block element>> { recoverWhile=block_inside_class_recovery }
 private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods_token | properties_token | events_token ) )
 
-methods_block ::= methods_token br* methods_attributes? NEWLINE*
+methods_block ::= methods_token br* attributes? NEWLINE*
     methods_block_body NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
 private methods_token ::= <<parseIdentifierAsKeyword 'METHODS'>>
-methods_attributes ::= <<p_opt_list properties_attribute_list_item>>
 private methods_block_body ::= <<block element>> { recoverWhile=block_inside_class_recovery }
 
-events_block ::= events_token br* events_attributes? NEWLINE*
+events_block ::= events_token br* attributes? NEWLINE*
     events_list NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
 private events_token ::= <<parseIdentifierAsKeyword 'EVENTS'>>
-events_attributes ::= <<p_opt_list properties_attribute_list_item>>
 events_list ::= (ref_expr NEWLINE*)* { recoverWhile=events_block_body_recovery }
 private events_block_body_recovery ::= !( NEWLINE* end )
 
@@ -241,7 +243,7 @@ fake binary_expr ::= expr + {
   ]
 }
 
-assign_expr ::= expr br* '=' br* expr { pin='=' rightAssociative=true }
+assign_expr ::= expr ws '=' ws expr { pin='=' rightAssociative=true }
 
 private compare_group ::= equal_expr
   | not_equal_expr
@@ -300,72 +302,68 @@ matrix_literal ::= '[' sep matrix_content? sep ']' { pin=1 }
 private sep ::= (br | NEWLINE)*
 private matrix_content ::= matrix_row ( sep ';' NEWLINE* sep matrix_row )* sep ';'? { recoverWhile=not_rbracket }
 private not_rbracket ::= one_line_recovery !( ']' )
-matrix_row ::= matrix_item ( sep (',' sep)?  matrix_item)* { recoverWhile=not_rbracket_or_semicolon }
+matrix_row ::= matrix_item ( sep (',' sep)?  matrix_item)* sep ','? { recoverWhile=not_rbracket_or_semicolon }
 private not_rbracket_or_semicolon ::= not_rbracket !( ';' )
 matrix_item ::= '~' | expr
 
 cell_array_literal ::= '{' sep cell_array_content? sep '}' { pin=1 }
 private cell_array_content ::= cell_array_row ( sep ';' sep cell_array_row )* [sep ';'] { recoverWhile=cell_array_content_recovery }
 private cell_array_content_recovery ::= one_line_recovery !( '}' )
-cell_array_row ::= cell_array_item ( sep (',' sep)? cell_array_item )* { recoverWhile=cell_array_row_recovery }
+cell_array_row ::= cell_array_item ( sep (',' sep)? cell_array_item )* sep ','? { recoverWhile=cell_array_row_recovery }
 private cell_array_row_recovery ::= one_line_recovery !( '}' | sep ';' )
 cell_array_item ::= expr
 
 cell_array_access_expr ::= expr '{' sep cell_array_access_item_list sep '}'
-private cell_array_access_item_list ::= cell_array_access_item ( br* ',' br* cell_array_access_item )* sep ';'? { recoverWhile=not_brace }
-private cell_array_access_item ::= ( matrix_index | expr )
+private cell_array_access_item_list ::= <<withOff 'NEW_LINE_ALLOWED' (<<withOn 'ALLOW_END_AS_IDENTIFIER' (<<comma_list argument>>)>>)>> [ sep ';' ] { recoverWhile=not_brace }
 private not_brace ::= !('}')
 
-range_expr ::= expr ':' ( expr ':' )? ( expr | end )
+range_expr ::= expr ws ':' ws expr [ ws ':' ws expr ]
 
 direct_function_expr ::= function_call_or_matrix_element_access { elementType=function_expr }
-function_expr ::= expr br* arguments
-private function_call_or_matrix_element_access ::= ref_expr_allowing_end br* arguments
-ref_expr_allowing_end ::= <<parseIdentifierOrRemapEndToken>> {elementType=ref_expr}
-arguments ::= <<p_opt_list argument>>
-argument ::= matrix_index | simple_matrix_index | expr
-simple_matrix_index ::= matrix_index_item {elementType=matrix_index}
-private matrix_index_item ::= end br* ( '-' | '+' ) br* expr | end
-matrix_index ::= [matrix_index_item | expr] (sep ':' sep [matrix_index_item | expr])+
+function_expr ::= expr ws arguments
+private function_call_or_matrix_element_access ::= <<withOn 'ALLOW_END_AS_IDENTIFIER' ref_expr>> ws arguments
+arguments ::= <<withOn 'NEW_LINE_ALLOWED' (<<withOn 'ALLOW_END_AS_IDENTIFIER' (<<p_opt_list argument>>)>>)>>
+private argument ::= expr | all_items_range
+all_items_range ::= ':' { extends=expr }
 
-paren_expr ::= '(' br* expr? br* ')' { pin=1 }
+paren_expr ::= '(' ws expr? ws ')' { pin=1 }
 
-not_equal_expr ::= expr br* '~=' br* expr
-equal_expr ::= expr br* '==' br* expr
-less_expr ::= expr br* '<' br* expr
-less_or_equal_expr ::= expr br* '<=' br* expr
-more_expr ::= expr br* '>' br* expr
-more_or_equal_expr ::= expr br* '>=' br* expr
+not_equal_expr ::= expr ws '~=' ws expr
+equal_expr ::= expr ws '==' ws expr
+less_expr ::= expr ws '<' ws expr
+less_or_equal_expr ::= expr ws '<=' ws expr
+more_expr ::= expr ws '>' ws expr
+more_or_equal_expr ::= expr ws '>=' ws expr
 
-or_expr ::= expr br* '||' br* expr
-matrix_or_expr ::= expr br* '|' br* expr
-and_expr ::= expr br* '&&' br* expr
-matrix_and_expr ::= expr br* '&' br* expr
+or_expr ::= expr ws '||' ws expr
+matrix_or_expr ::= expr ws '|' ws expr
+and_expr ::= expr ws '&&' ws expr
+matrix_and_expr ::= expr ws '&' ws expr
 
 qualified_expr ::= expr '.' expr
-ref_expr ::= IDENTIFIER
-unary_min_expr ::= '-' br* expr
-unary_dec_expr ::= expr br* '--'
-unary_prefix_dec_expr ::= '--' br* expr
-unary_inc_expr ::= expr br* '++'
-unary_prefix_inc_expr ::= '++' br* expr
-unary_plus_expr ::= '+' br* expr
-ctranspose_expr ::= expr br* "'"
-transpose_expr ::= expr br* ".'"
-unary_negation_expr ::= '~' br* expr
-meta_class_expr ::= '?' br* ref_expr
+ref_expr ::= ident
+unary_min_expr ::= '-' ws expr
+unary_dec_expr ::= expr ws '--'
+unary_prefix_dec_expr ::= '--' ws expr
+unary_inc_expr ::= expr ws '++'
+unary_prefix_inc_expr ::= '++' ws expr
+unary_plus_expr ::= '+' ws expr
+ctranspose_expr ::= expr ws "'"
+transpose_expr ::= expr ws ".'"
+unary_negation_expr ::= '~' ws expr
+meta_class_expr ::= '?' ws ref_expr
 
-rdiv_expr ::= expr '/' expr
-element_wise_rdiv_expr ::= expr './' expr
-ldiv_expr ::= expr '\' expr
-element_wise_ldiv_expr ::= expr '.\' expr
-mul_expr ::= expr br* '*' br* expr
-element_wise_mul_expr ::= expr br* '.*' br* expr
-pow_expr ::= expr br* '^' br* expr
-element_wise_pow_expr ::= expr br* '.^' br* expr
+rdiv_expr ::= expr ws '/' ws expr
+element_wise_rdiv_expr ::= expr ws './' ws expr
+ldiv_expr ::= expr ws '\' ws expr
+element_wise_ldiv_expr ::= expr ws '.\' ws expr
+mul_expr ::= expr ws '*' ws expr
+element_wise_mul_expr ::= expr ws '.*' ws expr
+pow_expr ::= expr ws '^' ws expr
+element_wise_pow_expr ::= expr ws '.^' ws expr
 
-minus_expr ::= expr br* '-' br* expr
-plus_expr ::= expr br* '+' br* expr
+minus_expr ::= expr ws '-' ws expr
+plus_expr ::= expr ws '+' ws expr
 
 private br ::= '...' NEWLINE { pin=1 }
 
@@ -376,4 +374,4 @@ lambda_body ::= expr
 
 file_operation ::= (LOAD | DIR | LS | CD) br* FILE_NAME br* variables? { pin=1 }
 variables ::= variable+
-private variable ::= IDENTIFIER
+private variable ::= ident

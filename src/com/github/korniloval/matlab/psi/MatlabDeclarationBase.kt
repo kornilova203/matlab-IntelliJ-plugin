@@ -11,7 +11,7 @@ abstract class MatlabDeclarationBase(elementType: IElementType) : MatlabComposit
 
     override val visibleOutsideFunction = true
 
-    override fun getNameIdentifier(): PsiElement? = getChildOfType(this, MatlabTypes.IDENTIFIER)
+    override fun getNameIdentifier(): PsiElement? = getChildOfType(MatlabTypes.IDENTIFIER)
 
     override fun getName(): String? = nameIdentifier?.text
 

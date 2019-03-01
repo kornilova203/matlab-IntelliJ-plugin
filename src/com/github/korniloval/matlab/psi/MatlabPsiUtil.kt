@@ -1,6 +1,7 @@
 package com.github.korniloval.matlab.psi
 
 import com.github.korniloval.matlab.MatlabLanguage
+import com.github.korniloval.matlab.psi.MatlabTypes.IDENTIFIER
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -22,12 +23,16 @@ object MatlabPsiUtil {
     }
 
     fun createIdentifierFromText(project: Project, text: String): PsiElement {
-        return createRefFromText(project, text).identifier
+        return createRefFromText(project, text).identifier()
     }
 
-    fun getChildOfType(e: PsiElement?, type: IElementType?): PsiElement? {
-        if (e == null || type == null) return null
-        val child = e.firstChild
+    fun MatlabRefExpr.identifier(): PsiElement {
+        return getChildOfType(IDENTIFIER)!!
+    }
+
+    fun PsiElement.getChildOfType(type: IElementType?): PsiElement? {
+        if (type == null) return null
+        val child = firstChild
         return if (child == null) null else PsiTreeUtil.findSiblingForward(child, type, false, null)
     }
 }

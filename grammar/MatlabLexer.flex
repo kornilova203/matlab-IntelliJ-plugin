@@ -183,9 +183,9 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   {NEWLINE}             { stopLookForCtrans(); return NEWLINE; }
   {LINE_COMMENT}        { stopLookForCtrans(); return COMMENT; }
   ^{BLOCK_COMMENT_PREFIX}$ { stopLookForCtrans(); yypushState(BLOCKCOMMENT_STATE); }
-  {FLOAT_EXPONENTIAL}   { stopLookForCtrans(); return FLOAT_EXPONENTIAL; }
-  {FLOAT}               { stopLookForCtrans(); return FLOAT; }
-  {INTEGER}             { stopLookForCtrans(); return INTEGER; }
+  {FLOAT_EXPONENTIAL}   { lookForCtrans(); return FLOAT_EXPONENTIAL; }
+  {FLOAT}               { lookForCtrans(); return FLOAT; }
+  {INTEGER}             { lookForCtrans(); return INTEGER; }
   {IDENTIFIER}          { lookForCtrans(); return IDENTIFIER; }
   {DOUBLE_QUOTE_STRING} { lookForCtrans(); return DOUBLE_QUOTE_STRING; }
 
@@ -209,6 +209,7 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 
 <LOOK_FOR_LINECOMMENT> {
     {WHITE_SPACE}                        { return WHITE_SPACE; }
+    . / \n                               { yypopState(); return COMMENT; }
     .                                    { yypopState(); yypushState(LINECOMMENT_STATE); }
 }
 

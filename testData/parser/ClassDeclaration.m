@@ -37,6 +37,16 @@ classdef C
     end
 end
 
+classdef C
+    properties (
+    SetAccess =
+    ?EnvelopeStageManager,
+    GetAccess=public
+    )
+        % empty
+    end
+end
+
 classdef SquareArea
    properties
       Width
