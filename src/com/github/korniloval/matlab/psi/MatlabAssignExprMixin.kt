@@ -1,6 +1,5 @@
 package com.github.korniloval.matlab.psi
 
-import com.github.korniloval.matlab.psi.MatlabPsiUtil.identifier
 import com.github.korniloval.matlab.psi.impl.MatlabBinaryExprImpl
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveState
@@ -22,7 +21,7 @@ abstract class MatlabAssignExprMixin(elementType: IElementType) : MatlabBinaryEx
     override fun getName(): String? = nameIdentifier?.text
 
     override fun setName(name: String): PsiElement {
-        nameIdentifier?.replace(MatlabPsiUtil.createIdentifierFromText(project, name))
+        nameIdentifier?.replace(createIdentifierFromText(project, name))
         return this
     }
 

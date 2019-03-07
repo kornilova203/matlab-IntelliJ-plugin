@@ -1,6 +1,5 @@
 package com.github.korniloval.matlab.psi
 
-import com.github.korniloval.matlab.psi.MatlabPsiUtil.getChildOfType
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.IElementType
 
@@ -16,7 +15,7 @@ abstract class MatlabDeclarationBase(elementType: IElementType) : MatlabComposit
     override fun getName(): String? = nameIdentifier?.text
 
     override fun setName(name: String): PsiElement {
-        nameIdentifier?.replace(MatlabPsiUtil.createIdentifierFromText(project, name))
+        nameIdentifier?.replace(createIdentifierFromText(project, name))
         return this
     }
 

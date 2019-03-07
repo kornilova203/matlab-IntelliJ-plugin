@@ -1,7 +1,5 @@
 package com.github.korniloval.matlab.psi
 
-import com.github.korniloval.matlab.psi.MatlabPsiUtil.createIdentifierFromText
-import com.github.korniloval.matlab.psi.MatlabPsiUtil.identifier
 import com.github.korniloval.matlab.psi.impl.MatlabRefExprImpl
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.AbstractElementManipulator
