@@ -3,4 +3,5 @@
 /.idea/shelf/
 /.idea/workspace.xml
 /out/
-/matlab-IntelliJ-plugin.jar
+/matlab-IntelliJ-plugin*.jar
+/matlab-IntelliJ-plugin*.zip

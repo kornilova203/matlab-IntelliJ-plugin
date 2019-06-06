@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>MatlabSupport</id>
     <name>Matlab Support</name>
-    <version>0.5</version>
+    <version>0.5.1</version>
 
     <vendor url="https://github.com/kornilova-l" email="kornilova203@gmail.com"/>
 
@@ -12,13 +12,7 @@
 
     <change-notes><![CDATA[
     <ol>
-        <li>Support syntax of global variables</li>
-        <li>Support try-catch block</li>
-        <li>Support programmatic name fields access</li>
-        <li>Improve complex conjugate transpose operator parsing</li>
-        <li>Support "after the ellipsis" comments</li>
-        <li>More accurate resolve scope</li>
-        <li>Resolve lambda parameters</li>
+        <li>Fix problem when Matlab run configuration was applied to non-matlab files</li>
     </ol>
     ]]>
     </change-notes>
