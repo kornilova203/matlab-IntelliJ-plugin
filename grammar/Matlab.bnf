@@ -178,7 +178,7 @@ fake parameters_list ::= parameter*
 parameter ::= ident | '~'
 
 class_declaration ::= classdef br* class_attributes? br* ident br* super_classes? NEWLINE*
-    (( properties_block | methods_block | events_block ) NEWLINE*)*
+    (( properties_block | methods_block | events_block | enumeration_block ) NEWLINE*)*
     end { pin=1 }
 
 class_attributes ::= <<p_opt_list class_attribute_list_item>>
@@ -187,7 +187,13 @@ class_attribute_list_item ::= ref_expr '=' expr { pin=1 }
 super_classes ::= '<' br* super_classes_list { pin=1 }
 private super_classes_list ::= super_classes_list_item ('&' super_classes_list_item) *
 private super_classes_list_item ::= ref_expr { recoverWhile=not_ampersand_or_super_class_or_properties_or_methods_or_end }
-private not_ampersand_or_super_class_or_properties_or_methods_or_end ::= !( br* '&' | br* super_classes_list_item | NEWLINE* properties_block | NEWLINE* methods_block | NEWLINE* end )
+private not_ampersand_or_super_class_or_properties_or_methods_or_end ::= !( br* '&'
+    | br* super_classes_list_item
+    | NEWLINE* properties_token
+    | NEWLINE* methods_token
+    | NEWLINE* events_token
+    | NEWLINE* enumeration_token
+    | NEWLINE* end )
 
 properties_block ::= properties_token br* attributes? NEWLINE*
     properties_block_body NEWLINE*
@@ -196,7 +202,7 @@ private properties_token ::= <<parseIdentifierAsKeyword 'PROPERTIES'>>
 attributes ::= <<p_opt_list attribute>>
 attribute ::= {} ref_expr [ sep '=' sep expr ] { pin(".*")=2 }
 private properties_block_body ::= <<block element>> { recoverWhile=block_inside_class_recovery }
-private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods_token | properties_token | events_token ) )
+private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods_token | properties_token | events_token | enumeration_token ) )
 
 methods_block ::= methods_token br* attributes? NEWLINE*
     methods_block_body NEWLINE*
@@ -210,6 +216,13 @@ events_block ::= events_token br* attributes? NEWLINE*
 private events_token ::= <<parseIdentifierAsKeyword 'EVENTS'>>
 events_list ::= (ref_expr NEWLINE*)* { recoverWhile=events_block_body_recovery }
 private events_block_body_recovery ::= !( NEWLINE* end )
+
+enumeration_block ::= enumeration_token NEWLINE*
+    ( <<comma_list_item <<enum_item>>>> ( ',' <<comma_list_item <<enum_item>>>> | NEWLINE* enum_item )* ) NEWLINE *
+    end
+    { pin=1 recoverWhile=block_inside_class_recovery }
+private enumeration_token ::= <<parseIdentifierAsKeyword 'ENUMERATION'>>
+private enum_item ::= ident arguments?
 
 ;{
     name(".*literal")='literal'

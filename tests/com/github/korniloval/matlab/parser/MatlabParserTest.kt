@@ -30,4 +30,5 @@ open class MatlabParserTest : ParsingTestCase("", "m", MatlabParserDefinition())
     fun testExpressions() = doTest()
     fun testStructs() = doTest()
     fun testTryCatch() = doTest()
+    fun testEnumeration() = doTest()
 }

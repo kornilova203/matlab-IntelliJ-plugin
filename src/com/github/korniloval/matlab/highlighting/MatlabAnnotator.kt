@@ -27,17 +27,17 @@ class MatlabAnnotator : Annotator {
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
         psiTraverser().withRoot(element).forEach { el ->
             val type = el.node.elementType
-            if (type == AT && el.parent is MatlabLambdaExpr) {
-                holder.createInfoAnnotation(el as PsiElement, null).textAttributes = LAMBDA_PARENTH
-            } else if (type == LPARENTH || type == RPARENTH) {
-                if (el.parent is MatlabParameters && el.parent.parent is MatlabLambdaExpr) {
-                    holder.createInfoAnnotation(el as PsiElement, null).textAttributes = LAMBDA_PARENTH
-                }
-            } else if (type == IDENTIFIER) {
-                if (el.parent is MatlabFunctionDeclaration) holder.createInfoAnnotation(el, null).textAttributes = FUNCTION_DECLARATION
-                if (el.parent is MatlabClassDeclaration) holder.createInfoAnnotation(el, null).textAttributes = CLASS_DECLARATION
-            } else if (type == METHODS || type == EVENTS || type == PROPERTIES) {
-                holder.createInfoAnnotation(el, null).textAttributes = KEYWORD
+            val attrs = when {
+                type == AT && el.parent is MatlabLambdaExpr -> LAMBDA_PARENTH
+                (type == LPARENTH || type == RPARENTH) &&
+                        el.parent is MatlabParameters && el.parent.parent is MatlabLambdaExpr  -> LAMBDA_PARENTH
+                type == IDENTIFIER && el.parent is MatlabFunctionDeclaration                   -> FUNCTION_DECLARATION
+                type == IDENTIFIER && el.parent is MatlabClassDeclaration                      -> CLASS_DECLARATION
+                type == METHODS || type == EVENTS || type == PROPERTIES || type == ENUMERATION -> KEYWORD
+                else -> null
+            }
+            if (attrs != null) {
+                holder.createInfoAnnotation(el, null).textAttributes = attrs
             }
         }
     }
