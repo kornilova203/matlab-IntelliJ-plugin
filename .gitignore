@@ -1,7 +1,7 @@
 /gen/
-/.idea/dictionaries/
-/.idea/shelf/
-/.idea/workspace.xml
+/.idea/
 /out/
 /matlab-IntelliJ-plugin*.jar
 /matlab-IntelliJ-plugin*.zip
+/.gradle/
+/build/
