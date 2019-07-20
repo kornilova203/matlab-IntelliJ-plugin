@@ -27,25 +27,23 @@ Note: currently `Program arguments` field in configuration is ignored.
 
 For easier development install [Grammar-Kit](https://plugins.jetbrains.com/plugin/6606-grammar-kit) plugin.
 
-This project uses IntelliJ IDEA build system.  
-Follow steps below to start working on the plugin:
-1. Clone it and open in IntelliJ IDEA.
-2. Open **File | Project Structure**, go to **Project** tab and fix project SDK (see [Setting Up a Development Environment](http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/setting_up_environment.html)). I suggest using recent IDEA Community as project SDK.
-3. Generate Matlab lexers. Open [MatlabLexer.flex](grammar/MatlabLexer.flex) and click **Run JFlex Generator** from context menu, do the same for [SingleQuoteStringLexer.flex](grammar/SingleQuoteStringLexer.flex).
-4. Generate Matlab parser. Open [Matlab.bnf](grammar/Matlab.bnf) and run **Generate Parser Code** from context menu.
-5. Run/Debug **IDEA with Matlab Plugin** configuration.
+Follow these steps to start working on the plugin:
+1. Clone project and import it to IntelliJ IDEA as Gradle project.
+2. Generate Matlab lexers. Open [MatlabLexer.flex](grammar/MatlabLexer.flex) and click **Run JFlex Generator** from context menu, do the same for [SingleQuoteStringLexer.flex](grammar/SingleQuoteStringLexer.flex).
+3. Generate Matlab parser. Open [Matlab.bnf](grammar/Matlab.bnf) and run **Generate Parser Code** from context menu.
+4. Run/Debug `runIde` Gradle task.
 
 If you have any issue with setting up development environment then please create an issue.
 
 The project is written in Kotlin. It's pretty easy to learn. To get started you may quickly look through [Basic Syntax](https://kotlinlang.org/docs/reference/basic-syntax.html) and [Classes and Inheritance](https://kotlinlang.org/docs/reference/classes.html).  
 Contributions in Java are also welcomed.
 
-To build a jar with Matlab Plugin click **Build | Prepare Plugin ... For Deployment**.
+To build a jar with Matlab Plugin run `buildPlugin` Gradle task.
 
 ### Tips for plugin developers
 
 1. _View PSI Structure._
-  When you start IDEA by running __IDEA with Matlab Plugin__ configuration you may open a matlab file in the IDE and run **View PSI Structure of Current File..** (this action is available because IDE is started with `idea.is.internal=true` vm option).
+  When you start IDEA with `runIde` Gradle task you may open a matlab file in the IDE and run **View PSI Structure of Current File..** action.
 
 
  [Octave]: https://www.gnu.org/software/octave/
