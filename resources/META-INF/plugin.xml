@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>MatlabSupport</id>
     <name>Matlab Support</name>
-    <version>0.6-SNAPSHOT</version>
+    <version>0.5.2</version>
 
     <vendor url="https://github.com/kornilova-l" email="kornilova203@gmail.com"/>
 
@@ -12,7 +12,7 @@
 
     <change-notes><![CDATA[
     <ol>
-        <li>Fix problem when Matlab run configuration was applied to non-matlab files</li>
+        <li>Support enumeration blocks</li>
     </ol>
     ]]>
     </change-notes>
