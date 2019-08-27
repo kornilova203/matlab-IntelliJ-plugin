@@ -9,28 +9,18 @@ import com.intellij.psi.PsiElement
 class MatlabRunConfigurationProducer
     : RunConfigurationProducer<MatlabRunConfiguration>(MatlabConfigurationType.getInstance()) {
 
-    override fun isConfigurationFromContext(configuration: MatlabRunConfiguration?, context: ConfigurationContext?): Boolean {
-        if (configuration != null && context != null) {
-            val matlabFile = context.location?.psiElement
-            if (matlabFile is MatlabFile) {
-                return configuration.getFilePath() == matlabFile.virtualFile.canonicalPath
-            }
-        }
-        return false
+    override fun isConfigurationFromContext(configuration: MatlabRunConfiguration, context: ConfigurationContext): Boolean {
+        val matlabFile = context.location?.psiElement
+        if (matlabFile !is MatlabFile) return false
+        return configuration.getFilePath() == matlabFile.virtualFile.canonicalPath
     }
 
-    override fun setupConfigurationFromContext(configuration: MatlabRunConfiguration?, context: ConfigurationContext?, sourceElement: Ref<PsiElement>?): Boolean {
-        if (sourceElement != null && configuration != null) {
-            val matlabFile = sourceElement.get()
-            if (matlabFile is MatlabFile) {
-                val path = matlabFile.virtualFile.canonicalPath
-                if (path != null) {
-                    configuration.setFilePath(path)
-                    configuration.name = matlabFile.virtualFile.name
-                    return true
-                }
-            }
-        }
-        return false
+    override fun setupConfigurationFromContext(configuration: MatlabRunConfiguration, context: ConfigurationContext, sourceElement: Ref<PsiElement>): Boolean {
+        val matlabFile = sourceElement.get()
+        if (matlabFile !is MatlabFile) return false
+        val path = matlabFile.virtualFile.canonicalPath ?: return false
+        configuration.setFilePath(path)
+        configuration.name = matlabFile.virtualFile.name
+        return true
     }
 }
