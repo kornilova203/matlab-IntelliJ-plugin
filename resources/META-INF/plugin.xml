@@ -50,6 +50,8 @@
         <lang.refactoringSupport language="Matlab"
                                  implementationClass="com.github.korniloval.matlab.refactoring.MatlabRefactoringSupportProvider"/>
         <lang.ast.factory language="Matlab" implementationClass="com.github.korniloval.matlab.MatlabASTFactory"/>
+        <lang.smartEnterProcessor language="Matlab"
+                                  implementationClass="com.github.korniloval.matlab.editor.smartEnter.MatlabSmartEnter"/>
     </extensions>
 
     <project-components>
