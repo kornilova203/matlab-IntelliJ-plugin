@@ -8,9 +8,5 @@ class MatlabCannotRunException(message: String) : ExecutionException(message) {
         fun interpreterNotSetUp(): MatlabCannotRunException {
             return MatlabCannotRunException("Matlab interpreter is not specified.")
         }
-
-        fun fileNotSetUp(): MatlabCannotRunException {
-            return MatlabCannotRunException("File is not specified.")
-        }
     }
 }

@@ -18,12 +18,15 @@ class MatlabRunConfiguration(project: Project, configurationFactory: Configurati
     private var workingDir: String? = null
     private var programParams: String? = null
     private var interpreterPath: String? = PropertiesComponent.getInstance(project).getValue(MATLAB_INTERPRETER) // null or non empty string
-    private var filePath: String? = null // null or non empty string
+    private var path: String? = null // null or non empty string
+    private var command: String? = null // null or non empty string
     private var interpreterOptions: String? = null // null or non empty string
 
     /* see AbstractRunConfiguration */
     private val myEnvs = LinkedHashMap<String, String>()
     private var myPassParentEnvs = true
+
+    fun guessExecutionHelper() = OctaveExecutionHelper
 
     override fun getInterpreterPath(): String? = interpreterPath
 
@@ -37,10 +40,16 @@ class MatlabRunConfiguration(project: Project, configurationFactory: Configurati
         }
     }
 
-    override fun getFilePath(): String? = filePath
+    override fun getPath(): String? = path
 
-    override fun setFilePath(path: String) {
-        filePath = if (path.isBlank()) null else path
+    override fun getCommand(): String? = command
+
+    override fun setPath(path: String) {
+        this.path = if (path.isBlank()) null else path
+    }
+
+    override fun setCommand(command: String) {
+        this.command = if (command.isBlank()) null else command
     }
 
     override fun getInterpreterOptions(): String? = interpreterOptions
@@ -55,8 +64,8 @@ class MatlabRunConfiguration(project: Project, configurationFactory: Configurati
         if (interpreterPath == null) {
             throw MatlabCannotRunException.interpreterNotSetUp()
         }
-        if (filePath == null) {
-            throw MatlabCannotRunException.fileNotSetUp()
+        if (command == null) {
+            throw MatlabCannotRunException("Command is not set")
         }
         return MatlabCommandLineState(this, environment)
     }
@@ -76,7 +85,8 @@ class MatlabRunConfiguration(project: Project, configurationFactory: Configurati
     override fun writeExternal(element: Element) {
         super.writeExternal(element)
 
-        JDOMExternalizerUtil.writeField(element, "FILE_PATH", filePath)
+        JDOMExternalizerUtil.writeField(element, "PATH", path)
+        JDOMExternalizerUtil.writeField(element, "COMMAND", command)
         JDOMExternalizerUtil.writeField(element, "INTERPRETER_PATH", interpreterPath)
         JDOMExternalizerUtil.writeField(element, "WORKING_DIRECTORY", workingDirectory)
         JDOMExternalizerUtil.writeField(element, "PARENT_ENVS", isPassParentEnvs.toString())
@@ -89,9 +99,13 @@ class MatlabRunConfiguration(project: Project, configurationFactory: Configurati
         super.readExternal(element)
         EnvironmentVariablesComponent.readExternal(element, myEnvs)
 
-        filePath = JDOMExternalizerUtil.readField(element, "FILE_PATH")
-        if (filePath.isNullOrBlank()) {
-            filePath = null
+        path = JDOMExternalizerUtil.readField(element, "PATH")
+        if (path.isNullOrBlank()) {
+            path = null
+        }
+        command = JDOMExternalizerUtil.readField(element, "COMMAND")
+        if (command.isNullOrBlank()) {
+            command = null
         }
         interpreterPath = JDOMExternalizerUtil.readField(element, "INTERPRETER_PATH")
         if (interpreterPath.isNullOrBlank()) {

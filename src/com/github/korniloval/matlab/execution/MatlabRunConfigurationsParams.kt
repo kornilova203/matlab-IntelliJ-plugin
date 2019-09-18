@@ -7,9 +7,13 @@ interface MatlabRunConfigurationsParams : CommonProgramRunConfigurationParameter
 
     fun setInterpreterPath(path: String)
 
-    fun getFilePath(): String?
+    fun getPath(): String?
 
-    fun setFilePath(path: String)
+    fun setPath(path: String)
+
+    fun getCommand(): String?
+
+    fun setCommand(command: String)
 
     fun getInterpreterOptions(): String?
 

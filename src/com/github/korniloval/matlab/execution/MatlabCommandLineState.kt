@@ -19,7 +19,6 @@ class MatlabCommandLineState(private val runConfiguration: MatlabRunConfiguratio
         val processHandler = KillableColoredProcessHandler(cmd)
         ProcessTerminatedListener.attach(processHandler, environment.project)
 
-        // FIXME: handle path macros
         return processHandler
     }
 
@@ -32,12 +31,7 @@ class MatlabCommandLineState(private val runConfiguration: MatlabRunConfiguratio
             cmd.addParameters(runConfiguration.getInterpreterOptions()!!.split(" "))
         }
 
-        if (interpreter.contains("matlab")) {
-            cmd.addParameters(mutableListOf("-nodisplay", "-nosplash", "-nodesktop", "-r"))
-            cmd.addParameter("run('${runConfiguration.getFilePath()}');exit;")
-        } else {
-            cmd.parametersList.addParametersString(runConfiguration.getFilePath())
-        }
+        runConfiguration.guessExecutionHelper().appendCommand(cmd, runConfiguration.getCommand()!!)
 
         cmd.withWorkDirectory(workingDir)
         cmd.withParentEnvironmentType(if (runConfiguration.isPassParentEnvs) GeneralCommandLine.ParentEnvironmentType.CONSOLE else GeneralCommandLine.ParentEnvironmentType.NONE)

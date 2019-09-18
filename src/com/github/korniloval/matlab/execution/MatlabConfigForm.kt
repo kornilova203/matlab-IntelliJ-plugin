@@ -15,8 +15,11 @@ class MatlabConfigForm : CommonProgramParametersPanel() {
     private var interpreterPathComponent: LabeledComponent<JComponent>? = null
     private var interpreterPathField: TextFieldWithBrowseButton? = null
 
-    private var filePathComponent: LabeledComponent<JComponent>? = null
-    private var filePathField: TextFieldWithBrowseButton? = null
+    private var commandComponent: LabeledComponent<JComponent>? = null
+    private var commandField: RawCommandLineEditor? = null
+
+    private var pathComponent: LabeledComponent<JComponent>? = null
+    private var pathField: RawCommandLineEditor? = null
 
     private fun initOwnComponents() {
 
@@ -32,19 +35,21 @@ class MatlabConfigForm : CommonProgramParametersPanel() {
         interpreterPathComponent!!.labelLocation = BorderLayout.WEST
 
 
-        val chooseScriptDescriptor = FileChooserDescriptorFactory.createSingleLocalFileDescriptor()
-        filePathField = TextFieldWithBrowseButton()
-        filePathField!!.addBrowseFolderListener(MacroAwareTextBrowseFolderListener(chooseScriptDescriptor, project))
+        pathField = RawCommandLineEditor()
+        pathComponent = LabeledComponent.create(pathField!!, "Path")
+        pathComponent!!.labelLocation = BorderLayout.WEST
 
-        filePathComponent = LabeledComponent.create(createComponentWithMacroBrowse(filePathField!!), "File:")
-        filePathComponent!!.labelLocation = BorderLayout.WEST
+        commandField = RawCommandLineEditor()
+        commandComponent = LabeledComponent.create(commandField!!, "Matlab/Octave Command")
+        commandComponent!!.labelLocation = BorderLayout.WEST
     }
 
 
     override fun addComponents() {
         initOwnComponents()
 
-        add(filePathComponent)
+        add(commandComponent)
+        add(pathComponent)
         add(interpreterPathComponent)
         add(interpreterOptionsComponent)
 
@@ -54,12 +59,13 @@ class MatlabConfigForm : CommonProgramParametersPanel() {
     fun resetForm(configuration: MatlabRunConfiguration) {
         interpreterOptionsComponent!!.component.text = configuration.getInterpreterOptions()
         interpreterPathField!!.setText(configuration.getInterpreterPath())
-        filePathField!!.setText(configuration.getFilePath())
+        pathField!!.setText(configuration.getPath())
+        commandField!!.setText(configuration.getCommand())
     }
 
     fun applyToForm(configuration: MatlabRunConfiguration) {
         configuration.setInterpreterOptions(interpreterOptionsComponent!!.component.text)
         configuration.setInterpreterPath(interpreterPathField!!.text)
-        configuration.setFilePath(filePathField!!.text)
+        configuration.setCommand(commandField!!.text)
     }
 }
