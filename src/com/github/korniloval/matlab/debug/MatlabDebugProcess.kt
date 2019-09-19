@@ -16,6 +16,7 @@ import com.intellij.xdebugger.XDebuggerUtil
 import com.intellij.xdebugger.breakpoints.XBreakpointHandler
 import com.intellij.xdebugger.breakpoints.XLineBreakpoint
 import com.intellij.xdebugger.evaluation.XDebuggerEditorsProvider
+import com.intellij.xdebugger.frame.XSuspendContext
 
 class MatlabDebugProcess(session: XDebugSession, private val state: MatlabCommandLineState, private val env: ExecutionEnvironment) : XDebugProcess(session) {
     private val provider = MatlabDebuggerEditorsProvider()
@@ -78,8 +79,13 @@ class MatlabDebugProcess(session: XDebugSession, private val state: MatlabComman
 
     override fun getBreakpointHandlers(): Array<XBreakpointHandler<*>> = arrayOf(breakpointHandler)
 
+    override fun resume(context: XSuspendContext?) {
+        command(CONT)
+    }
+
     companion object {
         private const val STOP = "dbstop"
+        private const val CONT = "dbcont"
         private val STOPPED_PATTERN = Regex("stopped in (.*) at line (\\d+)\n")
     }
 }
