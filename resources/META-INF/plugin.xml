@@ -29,6 +29,8 @@
                                        implementationClass="com.github.korniloval.matlab.MatlabSyntaxHighlighterFactory"/>
         <configurationType implementation="com.github.korniloval.matlab.execution.MatlabConfigurationType"/>
         <programRunner implementation="com.github.korniloval.matlab.execution.MatlabProgramRunner"/>
+        <programRunner implementation="com.github.korniloval.matlab.execution.MatlabDebugRunner"/>
+        <xdebugger.breakpointType implementation="com.github.korniloval.matlab.debug.MatlabLineBreakpointType"/>
         <runConfigurationProducer
                 implementation="com.github.korniloval.matlab.execution.MatlabRunConfigurationProducer"/>
 

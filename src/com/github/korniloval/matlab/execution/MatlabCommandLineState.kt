@@ -2,6 +2,7 @@ package com.github.korniloval.matlab.execution
 
 import com.intellij.execution.configurations.CommandLineState
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.executors.DefaultDebugExecutor
 import com.intellij.execution.process.KillableColoredProcessHandler
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessTerminatedListener
@@ -31,7 +32,9 @@ class MatlabCommandLineState(private val runConfiguration: MatlabRunConfiguratio
             cmd.addParameters(runConfiguration.getInterpreterOptions()!!.split(" "))
         }
 
-        runConfiguration.guessExecutionHelper().appendCommand(cmd, runConfiguration.getCommand()!!)
+        val isMatlab = isMatlab(interpreter)
+        val isDebug = environment.executor.id == DefaultDebugExecutor.EXECUTOR_ID
+        guessExecutionHelper(isMatlab, isDebug).initCmd(cmd, runConfiguration)
 
         cmd.withWorkDirectory(workingDir)
         cmd.withParentEnvironmentType(if (runConfiguration.isPassParentEnvs) GeneralCommandLine.ParentEnvironmentType.CONSOLE else GeneralCommandLine.ParentEnvironmentType.NONE)

@@ -26,8 +26,6 @@ class MatlabRunConfiguration(project: Project, configurationFactory: Configurati
     private val myEnvs = LinkedHashMap<String, String>()
     private var myPassParentEnvs = true
 
-    fun guessExecutionHelper() = OctaveExecutionHelper
-
     override fun getInterpreterPath(): String? = interpreterPath
 
     override fun setInterpreterPath(path: String) {

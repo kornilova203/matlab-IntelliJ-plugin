@@ -12,14 +12,14 @@ class MatlabRunConfigurationProducer
     override fun isConfigurationFromContext(configuration: MatlabRunConfiguration, context: ConfigurationContext): Boolean {
         val matlabFile = context.location?.psiElement as? MatlabFile ?: return false
         val path = matlabFile.virtualFile.canonicalPath ?: return false
-        return configuration.getCommand() == configuration.guessExecutionHelper().runFileCommand(path)
+        return configuration.getCommand() == guessCommandHelper(isMatlab(configuration.getInterpreterPath()!!)).runFileCommand(path)
     }
 
     override fun setupConfigurationFromContext(configuration: MatlabRunConfiguration, context: ConfigurationContext, sourceElement: Ref<PsiElement>): Boolean {
         val matlabFile = sourceElement.get() as? MatlabFile ?: return false
         val path = matlabFile.virtualFile.canonicalPath ?: return false
 
-        val helper = configuration.guessExecutionHelper()
+        val helper = guessCommandHelper(isMatlab(configuration.getInterpreterPath()!!))
         configuration.setCommand(helper.runFileCommand(path))
         configuration.name = matlabFile.virtualFile.name
         return true
