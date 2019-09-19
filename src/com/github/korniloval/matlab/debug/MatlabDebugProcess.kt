@@ -22,23 +22,29 @@ class MatlabDebugProcess(session: XDebugSession, state: MatlabCommandLineState, 
     private val provider = MatlabDebuggerEditorsProvider()
     private val executionResult: ExecutionResult = state.execute(env.executor, env.runner)
     private val breakpointHandler = MatlabBreakpointHandler()
+    val commandsQueue = DebuggerCommandsQueue(this)
 
     override fun getEditorsProvider(): XDebuggerEditorsProvider = provider
 
     override fun sessionInitialized() {
         initListener()
+
+        val commandsQueueThread = Thread(commandsQueue)
+        commandsQueueThread.isDaemon = true
+        commandsQueueThread.start()
+
         executionResult.processHandler.startNotify()
-        command("PS1(\"\")")
+        run("PS1(\"\")")
         initBreakpoints(breakpointHandler.breakpoints)
 
         val config = env.runProfile as MatlabRunConfiguration
-        command(config.getCommand()!!)
+        run(config.getCommand()!!)
     }
 
     private fun initBreakpoints(breakpoints: MutableSet<XLineBreakpoint<MatlabLineBreakpointProperties>>) {
         for (breakpoint in breakpoints) {
             val funcName = file(breakpoint.fileUrl)?.nameWithoutExtension ?: return
-            command("$STOP $funcName ${breakpoint.line + 1}")
+            run("$STOP $funcName ${breakpoint.line + 1}")
         }
     }
 
@@ -74,7 +80,7 @@ class MatlabDebugProcess(session: XDebugSession, state: MatlabCommandLineState, 
 
     private fun file(fileUrl: String) = VirtualFileManager.getInstance().findFileByUrl(fileUrl)
 
-    fun command(command: String) {
+    fun run(command: String) {
         val input = executionResult.processHandler.processInput ?: return
         try {
             input.write("$command\n".toByteArray())
@@ -90,11 +96,12 @@ class MatlabDebugProcess(session: XDebugSession, state: MatlabCommandLineState, 
     override fun getBreakpointHandlers(): Array<XBreakpointHandler<*>> = arrayOf(breakpointHandler)
 
     override fun resume(context: XSuspendContext?) {
-        command(CONT)
+        run(CONT)
     }
 
     override fun stop() {
-        command(EXIT)
+        run(EXIT)
+        commandsQueue.stop.set(true)
     }
 
     companion object {

@@ -1,7 +1,6 @@
 package com.github.korniloval.matlab.debug
 
-import com.github.korniloval.matlab.debug.MatlabDebugProcess.Companion.DEBUG_PROMPT
-import com.intellij.execution.process.ProcessOutputTypes
+import com.intellij.icons.AllIcons
 import com.intellij.xdebugger.XSourcePosition
 import com.intellij.xdebugger.frame.*
 
@@ -18,23 +17,20 @@ class Frame internal constructor(private val xPosition: XSourcePosition, private
     override fun getSourcePosition() = xPosition
 
     override fun computeChildren(node: XCompositeNode) {
-        val varNames = mutableListOf<String>()
-        debugProcess.addTextListener(ProcessOutputTypes.STDOUT) { text ->
-            if (text == DEBUG_PROMPT) {
-                val children = XValueChildrenList()
-                varNames.forEach {
-                    children.add(MatlabValue(it))
-                }
-                node.addChildren(children, true)
-                return@addTextListener false
+        val children = XValueChildrenList()
+        debugProcess.commandsQueue.queue.add(object : Command("whos") {
+            override fun process(text: String) {
+                val matchResult = VAR_DESC_PATTERN.matchEntire(text) ?: return
+                val attr = matchResult.groups["attr"]?.value ?: ""
+                if (attr.contains(AUTO_VAR_ATTR)) return
+                val type = matchResult.groups["class"]?.value
+                matchResult.groups["name"]?.value?.let { children.add(MatlabValue(it, type)) }
             }
-            val matchResult = VAR_DESC_PATTERN.matchEntire(text) ?: return@addTextListener true
-            val attr = matchResult.groups["attr"]?.value ?: ""
-            if (attr.contains(AUTO_VAR_ATTR)) return@addTextListener true
-            matchResult.groups["name"]?.value?.let { varNames.add(it) }
-            true
-        }
-        debugProcess.command("whos")
+
+            override fun end() {
+                node.addChildren(children, true)
+            }
+        })
     }
 
     companion object {
@@ -43,8 +39,8 @@ class Frame internal constructor(private val xPosition: XSourcePosition, private
     }
 }
 
-class MatlabValue(name: String) : XNamedValue(name) {
+class MatlabValue(name: String, private val type: String?) : XNamedValue(name) {
     override fun computePresentation(node: XValueNode, place: XValuePlace) {
-
+        node.setPresentation(AllIcons.Nodes.Variable, type, "", false)
     }
 }
