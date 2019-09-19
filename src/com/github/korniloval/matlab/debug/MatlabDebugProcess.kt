@@ -93,9 +93,14 @@ class MatlabDebugProcess(session: XDebugSession, state: MatlabCommandLineState, 
         command(CONT)
     }
 
+    override fun stop() {
+        command(EXIT)
+    }
+
     companion object {
         private const val STOP = "dbstop"
         private const val CONT = "dbcont"
+        private const val EXIT = "exit"
         const val DEBUG_PROMPT = "debug> "
         private val STOPPED_PATTERN = Regex("stopped in (.*) at line (\\d+)\n")
     }
