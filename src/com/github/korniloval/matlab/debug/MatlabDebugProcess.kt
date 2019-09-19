@@ -18,7 +18,7 @@ import com.intellij.xdebugger.breakpoints.XLineBreakpoint
 import com.intellij.xdebugger.evaluation.XDebuggerEditorsProvider
 import com.intellij.xdebugger.frame.XSuspendContext
 
-class MatlabDebugProcess(session: XDebugSession, private val state: MatlabCommandLineState, private val env: ExecutionEnvironment) : XDebugProcess(session) {
+class MatlabDebugProcess(session: XDebugSession, state: MatlabCommandLineState, private val env: ExecutionEnvironment) : XDebugProcess(session) {
     private val provider = MatlabDebuggerEditorsProvider()
     private val executionResult: ExecutionResult = state.execute(env.executor, env.runner)
     private val breakpointHandler = MatlabBreakpointHandler()
@@ -42,29 +42,39 @@ class MatlabDebugProcess(session: XDebugSession, private val state: MatlabComman
         }
     }
 
-    private fun initListener() {
-        executionResult.processHandler.addProcessListener(object : ProcessListener {
+    fun addTextListener(type: Key<*>, processor: (String) -> Boolean) {
+        val listener = object : ProcessListener {
             override fun onTextAvailable(event: ProcessEvent, outputType: Key<*>) {
-                if (outputType != ProcessOutputTypes.STDERR) return
-                val res = STOPPED_PATTERN.matchEntire(event.text) ?: return
-                val filePath = "file://${res.groupValues[1]}"
-                val lineNum = res.groupValues[2].toInt() - 1
-                val bp = breakpointHandler.breakpoints.find {
-                    it.fileUrl == filePath && it.line == lineNum
-                } ?: return
-                val frames = listOf(Frame(XDebuggerUtil.getInstance().createPosition(file(bp.fileUrl), lineNum)!!))
-                session.breakpointReached(bp, null, MatlabSuspendContext(MatlabStack(frames)))
+                if (outputType != type) return
+                if (!processor(event.text)) {
+                    executionResult.processHandler.removeProcessListener(this)
+                }
             }
 
             override fun processTerminated(event: ProcessEvent) = Unit
             override fun processWillTerminate(event: ProcessEvent, willBeDestroyed: Boolean) = Unit
             override fun startNotified(event: ProcessEvent) = Unit
-        })
+        }
+        executionResult.processHandler.addProcessListener(listener)
+    }
+
+    private fun initListener() {
+        addTextListener(ProcessOutputTypes.STDERR) { text ->
+            val res = STOPPED_PATTERN.matchEntire(text) ?: return@addTextListener true
+            val filePath = "file://${res.groupValues[1]}"
+            val lineNum = res.groupValues[2].toInt() - 1
+            val bp = breakpointHandler.breakpoints.find {
+                it.fileUrl == filePath && it.line == lineNum
+            } ?: return@addTextListener true
+            val frames = listOf(Frame(XDebuggerUtil.getInstance().createPosition(file(bp.fileUrl), lineNum)!!, this@MatlabDebugProcess))
+            session.breakpointReached(bp, null, MatlabSuspendContext(MatlabStack(frames)))
+            true
+        }
     }
 
     private fun file(fileUrl: String) = VirtualFileManager.getInstance().findFileByUrl(fileUrl)
 
-    private fun command(command: String) {
+    fun command(command: String) {
         val input = executionResult.processHandler.processInput ?: return
         try {
             input.write("$command\n".toByteArray())
@@ -86,6 +96,7 @@ class MatlabDebugProcess(session: XDebugSession, private val state: MatlabComman
     companion object {
         private const val STOP = "dbstop"
         private const val CONT = "dbcont"
+        const val DEBUG_PROMPT = "debug> "
         private val STOPPED_PATTERN = Regex("stopped in (.*) at line (\\d+)\n")
     }
 }
