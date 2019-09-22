@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>MatlabSupport</id>
     <name>Matlab Support</name>
-    <version>0.5.2</version>
+    <version>0.5.3</version>
 
     <vendor url="https://github.com/kornilova-l" email="kornilova203@gmail.com"/>
 
@@ -12,7 +12,8 @@
 
     <change-notes><![CDATA[
     <ol>
-        <li>Support enumeration blocks</li>
+        <li>Smart Enter inserts semicolon where required (ctrl-shift-enter or cmd-shift-enter) (by @cyclic-reference)</li>
+        <li>Added plugin icon (by @cyclic-reference)</li>
     </ol>
     ]]>
     </change-notes>
