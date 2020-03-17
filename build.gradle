@@ -15,7 +15,7 @@ repositories {
 }
 
 intellij {
-    version = '2019.1.3'
+    version = '2019.3.4'
     updateSinceUntilBuild = false
     downloadSources = true
 }

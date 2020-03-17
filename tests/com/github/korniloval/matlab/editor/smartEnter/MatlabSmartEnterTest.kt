@@ -3,7 +3,6 @@ package com.github.korniloval.matlab.editor.smartEnter
 import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.openapi.editor.VisualPosition
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
 
 class MatlabSmartEnterTest : BasePlatformTestCase() {
 

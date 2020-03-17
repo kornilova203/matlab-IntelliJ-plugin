@@ -1,12 +1,15 @@
 package com.github.korniloval.matlab.resolve
 
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.github.korniloval.matlab.getTestDataRoot
+import com.intellij.testFramework.TestDataPath
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 /**
  * @author Liudmila Kornilova
  **/
-class FindUsagesTest : LightPlatformCodeInsightFixtureTestCase() {
-    override fun getTestDataPath(): String = "testData/findusages/"
+@TestDataPath("findusages")
+class FindUsagesTest : BasePlatformTestCase() {
+    override fun getTestDataPath(): String = getTestDataRoot(javaClass)
 
     fun testVariable() = doTest(2)
     fun testFunction() = doTest(1)

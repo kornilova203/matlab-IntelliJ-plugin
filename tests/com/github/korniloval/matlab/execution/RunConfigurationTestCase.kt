@@ -9,12 +9,12 @@ import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.psi.PsiElement
 import com.intellij.testFramework.LightProjectDescriptor
 import com.intellij.testFramework.MapDataContext
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 
 class MyProjectDescriptor : LightProjectDescriptor()
 
-abstract class RunConfigurationTestCase : LightPlatformCodeInsightFixtureTestCase() {
+abstract class RunConfigurationTestCase : BasePlatformTestCase() {
 
     protected fun assertInterpreterPath(configuration: MatlabRunConfiguration?, interpreterPath: String) {
         TestCase.assertNotNull(configuration)

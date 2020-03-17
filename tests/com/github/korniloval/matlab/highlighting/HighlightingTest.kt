@@ -1,11 +1,14 @@
 package com.github.korniloval.matlab.highlighting
 
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.github.korniloval.matlab.getTestDataRoot
+import com.intellij.testFramework.TestDataPath
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import java.io.File
 
-class HighlightingTest : LightPlatformCodeInsightFixtureTestCase() {
+@TestDataPath("highlighting")
+class HighlightingTest : BasePlatformTestCase() {
 
-    override fun getTestDataPath(): String = "testData/highlighting"
+    override fun getTestDataPath(): String = getTestDataRoot(javaClass)
 
     fun testFunctionCall() = doTest()
     fun testFunctionDefinition() = doTest()

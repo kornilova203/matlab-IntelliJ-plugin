@@ -1,13 +1,16 @@
 package com.github.korniloval.matlab.refactoring.rename
 
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.github.korniloval.matlab.getTestDataRoot
+import com.intellij.testFramework.TestDataPath
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 /**
  * @author Liudmila Kornilova
  **/
-class RenameTest : LightPlatformCodeInsightFixtureTestCase() {
+@TestDataPath("rename")
+class RenameTest : BasePlatformTestCase() {
 
-    override fun getTestDataPath(): String = "testData/rename"
+    override fun getTestDataPath(): String = getTestDataRoot(javaClass)
 
     fun testVar() = doTest()
     fun testFunction() = doTest()

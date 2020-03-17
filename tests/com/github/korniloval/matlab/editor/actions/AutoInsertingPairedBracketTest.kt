@@ -1,9 +1,9 @@
 package com.github.korniloval.matlab.editor.actions
 
 import com.intellij.openapi.editor.VisualPosition
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
-class AutoInsertingPairedBracketTest : LightPlatformCodeInsightFixtureTestCase() {
+class AutoInsertingPairedBracketTest : BasePlatformTestCase() {
 
     fun testSimpleCases() {
         myFixture.configureByText("test.m", "")

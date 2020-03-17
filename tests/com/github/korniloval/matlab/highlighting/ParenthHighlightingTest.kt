@@ -1,17 +1,20 @@
 package com.github.korniloval.matlab.highlighting
 
+import com.github.korniloval.matlab.getTestDataRoot
 import com.intellij.codeInsight.highlighting.BraceMatchingUtil
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.psi.PsiDocumentManager
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.testFramework.TestDataPath
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import java.io.File
 
 private const val PAIR_MARKER = "<pair>"
 
-class ParenthHighlightingTest : LightPlatformCodeInsightFixtureTestCase() {
+@TestDataPath("highlighting")
+class ParenthHighlightingTest : BasePlatformTestCase() {
 
-    override fun getTestDataPath(): String = "testData/highlighting"
+    override fun getTestDataPath(): String = getTestDataRoot(javaClass)
 
     fun testParenth() = doTest()
     fun testBraces() = doTest()

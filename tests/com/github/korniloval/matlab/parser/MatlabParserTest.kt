@@ -1,11 +1,14 @@
 package com.github.korniloval.matlab.parser
 
 import com.github.korniloval.matlab.MatlabParserDefinition
+import com.github.korniloval.matlab.getTestDataRoot
 import com.intellij.testFramework.ParsingTestCase
+import com.intellij.testFramework.TestDataPath
 
+@TestDataPath("parser")
 open class MatlabParserTest : ParsingTestCase("", "m", MatlabParserDefinition()) {
 
-    override fun getTestDataPath(): String = "testData/parser"
+    override fun getTestDataPath(): String = getTestDataRoot(javaClass)
 
     fun doTest() = doTest(true)
 

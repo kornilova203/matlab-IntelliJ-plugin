@@ -1,9 +1,12 @@
 package com.github.korniloval.matlab.completion
 
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.github.korniloval.matlab.getTestDataRoot
+import com.intellij.testFramework.TestDataPath
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
-class CompletionTest : LightPlatformCodeInsightFixtureTestCase() {
-    override fun getTestDataPath(): String = "testData/completion"
+@TestDataPath("completion")
+class CompletionTest : BasePlatformTestCase() {
+    override fun getTestDataPath(): String = getTestDataRoot(javaClass)
 
     fun testF() = doTest("function", "for", "classdef", "if")
     fun testIf() = doTest("function", "for", "classdef", "if", "end", "while")

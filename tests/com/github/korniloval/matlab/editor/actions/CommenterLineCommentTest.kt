@@ -1,17 +1,18 @@
 package com.github.korniloval.matlab.editor.actions
 
+import com.github.korniloval.matlab.getTestDataRoot
 import com.intellij.openapi.actionSystem.IdeActions
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase
+import com.intellij.testFramework.TestDataPath
+import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.jetbrains.annotations.NotNull
 
 
-class CommenterLineCommentTest : LightPlatformCodeInsightFixtureTestCase() {
-    override fun getTestDataPath(): String {
-        return "testData/commenter/"
-    }
+@TestDataPath("commenter")
+class CommenterLineCommentTest : BasePlatformTestCase() {
+    override fun getTestDataPath(): String = getTestDataRoot(javaClass)
 
     @NotNull
-    private fun doTest(actionId:String){
+    private fun doTest(actionId: String) {
         myFixture.configureByFile(getTestName(false) + ".m")
         myFixture.performEditorAction(actionId)
         myFixture.checkResultByFile(getTestName(false) + "_after.m", true)
