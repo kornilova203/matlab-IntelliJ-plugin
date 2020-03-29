@@ -3,11 +3,11 @@
     <name>Matlab Support</name>
     <version>0.5.3</version>
 
-    <vendor url="https://github.com/kornilova-l" email="kornilova203@gmail.com"/>
+    <vendor url="https://github.com/kornilova203" email="kornilova203@gmail.com"/>
 
     <description><![CDATA[
     <strong>Matlab syntax highlighting plugin for JetBrains IDEs.</strong><br>
-    Documentation: <a href="https://github.com/kornilova-l/matlab-IntelliJ-plugin">github.com/kornilova-l/matlab-IntelliJ-plugin</a>
+    Documentation: <a href="https://github.com/kornilova203/matlab-IntelliJ-plugin">github.com/kornilova203/matlab-IntelliJ-plugin</a>
     ]]></description>
 
     <change-notes><![CDATA[
