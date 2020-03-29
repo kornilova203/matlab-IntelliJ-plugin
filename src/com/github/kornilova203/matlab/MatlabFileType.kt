@@ -6,6 +6,7 @@ import javax.swing.Icon
 class MatlabFileType private constructor() : LanguageFileType(MatlabLanguage.INSTANCE) {
 
     companion object {
+        @JvmField
         val INSTANCE = MatlabFileType()
     }
 

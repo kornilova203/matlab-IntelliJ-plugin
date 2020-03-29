@@ -23,7 +23,8 @@
     <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileTypeFactory implementation="com.github.kornilova203.matlab.MatlabFileTypeFactory"/>
+        <fileType name="Matlab" fieldName="INSTANCE" extensions="m" language="Matlab"
+                  implementationClass="com.github.kornilova203.matlab.MatlabFileType"/>
         <lang.parserDefinition language="Matlab"
                                implementationClass="com.github.kornilova203.matlab.MatlabParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Matlab"
