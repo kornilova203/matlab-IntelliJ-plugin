@@ -31,11 +31,6 @@ class MatlabParserDefinition : ParserDefinition {
         return MatlabFile(viewProvider)
     }
 
-    override fun spaceExistanceTypeBetweenTokens(left: ASTNode?, right: ASTNode?): ParserDefinition.SpaceRequirements {
-        /* for compatibility with older versions */
-        return ParserDefinition.SpaceRequirements.MAY
-    }
-
     override fun getStringLiteralElements(): TokenSet = TokenSet.EMPTY
 
     override fun getFileNodeType(): IFileElementType = FILE
