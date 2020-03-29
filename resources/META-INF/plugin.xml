@@ -18,8 +18,6 @@
     ]]>
     </change-notes>
 
-    <idea-version since-build="162"/>
-
     <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">

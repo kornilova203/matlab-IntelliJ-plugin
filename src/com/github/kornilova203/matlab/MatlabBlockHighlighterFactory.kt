@@ -40,7 +40,7 @@ class MatlabBlockHighlighterFactory(registrar: TextEditorHighlightingPassRegistr
     }
 
     class MatlabBlockHighlightingPass(private val file: PsiFile, private val editor: Editor) : TextEditorHighlightingPass(file.project, editor.document, false) {
-        private val ranges = ContainerUtil.newArrayList<TextRange>()
+        private val ranges = mutableListOf<TextRange>()
         private var isMatched = false
 
         override fun doCollectInformation(progress: ProgressIndicator) {
@@ -59,7 +59,7 @@ class MatlabBlockHighlighterFactory(registrar: TextEditorHighlightingPassRegistr
             val infos: List<HighlightInfo>
             if (ranges.isEmpty()) infos = emptyList()
             else {
-                infos = ContainerUtil.newArrayList()
+                infos = mutableListOf()
                 val type = if (ranges.size > 1 || isMatched) MATCHED else UNMATCHED
                 for (range in ranges) {
                     ContainerUtil.addIfNotNull(infos, HighlightInfo.newHighlightInfo(type).range(range).create())
