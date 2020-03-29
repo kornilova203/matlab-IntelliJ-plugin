@@ -12,7 +12,7 @@ import com.intellij.psi.scope.PsiScopeProcessor
 
 
 class MatlabFile(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, MatlabLanguage.INSTANCE) {
-    override fun getFileType(): FileType = MatlabFileType.INSTANCE
+    override fun getFileType(): FileType = MatlabFileType
 
     override fun toString(): String = "Matlab File"
 

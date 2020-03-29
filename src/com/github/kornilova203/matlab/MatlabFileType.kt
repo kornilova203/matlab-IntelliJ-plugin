@@ -3,12 +3,7 @@ package com.github.kornilova203.matlab
 import com.intellij.openapi.fileTypes.LanguageFileType
 import javax.swing.Icon
 
-class MatlabFileType private constructor() : LanguageFileType(MatlabLanguage.INSTANCE) {
-
-    companion object {
-        @JvmField
-        val INSTANCE = MatlabFileType()
-    }
+object MatlabFileType : LanguageFileType(MatlabLanguage.INSTANCE) {
 
     override fun getIcon(): Icon? {
         return Icons.Matlab
