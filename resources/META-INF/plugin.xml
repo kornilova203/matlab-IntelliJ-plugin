@@ -23,41 +23,41 @@
     <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileTypeFactory implementation="com.github.korniloval.matlab.MatlabFileTypeFactory"/>
+        <fileTypeFactory implementation="com.github.kornilova203.matlab.MatlabFileTypeFactory"/>
         <lang.parserDefinition language="Matlab"
-                               implementationClass="com.github.korniloval.matlab.MatlabParserDefinition"/>
+                               implementationClass="com.github.kornilova203.matlab.MatlabParserDefinition"/>
         <lang.syntaxHighlighterFactory language="Matlab"
-                                       implementationClass="com.github.korniloval.matlab.MatlabSyntaxHighlighterFactory"/>
-        <configurationType implementation="com.github.korniloval.matlab.execution.MatlabConfigurationType"/>
-        <programRunner implementation="com.github.korniloval.matlab.execution.MatlabProgramRunner"/>
+                                       implementationClass="com.github.kornilova203.matlab.MatlabSyntaxHighlighterFactory"/>
+        <configurationType implementation="com.github.kornilova203.matlab.execution.MatlabConfigurationType"/>
+        <programRunner implementation="com.github.kornilova203.matlab.execution.MatlabProgramRunner"/>
         <runConfigurationProducer
-                implementation="com.github.korniloval.matlab.execution.MatlabRunConfigurationProducer"/>
+                implementation="com.github.kornilova203.matlab.execution.MatlabRunConfigurationProducer"/>
 
         <lang.braceMatcher language="Matlab"
-                           implementationClass="com.github.korniloval.matlab.highlighting.MatlabPairedBraceMatcher"/>
+                           implementationClass="com.github.kornilova203.matlab.highlighting.MatlabPairedBraceMatcher"/>
         <lang.commenter language="Matlab"
-                        implementationClass="com.github.korniloval.matlab.editor.actions.MatlabCommentHandler"/>
-        <quoteHandler fileType="Matlab" className="com.github.korniloval.matlab.editor.actions.MatlabQuoteHandler"/>
+                        implementationClass="com.github.kornilova203.matlab.editor.actions.MatlabCommentHandler"/>
+        <quoteHandler fileType="Matlab" className="com.github.kornilova203.matlab.editor.actions.MatlabQuoteHandler"/>
 
         <completion.contributor language="Matlab"
-                                implementationClass="com.github.korniloval.matlab.completion.MatlabKeywordCompletionContributor"/>
+                                implementationClass="com.github.kornilova203.matlab.completion.MatlabKeywordCompletionContributor"/>
         <completion.contributor language="Matlab"
-                                implementationClass="com.github.korniloval.matlab.completion.MatlabReferenceCompletionContributor"/>
+                                implementationClass="com.github.kornilova203.matlab.completion.MatlabReferenceCompletionContributor"/>
         <lang.findUsagesProvider language="Matlab"
-                                 implementationClass="com.github.korniloval.matlab.MatlabFindUsagesProvider"/>
-        <annotator language="Matlab" implementationClass="com.github.korniloval.matlab.highlighting.MatlabAnnotator"/>
-        <lang.elementManipulator forClass="com.github.korniloval.matlab.psi.impl.MatlabRefExprImpl"
-                                 implementationClass="com.github.korniloval.matlab.psi.MatlabElementManipulator"/>
+                                 implementationClass="com.github.kornilova203.matlab.MatlabFindUsagesProvider"/>
+        <annotator language="Matlab" implementationClass="com.github.kornilova203.matlab.highlighting.MatlabAnnotator"/>
+        <lang.elementManipulator forClass="com.github.kornilova203.matlab.psi.impl.MatlabRefExprImpl"
+                                 implementationClass="com.github.kornilova203.matlab.psi.MatlabElementManipulator"/>
         <lang.refactoringSupport language="Matlab"
-                                 implementationClass="com.github.korniloval.matlab.refactoring.MatlabRefactoringSupportProvider"/>
-        <lang.ast.factory language="Matlab" implementationClass="com.github.korniloval.matlab.MatlabASTFactory"/>
+                                 implementationClass="com.github.kornilova203.matlab.refactoring.MatlabRefactoringSupportProvider"/>
+        <lang.ast.factory language="Matlab" implementationClass="com.github.kornilova203.matlab.MatlabASTFactory"/>
         <lang.smartEnterProcessor language="Matlab"
-                                  implementationClass="com.github.korniloval.matlab.editor.smartEnter.MatlabSmartEnter"/>
+                                  implementationClass="com.github.kornilova203.matlab.editor.smartEnter.MatlabSmartEnter"/>
     </extensions>
 
     <project-components>
         <component>
-            <implementation-class>com.github.korniloval.matlab.MatlabBlockHighlighterFactory</implementation-class>
+            <implementation-class>com.github.kornilova203.matlab.MatlabBlockHighlighterFactory</implementation-class>
         </component>
     </project-components>
 

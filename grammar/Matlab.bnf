@@ -1,20 +1,20 @@
 {
-  parserClass="com.github.korniloval.matlab.MatlabParser"
-  parserUtilClass="com.github.korniloval.matlab.MatlabParserUtil"
+  parserClass="com.github.kornilova203.matlab.MatlabParser"
+  parserUtilClass="com.github.kornilova203.matlab.MatlabParserUtil"
 
-  extends="com.github.korniloval.matlab.psi.MatlabCompositePsiElement"
+  extends="com.github.kornilova203.matlab.psi.MatlabCompositePsiElement"
 
   psiClassPrefix="Matlab"
   psiImplClassSuffix="Impl"
-  psiPackage="com.github.korniloval.matlab.psi"
-  psiImplPackage="com.github.korniloval.matlab.psi.impl"
+  psiPackage="com.github.kornilova203.matlab.psi"
+  psiImplPackage="com.github.kornilova203.matlab.psi.impl"
 
-  elementTypeHolderClass="com.github.korniloval.matlab.psi.MatlabTypes"
-  elementTypeClass="com.github.korniloval.matlab.psi.MatlabElementType"
-  tokenTypeClass="com.github.korniloval.matlab.psi.MatlabTokenType"
+  elementTypeHolderClass="com.github.kornilova203.matlab.psi.MatlabTypes"
+  elementTypeClass="com.github.kornilova203.matlab.psi.MatlabElementType"
+  tokenTypeClass="com.github.kornilova203.matlab.psi.MatlabTokenType"
 
   parserImports=[
-    "static com.github.korniloval.matlab.MatlabElementTypes.*"
+    "static com.github.kornilova203.matlab.MatlabElementTypes.*"
   ]
 
   tokens=[
@@ -73,15 +73,15 @@
       TRANS=".'"
     ]
 
-    mixin("ref_expr")="com.github.korniloval.matlab.psi.MatlabRefExprMixin"
-    mixin("class_declaration")="com.github.korniloval.matlab.psi.MatlabDeclarationBase"
-    mixin("catch_block")="com.github.korniloval.matlab.psi.MatlabCatchBlockMixin"
-    mixin("function_declaration")="com.github.korniloval.matlab.psi.MatlabFunctionDeclarationMixin"
-    mixin("parameter")="com.github.korniloval.matlab.psi.MatlabDeclarationBase"
-    mixin("ret_value")="com.github.korniloval.matlab.psi.MatlabDeclarationBase"
-    mixin("block")="com.github.korniloval.matlab.psi.MatlabBlockMixin"
-    mixin("for_loop")="com.github.korniloval.matlab.psi.MatlabForLoopMixin"
-    mixin("lambda_expr")="com.github.korniloval.matlab.psi.MatlabLambdaExprMixin"
+    mixin("ref_expr")="com.github.kornilova203.matlab.psi.MatlabRefExprMixin"
+    mixin("class_declaration")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
+    mixin("catch_block")="com.github.kornilova203.matlab.psi.MatlabCatchBlockMixin"
+    mixin("function_declaration")="com.github.kornilova203.matlab.psi.MatlabFunctionDeclarationMixin"
+    mixin("parameter")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
+    mixin("ret_value")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
+    mixin("block")="com.github.kornilova203.matlab.psi.MatlabBlockMixin"
+    mixin("for_loop")="com.github.kornilova203.matlab.psi.MatlabForLoopMixin"
+    mixin("lambda_expr")="com.github.kornilova203.matlab.psi.MatlabLambdaExprMixin"
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?
@@ -237,7 +237,7 @@ private enum_item ::= ident arguments?
     extends("binary_expr")=expr
     extends("ref_expr")=expr
     extends(".*_expr")=binary_expr
-    mixin("assign_expr")="com.github.korniloval.matlab.psi.MatlabAssignExprMixin"
+    mixin("assign_expr")="com.github.kornilova203.matlab.psi.MatlabAssignExprMixin"
 }
 
 expr ::= assign_expr

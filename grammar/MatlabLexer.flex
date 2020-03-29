@@ -1,4 +1,4 @@
-package com.github.korniloval.matlab.lexer;
+package com.github.kornilova203.matlab.lexer;
 
 import com.intellij.lexer.FlexAdapter;
 import com.intellij.lexer.FlexLexer;
@@ -7,7 +7,7 @@ import java.util.Stack;
 
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
-import static com.github.korniloval.matlab.psi.MatlabTypes.*;
+import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 
 %%
 
