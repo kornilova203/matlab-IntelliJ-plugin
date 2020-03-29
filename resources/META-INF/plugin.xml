@@ -20,6 +20,12 @@
 
     <depends>com.intellij.modules.lang</depends>
 
+    <application-components>
+        <component>
+            <implementation-class>com.github.kornilova203.matlab.MatlabUpdateComponent</implementation-class>
+        </component>
+    </application-components>
+
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="Matlab" fieldName="INSTANCE" extensions="m" language="Matlab"
                   implementationClass="com.github.kornilova203.matlab.MatlabFileType"/>
