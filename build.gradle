@@ -15,7 +15,7 @@ repositories {
 }
 
 intellij {
-    version = '2019.3.4'
+    version = '2020.1.2'
     patchPluginXml.sinceBuild = "191"
     downloadSources = true
 }
