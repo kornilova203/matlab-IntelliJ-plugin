@@ -29,9 +29,14 @@ For easier development install [Grammar-Kit](https://plugins.jetbrains.com/plugi
 
 Follow these steps to start working on the plugin:
 1. Clone project and import it to IntelliJ IDEA as Gradle project.
-2. Generate Matlab lexers. Open [MatlabLexer.flex](grammar/MatlabLexer.flex) and click **Run JFlex Generator** from context menu, do the same for [SingleQuoteStringLexer.flex](grammar/SingleQuoteStringLexer.flex).
-3. Generate Matlab parser. Open [Matlab.bnf](grammar/Matlab.bnf) and run **Generate Parser Code** from context menu.
-4. Run/Debug `runIde` Gradle task.
+2. Run/Debug `runIde` Gradle task.
+
+### How to re-generate parser
+
+After you made changes to bnf or flex files you need to generate new lexer/parser code:
+ 
+1. Generate Matlab lexers. Open [MatlabLexer.flex](grammar/MatlabLexer.flex) and click **Run JFlex Generator** from context menu, do the same for [SingleQuoteStringLexer.flex](grammar/SingleQuoteStringLexer.flex).
+2. Generate Matlab parser. Open [Matlab.bnf](grammar/Matlab.bnf) and run **Generate Parser Code** from context menu.
 
 If you have any issue with setting up development environment then please create an issue.
 
