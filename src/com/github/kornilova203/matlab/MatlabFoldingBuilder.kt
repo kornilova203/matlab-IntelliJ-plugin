@@ -24,7 +24,7 @@ class MatlabFoldingBuilder : CustomFoldingBuilder() {
         val type = node.elementType
         val parentType = node.treeParent?.elementType
         if (type == MatlabTypes.BLOCK && parentType != MatlabTypes.CASE_BLOCK && parentType != MatlabTypes.OTHERWISE_BLOCK
-                || type == MatlabTypes.SWITCH_BLOCK || type == MatlabTypes.CLASS_DECLARATION ) {
+                || type == MatlabTypes.SWITCH_BLOCK || type == MatlabTypes.CLASS_DECLARATION || type == MatlabTypes.EVENTS_LIST ) {
             val textRange = TextRange(getStartOffset(node), getEndOffset(node))
             descriptors.add(FoldingDescriptor(node, textRange))
         }
@@ -39,7 +39,9 @@ class MatlabFoldingBuilder : CustomFoldingBuilder() {
     private fun getStartOffset(node: ASTNode): Int {
         val child = when (node.elementType) {
             MatlabTypes.SWITCH_BLOCK -> node.findChildByType(MatlabTypes.SWITCH_EXPRESSION)
-            MatlabTypes.CLASS_DECLARATION -> node.findChildByType(MatlabTypes.IDENTIFIER)
+            MatlabTypes.CLASS_DECLARATION ->
+                if (node.findChildByType(MatlabTypes.SUPER_CLASSES) != null) node.findChildByType(MatlabTypes.SUPER_CLASSES)
+                else node.findChildByType(MatlabTypes.IDENTIFIER)
             else -> null
         }
         if (child != null) {
@@ -74,7 +76,7 @@ class MatlabFoldingBuilder : CustomFoldingBuilder() {
             }
             next = next.treeNext
         }
-        return findNotSpaceEnd(node.treeParent)
+        return if (node.treeParent != null) findNotSpaceEnd(node.treeParent) else node.textRange.endOffset
     }
 
     override fun isRegionCollapsedByDefault(node: ASTNode): Boolean = false
