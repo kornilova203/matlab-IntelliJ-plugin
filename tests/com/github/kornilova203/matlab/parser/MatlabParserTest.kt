@@ -1,12 +1,20 @@
 package com.github.kornilova203.matlab.parser
 
+import com.github.kornilova203.matlab.MatlabASTFactory
+import com.github.kornilova203.matlab.MatlabLanguage
 import com.github.kornilova203.matlab.MatlabParserDefinition
 import com.github.kornilova203.matlab.getTestDataRoot
+import com.intellij.lang.LanguageASTFactory
 import com.intellij.testFramework.ParsingTestCase
 import com.intellij.testFramework.TestDataPath
 
 @TestDataPath("parser")
 open class MatlabParserTest : ParsingTestCase("", "m", MatlabParserDefinition()) {
+
+    override fun setUp() {
+        super.setUp()
+        addExplicitExtension(LanguageASTFactory.INSTANCE, MatlabLanguage.INSTANCE, MatlabASTFactory())
+    }
 
     override fun getTestDataPath(): String = getTestDataRoot(javaClass)
 
