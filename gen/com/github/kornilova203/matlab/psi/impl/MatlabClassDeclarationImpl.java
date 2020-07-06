@@ -29,8 +29,8 @@ public class MatlabClassDeclarationImpl extends MatlabDeclarationBase implements
 
   @Override
   @Nullable
-  public MatlabClassAttributes getClassAttributes() {
-    return PsiTreeUtil.getChildOfType(this, MatlabClassAttributes.class);
+  public MatlabAttributes getAttributes() {
+    return PsiTreeUtil.getChildOfType(this, MatlabAttributes.class);
   }
 
   @Override

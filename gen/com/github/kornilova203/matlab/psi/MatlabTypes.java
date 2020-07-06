@@ -23,8 +23,6 @@ public interface MatlabTypes {
   IElementType CELL_ARRAY_ITEM = new MatlabElementType("CELL_ARRAY_ITEM");
   IElementType CELL_ARRAY_LITERAL = new MatlabElementType("CELL_ARRAY_LITERAL");
   IElementType CELL_ARRAY_ROW = new MatlabElementType("CELL_ARRAY_ROW");
-  IElementType CLASS_ATTRIBUTES = new MatlabElementType("CLASS_ATTRIBUTES");
-  IElementType CLASS_ATTRIBUTE_LIST_ITEM = new MatlabElementType("CLASS_ATTRIBUTE_LIST_ITEM");
   IElementType CLASS_DECLARATION = new MatlabElementType("CLASS_DECLARATION");
   IElementType CONDITION = new MatlabElementType("CONDITION");
   IElementType CTRANSPOSE_EXPR = new MatlabElementType("CTRANSPOSE_EXPR");
@@ -208,12 +206,6 @@ public interface MatlabTypes {
       }
       else if (type == CELL_ARRAY_ROW) {
         return new MatlabCellArrayRowImpl(type);
-      }
-      else if (type == CLASS_ATTRIBUTES) {
-        return new MatlabClassAttributesImpl(type);
-      }
-      else if (type == CLASS_ATTRIBUTE_LIST_ITEM) {
-        return new MatlabClassAttributeListItemImpl(type);
       }
       else if (type == CLASS_DECLARATION) {
         return new MatlabClassDeclarationImpl(type);

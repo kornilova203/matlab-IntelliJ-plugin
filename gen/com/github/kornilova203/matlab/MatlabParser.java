@@ -94,15 +94,16 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // {} ref_expr [ sep '=' sep expr ]
+  // {} [ '~' ] ref_expr [ sep '=' sep expr ]
   public static boolean attribute(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, ATTRIBUTE, "<attribute>");
     r = attribute_0(b, l + 1);
-    r = r && ref_expr(b, l + 1);
+    r = r && attribute_1(b, l + 1);
     p = r; // pin = 2
-    r = r && attribute_2(b, l + 1);
+    r = r && report_error_(b, ref_expr(b, l + 1));
+    r = p && attribute_3(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
@@ -112,16 +113,23 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     return true;
   }
 
+  // [ '~' ]
+  private static boolean attribute_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_1")) return false;
+    consumeToken(b, TILDA);
+    return true;
+  }
+
   // [ sep '=' sep expr ]
-  private static boolean attribute_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "attribute_2")) return false;
-    attribute_2_0(b, l + 1);
+  private static boolean attribute_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_3")) return false;
+    attribute_3_0(b, l + 1);
     return true;
   }
 
   // sep '=' sep expr
-  private static boolean attribute_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "attribute_2_0")) return false;
+  private static boolean attribute_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_3_0")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
     r = sep(b, l + 1);
@@ -646,33 +654,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ref_expr '=' expr
-  public static boolean class_attribute_list_item(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "class_attribute_list_item")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, CLASS_ATTRIBUTE_LIST_ITEM, "<class attribute list item>");
-    r = ref_expr(b, l + 1);
-    p = r; // pin = 1
-    r = r && report_error_(b, consumeToken(b, ASSIGN));
-    r = p && expr(b, l + 1, -1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  /* ********************************************************** */
-  // <<p_opt_list class_attribute_list_item>>
-  public static boolean class_attributes(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "class_attributes")) return false;
-    if (!nextTokenIs(b, LPARENTH)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = p_opt_list(b, l + 1, class_attribute_list_item_parser_);
-    exit_section_(b, m, CLASS_ATTRIBUTES, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // classdef br* class_attributes? br* ident br* super_classes? NEWLINE*
+  // classdef br* attributes? br* ident br* super_classes? NEWLINE*
   //     (( properties_block | methods_block | events_block | enumeration_block ) NEWLINE*)*
   //     end
   public static boolean class_declaration(PsiBuilder b, int l) {
@@ -706,10 +688,10 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // class_attributes?
+  // attributes?
   private static boolean class_declaration_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "class_declaration_2")) return false;
-    class_attributes(b, l + 1);
+    attributes(b, l + 1);
     return true;
   }
 
@@ -4120,11 +4102,6 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   static final Parser cell_array_row_recovery_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return cell_array_row_recovery(b, l + 1);
-    }
-  };
-  static final Parser class_attribute_list_item_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return class_attribute_list_item(b, l + 1);
     }
   };
   static final Parser element_parser_ = new Parser() {
