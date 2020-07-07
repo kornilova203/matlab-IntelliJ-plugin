@@ -67,14 +67,6 @@ public class MatlabVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitClassAttributeListItem(@NotNull MatlabClassAttributeListItem o) {
-    visitPsiElement(o);
-  }
-
-  public void visitClassAttributes(@NotNull MatlabClassAttributes o) {
-    visitPsiElement(o);
-  }
-
   public void visitClassDeclaration(@NotNull MatlabClassDeclaration o) {
     visitPsiElement(o);
   }

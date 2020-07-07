@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface MatlabClassDeclaration extends PsiElement {
 
   @Nullable
-  MatlabClassAttributes getClassAttributes();
+  MatlabAttributes getAttributes();
 
   @NotNull
   List<MatlabEnumerationBlock> getEnumerationBlockList();
