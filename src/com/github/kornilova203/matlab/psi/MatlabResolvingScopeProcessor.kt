@@ -14,9 +14,9 @@ class MatlabResolvingScopeProcessor(private val myReference: MatlabReference) : 
 
     override fun execute(decl: PsiElement, state: ResolveState): Boolean {
         if (decl !is MatlabDeclaration) return true
-        if (decl.name == myReference.element.text) {
+        if (decl.name == myReference.element.text && (decl is MatlabGlobalVariableDeclaration || declaration == null || declaration?.firstChild == myReference.element)) {
             this.declaration = decl
-            return false
+            return decl !is MatlabGlobalVariableDeclaration
         }
         return true
     }

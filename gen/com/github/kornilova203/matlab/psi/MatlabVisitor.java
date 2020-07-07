@@ -159,7 +159,7 @@ public class MatlabVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitGlobalVariableDeclarations(@NotNull MatlabGlobalVariableDeclarations o) {
+  public void visitGlobalVariableDeclaration(@NotNull MatlabGlobalVariableDeclaration o) {
     visitPsiElement(o);
   }
 
