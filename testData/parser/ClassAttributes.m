@@ -9,3 +9,6 @@ end
 
 classdef (AllowedSubclasses = true, Abstract, ~Hidden) MixAttributesClass
 end
+
+classdef (Abstract, , , ) ErrorClass
+end

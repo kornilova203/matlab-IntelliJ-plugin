@@ -79,3 +79,30 @@ Matlab File
     PsiElement(IDENTIFIER)('MixAttributesClass')
     PsiElement(NEWLINE)('\n')
     PsiElement(end)('end')
+  PsiElement(NEWLINE)('\n')
+  PsiElement(NEWLINE)('\n')
+  MatlabClassDeclarationImpl(CLASS_DECLARATION)
+    PsiElement(classdef)('classdef')
+    PsiWhiteSpace(' ')
+    MatlabAttributesImpl(ATTRIBUTES)
+      PsiElement(()('(')
+      MatlabAttributeImpl(ATTRIBUTE)
+        MatlabRefExprImpl(REF_EXPR)
+          PsiElement(IDENTIFIER)('Abstract')
+      PsiElement(,)(',')
+      PsiErrorElement:'...', NEWLINE or '~' expected, got ','
+        <empty list>
+      PsiWhiteSpace(' ')
+      PsiElement(,)(',')
+      PsiErrorElement:'...', NEWLINE or '~' expected, got ','
+        <empty list>
+      PsiWhiteSpace(' ')
+      PsiElement(,)(',')
+      PsiErrorElement:'...', NEWLINE or '~' expected, got ')'
+        <empty list>
+      PsiWhiteSpace(' ')
+      PsiElement())(')')
+    PsiWhiteSpace(' ')
+    PsiElement(IDENTIFIER)('ErrorClass')
+    PsiElement(NEWLINE)('\n')
+    PsiElement(end)('end')

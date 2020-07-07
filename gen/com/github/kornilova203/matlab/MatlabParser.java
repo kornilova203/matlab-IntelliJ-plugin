@@ -94,42 +94,36 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // {} [ '~' ] ref_expr [ sep '=' sep expr ]
+  // [ '~' ] ref_expr [ sep '=' sep expr ]
   public static boolean attribute(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "attribute")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, ATTRIBUTE, "<attribute>");
     r = attribute_0(b, l + 1);
-    r = r && attribute_1(b, l + 1);
+    r = r && ref_expr(b, l + 1);
     p = r; // pin = 2
-    r = r && report_error_(b, ref_expr(b, l + 1));
-    r = p && attribute_3(b, l + 1) && r;
+    r = r && attribute_2(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // {}
-  private static boolean attribute_0(PsiBuilder b, int l) {
-    return true;
-  }
-
   // [ '~' ]
-  private static boolean attribute_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "attribute_1")) return false;
+  private static boolean attribute_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_0")) return false;
     consumeToken(b, TILDA);
     return true;
   }
 
   // [ sep '=' sep expr ]
-  private static boolean attribute_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "attribute_3")) return false;
-    attribute_3_0(b, l + 1);
+  private static boolean attribute_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_2")) return false;
+    attribute_2_0(b, l + 1);
     return true;
   }
 
   // sep '=' sep expr
-  private static boolean attribute_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "attribute_3_0")) return false;
+  private static boolean attribute_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "attribute_2_0")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
     r = sep(b, l + 1);

@@ -197,7 +197,7 @@ properties_block ::= properties_token br* attributes? NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
 private properties_token ::= <<parseIdentifierAsKeyword 'PROPERTIES'>>
 attributes ::= <<p_opt_list attribute>>
-attribute ::= {} [ '~' ] ref_expr [ sep '=' sep expr ] { pin(".*")=2 }
+attribute ::= [ '~' ] ref_expr [ sep '=' sep expr ] { pin(".*")=2 }
 private properties_block_body ::= <<block element>> { recoverWhile=block_inside_class_recovery }
 private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods_token | properties_token | events_token | enumeration_token ) )
 
