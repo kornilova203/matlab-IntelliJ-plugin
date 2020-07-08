@@ -1,12 +1,18 @@
 package com.github.kornilova203.matlab;
 
 import com.github.kornilova203.matlab.psi.MatlabElementType;
+import com.github.kornilova203.matlab.psi.MatlabTokenType;
+import com.github.kornilova203.matlab.psi.MatlabTypes;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import com.intellij.lang.parser.GeneratedParserUtilBase;
 import com.intellij.openapi.util.Key;
+import com.intellij.psi.tree.IElementType;
 import gnu.trove.TObjectLongHashMap;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 
@@ -17,6 +23,8 @@ public class MatlabParserUtil extends GeneratedParserUtilBase {
     static final String ALLOW_END_AS_IDENTIFIER = "ALLOW_END_AS_IDENTIFIER";
     static final String NEW_LINE_ALLOWED = "NEW_LINE_ALLOWED";
     private static final Key<TObjectLongHashMap<String>> MODES_KEY = Key.create("MODES_KEY");
+    static final HashSet<IElementType> KEYWORDS = new HashSet<>(Arrays.asList(FUNCTION, END, IF, ELSE, ELSEIF, WHILE,
+            SWITCH, CASE, OTHERWISE, FOR, CLASSDEF, TRY, CATCH, GLOBAL));
 
     public static boolean parseIdentifier(PsiBuilder builder, int level) {
         if (builder.getTokenType() == IDENTIFIER) {
@@ -84,5 +92,17 @@ public class MatlabParserUtil extends GeneratedParserUtilBase {
         TObjectLongHashMap<String> flags = builder.getUserData(MODES_KEY);
         if (flags == null) builder.putUserData(MODES_KEY, flags = new TObjectLongHashMap<>());
         return flags;
+    }
+
+    public static boolean parseKeywordAsRefExpression(PsiBuilder builder, int level) {
+        if (KEYWORDS.contains(builder.getTokenType())) {
+            Marker mark = builder.mark();
+            builder.advanceLexer();
+            Marker ref = mark.precede();
+            mark.collapse(IDENTIFIER);
+            ref.done(REF_EXPR);
+            return true;
+        }
+        return false;
     }
 }

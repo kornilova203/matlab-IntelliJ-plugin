@@ -292,6 +292,7 @@ private add_group ::= plus_expr
   | minus_expr
 
 private primary_group ::= literal_expr
+  | qualified_with_keyword_expr
   | qualified_expr
   | direct_function_expr
   | function_expr
@@ -352,6 +353,7 @@ and_expr ::= expr ws '&&' ws expr
 matrix_and_expr ::= expr ws '&' ws expr
 
 qualified_expr ::= expr '.' expr
+qualified_with_keyword_expr ::= expr '.' <<parseKeywordAsRefExpression>> {elementType=qualified_expr}
 ref_expr ::= ident
 unary_min_expr ::= '-' ws expr
 unary_dec_expr ::= expr ws '--'

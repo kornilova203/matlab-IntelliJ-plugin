@@ -866,7 +866,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   // if_block
   //   | switch_block
   //   | try_block
-  //   | global br* global_variable_declaration (br* global_variable_declaration)* 
+  //   | global br* global_variable_declaration (br* global_variable_declaration)*
   //   | file_operation
   //   | for_loop
   //   | while_loop
@@ -3297,9 +3297,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   // 6: POSTFIX(unary_inc_expr) POSTFIX(unary_dec_expr) PREFIX(unary_prefix_dec_expr) PREFIX(unary_prefix_inc_expr)
   //    PREFIX(unary_plus_expr) PREFIX(unary_min_expr) POSTFIX(ctranspose_expr) POSTFIX(transpose_expr)
   //    PREFIX(unary_negation_expr) PREFIX(meta_class_expr)
-  // 7: ATOM(literal_expr) BINARY(qualified_expr) ATOM(direct_function_expr) POSTFIX(function_expr)
-  //    POSTFIX(cell_array_access_expr) ATOM(ref_expr) ATOM(paren_expr) ATOM(lambda_expr)
-  //    ATOM(function_ref_expr)
+  // 7: ATOM(literal_expr) POSTFIX(qualified_with_keyword_expr) BINARY(qualified_expr) ATOM(direct_function_expr)
+  //    POSTFIX(function_expr) POSTFIX(cell_array_access_expr) ATOM(ref_expr) ATOM(paren_expr)
+  //    ATOM(lambda_expr) ATOM(function_ref_expr)
   public static boolean expr(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "expr")) return false;
     addVariant(b, "<expression>");
@@ -3432,6 +3432,10 @@ public class MatlabParser implements PsiParser, LightPsiParser {
       else if (g < 6 && transpose_expr_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, TRANSPOSE_EXPR, r, true, null);
+      }
+      else if (g < 7 && qualified_with_keyword_expr_0(b, l + 1)) {
+        r = true;
+        exit_section_(b, l, m, QUALIFIED_EXPR, r, true, null);
       }
       else if (g < 7 && consumeTokenSmart(b, DOT)) {
         r = expr(b, l, 7);
@@ -3932,6 +3936,17 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!r) r = matrix_literal(b, l + 1);
     if (!r) r = cell_array_literal(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // '.' <<parseKeywordAsRefExpression>>
+  private static boolean qualified_with_keyword_expr_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "qualified_with_keyword_expr_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokenSmart(b, DOT);
+    r = r && parseKeywordAsRefExpression(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
