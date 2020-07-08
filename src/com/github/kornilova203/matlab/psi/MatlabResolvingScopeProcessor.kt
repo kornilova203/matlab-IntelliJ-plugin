@@ -14,7 +14,7 @@ class MatlabResolvingScopeProcessor(private val myReference: MatlabReference) : 
 
     override fun execute(decl: PsiElement, state: ResolveState): Boolean {
         if (decl !is MatlabDeclaration) return true
-        if (decl.name == myReference.element.text && (decl is MatlabGlobalVariableDeclaration || declaration == null || declaration?.firstChild == myReference.element)) {
+        if (decl.name == myReference.element.text && (decl is MatlabGlobalVariableDeclaration || declaration == null || isResolvedToItself())) {
             this.declaration = decl
             return decl !is MatlabGlobalVariableDeclaration
         }
@@ -26,5 +26,9 @@ class MatlabResolvingScopeProcessor(private val myReference: MatlabReference) : 
     }
 
     override fun handleEvent(event: PsiScopeProcessor.Event, associated: Any?) {
+    }
+
+    private fun isResolvedToItself(): Boolean {
+        return declaration?.identifyingElement == myReference.element.identifier()
     }
 }
