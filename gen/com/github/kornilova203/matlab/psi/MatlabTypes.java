@@ -44,7 +44,7 @@ public interface MatlabTypes {
   IElementType FUNCTION_EXPR = new MatlabElementType("FUNCTION_EXPR");
   IElementType FUNCTION_REF_EXPR = new MatlabElementType("FUNCTION_REF_EXPR");
   IElementType GETTER_OR_SETTER_MODIFIER = new MatlabElementType("GETTER_OR_SETTER_MODIFIER");
-  IElementType GLOBAL_VARIABLE_DECLARATIONS = new MatlabElementType("GLOBAL_VARIABLE_DECLARATIONS");
+  IElementType GLOBAL_VARIABLE_DECLARATION = new MatlabElementType("GLOBAL_VARIABLE_DECLARATION");
   IElementType IF_BLOCK = new MatlabElementType("IF_BLOCK");
   IElementType LAMBDA_BODY = new MatlabElementType("LAMBDA_BODY");
   IElementType LAMBDA_EXPR = new MatlabElementType("LAMBDA_EXPR");
@@ -267,8 +267,8 @@ public interface MatlabTypes {
       else if (type == GETTER_OR_SETTER_MODIFIER) {
         return new MatlabGetterOrSetterModifierImpl(type);
       }
-      else if (type == GLOBAL_VARIABLE_DECLARATIONS) {
-        return new MatlabGlobalVariableDeclarationsImpl(type);
+      else if (type == GLOBAL_VARIABLE_DECLARATION) {
+        return new MatlabGlobalVariableDeclarationImpl(type);
       }
       else if (type == IF_BLOCK) {
         return new MatlabIfBlockImpl(type);

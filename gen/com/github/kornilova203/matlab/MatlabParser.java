@@ -866,7 +866,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   // if_block
   //   | switch_block
   //   | try_block
-  //   | global_variable_declarations
+  //   | global br* global_variable_declaration (br* global_variable_declaration)* 
   //   | file_operation
   //   | for_loop
   //   | while_loop
@@ -877,10 +877,11 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   static boolean el(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "el")) return false;
     boolean r;
+    Marker m = enter_section_(b);
     r = if_block(b, l + 1);
     if (!r) r = switch_block(b, l + 1);
     if (!r) r = try_block(b, l + 1);
-    if (!r) r = global_variable_declarations(b, l + 1);
+    if (!r) r = el_3(b, l + 1);
     if (!r) r = file_operation(b, l + 1);
     if (!r) r = for_loop(b, l + 1);
     if (!r) r = while_loop(b, l + 1);
@@ -888,7 +889,66 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!r) r = class_declaration(b, l + 1);
     if (!r) r = expr(b, l + 1, -1);
     if (!r) r = consumeToken(b, COMMENT);
+    exit_section_(b, m, null, r);
     return r;
+  }
+
+  // global br* global_variable_declaration (br* global_variable_declaration)*
+  private static boolean el_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "el_3")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
+    r = consumeToken(b, GLOBAL);
+    p = r; // pin = 1
+    r = r && report_error_(b, el_3_1(b, l + 1));
+    r = p && report_error_(b, global_variable_declaration(b, l + 1)) && r;
+    r = p && el_3_3(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // br*
+  private static boolean el_3_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "el_3_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!br(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "el_3_1", c)) break;
+    }
+    return true;
+  }
+
+  // (br* global_variable_declaration)*
+  private static boolean el_3_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "el_3_3")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!el_3_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "el_3_3", c)) break;
+    }
+    return true;
+  }
+
+  // br* global_variable_declaration
+  private static boolean el_3_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "el_3_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = el_3_3_0_0(b, l + 1);
+    r = r && global_variable_declaration(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // br*
+  private static boolean el_3_3_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "el_3_3_0_0")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!br(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "el_3_3_0_0", c)) break;
+    }
+    return true;
   }
 
   /* ********************************************************** */
@@ -1512,63 +1572,14 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // global br* ident (br* ident)*
-  public static boolean global_variable_declarations(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "global_variable_declarations")) return false;
-    if (!nextTokenIs(b, GLOBAL)) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, GLOBAL_VARIABLE_DECLARATIONS, null);
-    r = consumeToken(b, GLOBAL);
-    p = r; // pin = 1
-    r = r && report_error_(b, global_variable_declarations_1(b, l + 1));
-    r = p && report_error_(b, parseIdentifier(b, l + 1)) && r;
-    r = p && global_variable_declarations_3(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // br*
-  private static boolean global_variable_declarations_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "global_variable_declarations_1")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!br(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "global_variable_declarations_1", c)) break;
-    }
-    return true;
-  }
-
-  // (br* ident)*
-  private static boolean global_variable_declarations_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "global_variable_declarations_3")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!global_variable_declarations_3_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "global_variable_declarations_3", c)) break;
-    }
-    return true;
-  }
-
-  // br* ident
-  private static boolean global_variable_declarations_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "global_variable_declarations_3_0")) return false;
+  // ident
+  public static boolean global_variable_declaration(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "global_variable_declaration")) return false;
     boolean r;
-    Marker m = enter_section_(b);
-    r = global_variable_declarations_3_0_0(b, l + 1);
-    r = r && parseIdentifier(b, l + 1);
-    exit_section_(b, m, null, r);
+    Marker m = enter_section_(b, l, _NONE_, GLOBAL_VARIABLE_DECLARATION, "<global variable declaration>");
+    r = parseIdentifier(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
-  }
-
-  // br*
-  private static boolean global_variable_declarations_3_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "global_variable_declarations_3_0_0")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!br(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "global_variable_declarations_3_0_0", c)) break;
-    }
-    return true;
   }
 
   /* ********************************************************** */

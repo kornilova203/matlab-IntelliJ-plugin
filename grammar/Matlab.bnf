@@ -82,6 +82,7 @@
     mixin("block")="com.github.kornilova203.matlab.psi.MatlabBlockMixin"
     mixin("for_loop")="com.github.kornilova203.matlab.psi.MatlabForLoopMixin"
     mixin("lambda_expr")="com.github.kornilova203.matlab.psi.MatlabLambdaExprMixin"
+    mixin("global_variable_declaration")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?
@@ -102,20 +103,20 @@ private element ::= ( el [ ';' | ',' ] ) | ';' | ','
 private el ::= if_block
   | switch_block
   | try_block
-  | global_variable_declarations
+  | global br* global_variable_declaration (br* global_variable_declaration)*
   | file_operation
   | for_loop
   | while_loop
   | function_declaration
   | class_declaration
   | expr
-  | COMMENT
+  | COMMENT { pin(".*_3")=1 }
 
 meta block ::= (<<p>> NEWLINE *)*
 private block_that_recovers_until_end ::= <<block element>> { recoverWhile=not_end_or_oef }
 private not_end_or_oef ::= !( NEWLINE* ( end | <<eof>> ) )
 
-global_variable_declarations ::= global br* ident (br* ident)* { pin=1 }
+global_variable_declaration ::= ident
 
 if_block ::= if br* condition ','? NEWLINE*
   if_block_body NEWLINE*

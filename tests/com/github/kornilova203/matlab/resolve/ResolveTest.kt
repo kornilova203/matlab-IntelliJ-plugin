@@ -31,6 +31,7 @@ class ResolveTest : BasePlatformTestCase() {
     fun testVariableUsedInLambda() = doTest("a")
     fun testCaughtException() = doTest("e")
     fun testVariableInCatchBlock() = doTest("a")
+    fun testGlobal() = doTest("b")
 
     private fun doTest(name: String, shouldBeResolved: Boolean = true) {
         val file = File(testDataPath + getTestName(false) + ".m")
