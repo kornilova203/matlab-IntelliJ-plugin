@@ -22,6 +22,7 @@ class MatlabAnnotator : Annotator {
         val CLASS_DECLARATION = createTextAttributesKey("MATLAB.CLASS_DECLARATION", DefaultLanguageHighlighterColors.CLASS_NAME)
         val LAMBDA_PARENTH = createTextAttributesKey("MATLAB.LAMBDA_PARENTH", DefaultLanguageHighlighterColors.METADATA)
         val KEYWORD = createTextAttributesKey("MATLAB.KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
+        val ID = createTextAttributesKey("MATLAB.ID", DefaultLanguageHighlighterColors.LOCAL_VARIABLE)
     }
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
@@ -34,6 +35,7 @@ class MatlabAnnotator : Annotator {
                 type == IDENTIFIER && el.parent is MatlabFunctionDeclaration                   -> FUNCTION_DECLARATION
                 type == IDENTIFIER && el.parent is MatlabClassDeclaration                      -> CLASS_DECLARATION
                 type == METHODS || type == EVENTS || type == PROPERTIES || type == ENUMERATION -> KEYWORD
+                type == IDENTIFIER                                                             -> ID
                 else -> null
             }
             if (attrs != null) {
