@@ -25,8 +25,12 @@ class MatlabFoldingBuilder : CustomFoldingBuilder() {
         val parentType = node.treeParent?.elementType
         if (type == MatlabTypes.BLOCK && parentType != MatlabTypes.CASE_BLOCK && parentType != MatlabTypes.OTHERWISE_BLOCK
                 || type == MatlabTypes.SWITCH_BLOCK || type == MatlabTypes.CLASS_DECLARATION || type == MatlabTypes.EVENTS_LIST ) {
-            val textRange = TextRange(getStartOffset(node), getEndOffset(node))
-            descriptors.add(FoldingDescriptor(node, textRange))
+            val start = getStartOffset(node)
+            val end = getEndOffset(node)
+            if (end > start) {
+                val textRange = TextRange(start, end)
+                descriptors.add(FoldingDescriptor(node, textRange))
+            }
         }
 
         var child = node.firstChildNode
