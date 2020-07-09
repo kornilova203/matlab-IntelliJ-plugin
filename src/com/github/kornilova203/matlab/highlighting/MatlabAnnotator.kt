@@ -22,7 +22,7 @@ class MatlabAnnotator : Annotator {
         val CLASS_DECLARATION = createTextAttributesKey("MATLAB.CLASS_DECLARATION", DefaultLanguageHighlighterColors.CLASS_NAME)
         val LAMBDA_PARENTH = createTextAttributesKey("MATLAB.LAMBDA_PARENTH", DefaultLanguageHighlighterColors.METADATA)
         val KEYWORD = createTextAttributesKey("MATLAB.KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
-        val ID = createTextAttributesKey("MATLAB.ID", DefaultLanguageHighlighterColors.LOCAL_VARIABLE)
+        val ID = createTextAttributesKey("MATLAB.ID", DefaultLanguageHighlighterColors.IDENTIFIER)
     }
 
     override fun annotate(element: PsiElement, holder: AnnotationHolder) {
