@@ -8,7 +8,8 @@ import com.github.kornilova203.matlab.psi.MatlabTypes
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.patterns.PlatformPatterns.psiElement
-import com.intellij.patterns.StandardPatterns.and
+import com.intellij.patterns.StandardPatterns.*
+import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 
 class MatlabKeywordCompletionContributor : CompletionContributor() {
@@ -18,13 +19,9 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
         private val IDENT = psiElement(MatlabTypes.IDENTIFIER).withParent(MatlabRefExpr::class.java)
         private val AT_TOP_LEVEL = and(M, IDENT.withSuperParent(2, MatlabFile::class.java))
         private val IN_BLOCK = and(M, IDENT.withSuperParent(2, MatlabBlock::class.java))
-        private val AFTER_INTEGER_LITERAL = psiElement().afterLeafSkipping(
-                psiElement().withText(""),
-                psiElement().withElementType(MatlabTypes.INTEGER)
-        )
-        private val AFTER_FLOAT_LITERAL = psiElement().afterLeafSkipping(
-                psiElement().withText(""),
-                psiElement().withElementType(MatlabTypes.FLOAT)
+        private val AFTER_NUMBER_LITERAL = psiElement().afterLeafSkipping(
+                alwaysFalse<PsiElement>(),
+                or(psiElement(MatlabTypes.INTEGER), psiElement(MatlabTypes.FLOAT))
         )
     }
 
@@ -44,7 +41,8 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
         return object : CompletionProvider<CompletionParameters>() {
             override fun addCompletions(parameters: CompletionParameters, context: ProcessingContext, result: CompletionResultSet) {
                 val position = parameters.position
-                if (AFTER_INTEGER_LITERAL.accepts(position) || AFTER_FLOAT_LITERAL.accepts(position)) {
+                if (AFTER_NUMBER_LITERAL.accepts(position)) {
+                    result.stopHere()
                     return
                 }
                 for (keyword in keywords) {
