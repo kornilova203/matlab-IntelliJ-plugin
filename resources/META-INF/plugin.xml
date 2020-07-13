@@ -59,6 +59,7 @@
         <lang.smartEnterProcessor language="Matlab"
                                   implementationClass="com.github.kornilova203.matlab.editor.smartEnter.MatlabSmartEnter"/>
         <lang.foldingBuilder language="Matlab" implementationClass="com.github.kornilova203.matlab.MatlabFoldingBuilder"/>
+        <lineIndentProvider implementation="com.github.kornilova203.matlab.MatlabLineIndentProvider"/>
     </extensions>
 
     <project-components>
