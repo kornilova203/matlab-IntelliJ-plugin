@@ -33,25 +33,28 @@ fun PsiElement.inCurrentFunction(parent: PsiElement): Boolean {
     return true
 }
 
+fun PsiElement.findDeclaration(processor: PsiScopeProcessor, state: ResolveState, inCurrentScope : Boolean) : Boolean {
+    if (this is MatlabDeclaration) {
+        if (inCurrentScope || this.visibleOutsideFunction) {
+            return processor.execute(this, state)
+        }
+    }
+    return true
+}
+
 fun processDeclarations(parent: PsiElement, processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement?, place: PsiElement): Boolean {
     val inCurrentScope = place.inCurrentFunction(parent)
 
-    val res = lastParent?.forEachSiblingBackwards { el ->
-        if (el is MatlabDeclaration) {
-            if (inCurrentScope || el.visibleOutsideFunction) {
-                return@forEachSiblingBackwards processor.execute(el, state)
-            }
+    if (!state.get(MatlabReference.IS_ORIGINAL_FILE) && lastParent != null) {
+        if (!lastParent.findDeclaration(processor, state, inCurrentScope)) {
+            return false
         }
-        return@forEachSiblingBackwards true
     }
+
+    val res = lastParent?.forEachSiblingBackwards { it.findDeclaration(processor, state, inCurrentScope) }
     if (res == false) return false
 
     if (inCurrentScope) return true
 
-    return lastParent?.forEachSiblingForward { el ->
-        if (el is MatlabDeclaration && el.visibleOutsideFunction) {
-            return@forEachSiblingForward processor.execute(el, state)
-        }
-        return@forEachSiblingForward true
-    } ?: true
+    return lastParent?.forEachSiblingForward { it.findDeclaration(processor, state, inCurrentScope) } ?: true
 }
