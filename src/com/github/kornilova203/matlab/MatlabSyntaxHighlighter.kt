@@ -25,19 +25,19 @@ class MatlabSyntaxHighlighter : SyntaxHighlighterBase() {
         private val ID = createTextAttributesKey("ID", DefaultLanguageHighlighterColors.LOCAL_VARIABLE)
         private val KEYWORD = createTextAttributesKey("KEYWORD", DefaultLanguageHighlighterColors.KEYWORD)
 
-        private val BAD_CHAR_KEYS: Array<TextAttributesKey?> = arrayOf(BAD_CHARACTER)
-        private val VALID_STRING_ESCAPE_KEYS: Array<TextAttributesKey?> = arrayOf(VALID_STRING_ESCAPE)
-        private val INVALID_STRING_ESCAPE_KEYS: Array<TextAttributesKey?> = arrayOf(INVALID_STRING_ESCAPE)
-        private val COMMENT_KEYS: Array<TextAttributesKey?> = arrayOf(COMMENT)
-        private val STRING_KEYS: Array<TextAttributesKey?> = arrayOf(STRING)
-        private val SEMICOLON_KEYS: Array<TextAttributesKey?> = arrayOf(SEMICOLON)
-        private val KEYWORD_KEYS: Array<TextAttributesKey?> = arrayOf(KEYWORD)
-        private val ID_KEYS: Array<TextAttributesKey?> = arrayOf(ID)
-        private val NUMBER_KEYS: Array<TextAttributesKey?> = arrayOf(DefaultLanguageHighlighterColors.NUMBER)
-        private val EMPTY_KEYS = arrayOfNulls<TextAttributesKey>(0)
+        private val BAD_CHAR_KEYS: Array<TextAttributesKey> = arrayOf(BAD_CHARACTER)
+        private val VALID_STRING_ESCAPE_KEYS: Array<TextAttributesKey> = arrayOf(VALID_STRING_ESCAPE)
+        private val INVALID_STRING_ESCAPE_KEYS: Array<TextAttributesKey> = arrayOf(INVALID_STRING_ESCAPE)
+        private val COMMENT_KEYS: Array<TextAttributesKey> = arrayOf(COMMENT)
+        private val STRING_KEYS: Array<TextAttributesKey> = arrayOf(STRING)
+        private val SEMICOLON_KEYS: Array<TextAttributesKey> = arrayOf(SEMICOLON)
+        private val KEYWORD_KEYS: Array<TextAttributesKey> = arrayOf(KEYWORD)
+        private val ID_KEYS: Array<TextAttributesKey> = arrayOf(ID)
+        private val NUMBER_KEYS: Array<TextAttributesKey> = arrayOf(DefaultLanguageHighlighterColors.NUMBER)
+        private val EMPTY_KEYS = arrayOf<TextAttributesKey>()
     }
 
-    override fun getTokenHighlights(tokenType: IElementType?): Array<TextAttributesKey?> {
+    override fun getTokenHighlights(tokenType: IElementType?): Array<TextAttributesKey> {
         if (tokenType == null) {
             return EMPTY_KEYS
         }
