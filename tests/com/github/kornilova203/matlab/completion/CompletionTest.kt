@@ -14,6 +14,8 @@ class CompletionTest : BasePlatformTestCase() {
     fun testVarInSameScope() = doTest("var1", "var2")
     fun testVarInDifferentScopes() = doTest("var1", "var2")
     fun testShadowingVar() = doTest("var1", "var2")
+    fun testNumber() = doTest()
+    fun testNumberDot() = doTest()
 
     private fun doTest(vararg completionVariants: String) {
         myFixture.testCompletionVariants(getTestFilePath(), *completionVariants)
