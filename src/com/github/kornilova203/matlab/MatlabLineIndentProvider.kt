@@ -14,7 +14,7 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.util.text.CharArrayUtil
 
 
-class MatlabLineIndentProvider : LineIndentProvider{
+class MatlabLineIndentProvider : LineIndentProvider {
     companion object {
         private val WHITE_SPACE_OR_COMMENT: Array<IElementType> = arrayOf(
                 TokenType.WHITE_SPACE,
@@ -22,7 +22,7 @@ class MatlabLineIndentProvider : LineIndentProvider{
                 MatlabTypes.NEWLINE
         )
 
-        private val BLOCK_OPENING : Array<IElementType> = arrayOf(
+        private val BLOCK_OPENING: Array<IElementType> = arrayOf(
                 MatlabTypes.CLASSDEF,
                 MatlabTypes.FOR,
                 MatlabTypes.FUNCTION,
@@ -36,22 +36,22 @@ class MatlabLineIndentProvider : LineIndentProvider{
                 MatlabElementTypes.ENUMERATION
         )
 
-        private val BLOCK_CLOSING : Array<IElementType> = arrayOf(
+        private val BLOCK_CLOSING: Array<IElementType> = arrayOf(
                 MatlabTypes.END
         )
 
-        private val CASE_OTHERWISE : Array<IElementType> = arrayOf(
+        private val CASE_OTHERWISE: Array<IElementType> = arrayOf(
                 MatlabTypes.CASE,
                 MatlabTypes.OTHERWISE
         )
 
-        private val NOT_END_KEYWORDS : Array<IElementType> = arrayOf(
+        private val NOT_END_KEYWORDS: Array<IElementType> = arrayOf(
                 MatlabTypes.CATCH,
                 MatlabTypes.ELSE,
                 MatlabTypes.ELSEIF
         )
 
-        private val INDENT_KEYWORDS : Array<IElementType> = arrayOf(
+        private val INDENT_KEYWORDS: Array<IElementType> = arrayOf(
                 *BLOCK_OPENING,
                 *CASE_OTHERWISE,
                 *NOT_END_KEYWORDS
@@ -85,7 +85,7 @@ class MatlabLineIndentProvider : LineIndentProvider{
         return null
     }
 
-    private fun getIndentString(editor: Editor, offset: Int, shouldExpand : Boolean) : String {
+    private fun getIndentString(editor: Editor, offset: Int, shouldExpand: Boolean): String {
         val settings: CodeStyleSettings = CodeStyle.getSettings(editor)
         val indentOptions = settings.getIndentOptions(MatlabFileType)
         val docChars = editor.document.charsSequence

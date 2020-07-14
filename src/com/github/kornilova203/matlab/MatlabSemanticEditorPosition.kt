@@ -7,21 +7,16 @@ import com.intellij.psi.tree.IElementType
 import com.intellij.util.text.CharArrayUtil
 
 class MatlabSemanticEditorPosition(editor: EditorEx, offset: Int) {
-    private var myIterator: HighlighterIterator? = null
-    private var myEditor: EditorEx = editor
-    private var myChars: CharSequence
-
-    init {
-        myIterator = editor.highlighter.createIterator(offset)
-        myChars = myEditor.document.charsSequence
-    }
+    private var iterator: HighlighterIterator = editor.highlighter.createIterator(offset)
+    private var editor: EditorEx = editor
+    private var chars: CharSequence = this.editor.document.charsSequence
 
     fun isAtEnd(): Boolean {
-        return myIterator!!.atEnd()
+        return iterator.atEnd()
     }
 
     fun isAt(element: IElementType) : Boolean {
-        if (!myIterator!!.atEnd()) {
+        if (!iterator.atEnd()) {
             val type = getType()
             return type == element
         }
@@ -29,7 +24,7 @@ class MatlabSemanticEditorPosition(editor: EditorEx, offset: Int) {
     }
 
     fun isAtAnyOf(vararg elements: IElementType?): Boolean {
-        if (!myIterator!!.atEnd()) {
+        if (!iterator.atEnd()) {
             val type = getType()
             for (element in elements) {
                 if (type == element) return true
@@ -38,19 +33,19 @@ class MatlabSemanticEditorPosition(editor: EditorEx, offset: Int) {
         return false
     }
 
-    fun isAtMultiline(): Boolean {
-        return if (!myIterator!!.atEnd()) {
-            CharArrayUtil.containLineBreaks(myChars, myIterator!!.start, myIterator!!.end)
+    private fun isAtMultiline(): Boolean {
+        return if (!iterator.atEnd()) {
+            CharArrayUtil.containLineBreaks(chars, iterator.start, iterator.end)
         } else false
     }
 
     fun startOffset(): Int {
-        return myIterator!!.start
+        return iterator.start
     }
 
-    fun moveAfter() {
-        if (!myIterator!!.atEnd()) {
-            myIterator!!.advance()
+    private fun moveAfter() {
+        if (!iterator.atEnd()) {
+            iterator.advance()
         }
     }
 
@@ -58,9 +53,9 @@ class MatlabSemanticEditorPosition(editor: EditorEx, offset: Int) {
         return copyAnd { position: MatlabSemanticEditorPosition -> position.moveAfter() }
     }
 
-    fun moveBeforeOptionalMix(vararg elements: IElementType?) {
+    private fun moveBeforeOptionalMix(vararg elements: IElementType?) {
         while (isAtAnyOf(*elements)) {
-            myIterator!!.retreat()
+            iterator.retreat()
         }
     }
 
@@ -68,9 +63,9 @@ class MatlabSemanticEditorPosition(editor: EditorEx, offset: Int) {
         return copyAnd { position: MatlabSemanticEditorPosition -> position.moveBeforeOptionalMix(*elements)}
     }
 
-    fun moveAfterOptionalMix(vararg elements: IElementType?) {
+    private fun moveAfterOptionalMix(vararg elements: IElementType?) {
         while (isAtAnyOf(*elements)) {
-            myIterator!!.advance()
+            iterator.advance()
         }
     }
 
@@ -78,8 +73,8 @@ class MatlabSemanticEditorPosition(editor: EditorEx, offset: Int) {
         return copyAnd { position: MatlabSemanticEditorPosition -> position.moveAfterOptionalMix(*elements) }
     }
 
-    fun moveToLeftParenthesisBackwardsSkippingNested(leftParenthesis: Collection<IElementType>, rightParenthesis: Collection<IElementType>) {
-        while (!myIterator!!.atEnd()) {
+    private fun moveToLeftParenthesisBackwardsSkippingNested(leftParenthesis: Collection<IElementType>, rightParenthesis: Collection<IElementType>) {
+        while (!iterator.atEnd()) {
             val type = getType()
             if (rightParenthesis.contains(type)) {
                 moveBeforeParentheses(leftParenthesis, rightParenthesis)
@@ -87,15 +82,15 @@ class MatlabSemanticEditorPosition(editor: EditorEx, offset: Int) {
             } else if (leftParenthesis.contains(type)) {
                 break
             }
-            myIterator!!.retreat()
+            iterator.retreat()
         }
     }
 
-    fun moveBeforeParentheses(leftParenthesis: Collection<IElementType>, rightParenthesis: Collection<IElementType>) {
+    private fun moveBeforeParentheses(leftParenthesis: Collection<IElementType>, rightParenthesis: Collection<IElementType>) {
         var parenLevel = 0
-        while (!myIterator!!.atEnd()) {
+        while (!iterator.atEnd()) {
             val type = getType()
-            myIterator!!.retreat()
+            iterator.retreat()
             if (rightParenthesis.contains(type)) {
                 parenLevel++
             } else if (leftParenthesis.contains(type)) {
@@ -116,32 +111,32 @@ class MatlabSemanticEditorPosition(editor: EditorEx, offset: Int) {
         return elementAfterOnSameLine(*elements) != null
     }
 
-    fun elementAfterOnSameLine(vararg elements: IElementType): IElementType? {
-        myIterator!!.retreat()
-        while (!myIterator!!.atEnd() && !isAtMultiline()) {
+    private fun elementAfterOnSameLine(vararg elements: IElementType): IElementType? {
+        iterator.retreat()
+        while (!iterator.atEnd() && !isAtMultiline()) {
             val type = getType()
             for (element in elements) {
                 if (type == element) return element
             }
-            myIterator!!.retreat()
+            iterator.retreat()
         }
         return null
     }
 
-    fun copyAnd(modifier: (MatlabSemanticEditorPosition) -> Unit): MatlabSemanticEditorPosition {
+    private fun copyAnd(modifier: (MatlabSemanticEditorPosition) -> Unit): MatlabSemanticEditorPosition {
         val position: MatlabSemanticEditorPosition = copy()
         modifier(position)
         return position
     }
 
-    fun copy(): MatlabSemanticEditorPosition {
-        return MatlabSemanticEditorPosition(myEditor, if (isAtEnd()) -1 else myIterator!!.start)
+    private fun copy(): MatlabSemanticEditorPosition {
+        return MatlabSemanticEditorPosition(editor, if (isAtEnd()) -1 else iterator.start)
     }
 
-    fun getType() : IElementType {
-        var type = myIterator!!.tokenType
+    private fun getType() : IElementType {
+        var type = iterator.tokenType
         if (type == MatlabTypes.IDENTIFIER) {
-            type = when (myChars.subSequence(myIterator!!.start, myIterator!!.end).toString()) {
+            type = when (chars.subSequence(iterator.start, iterator.end).toString()) {
                 "properties" -> MatlabElementTypes.PROPERTIES
                 "methods" -> MatlabElementTypes.METHODS
                 "events" -> MatlabElementTypes.EVENTS
@@ -153,6 +148,6 @@ class MatlabSemanticEditorPosition(editor: EditorEx, offset: Int) {
     }
 
     override fun toString(): String {
-        return if (myIterator!!.atEnd()) "atEnd" else myIterator!!.tokenType.toString() + "=>" + myChars.subSequence(startOffset(), Integer.min(startOffset() + 255, myChars.length))
+        return if (iterator.atEnd()) "atEnd" else iterator.tokenType.toString() + "=>" + chars.subSequence(startOffset(), Integer.min(startOffset() + 255, chars.length))
     }
 }
