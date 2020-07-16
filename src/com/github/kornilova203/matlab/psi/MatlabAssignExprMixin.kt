@@ -1,6 +1,7 @@
 package com.github.kornilova203.matlab.psi
 
 import com.github.kornilova203.matlab.psi.impl.MatlabBinaryExprImpl
+import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveState
 import com.intellij.psi.scope.PsiScopeProcessor
@@ -9,7 +10,7 @@ import com.intellij.psi.tree.IElementType
 /**
  * @author Liudmila Kornilova
  **/
-abstract class MatlabAssignExprMixin(elementType: IElementType) : MatlabBinaryExprImpl(elementType), MatlabDeclaration, MatlabAssignExpr {
+abstract class MatlabAssignExprMixin(node: ASTNode) : MatlabBinaryExprImpl(node), MatlabDeclaration, MatlabAssignExpr {
 
     override val visibleOutsideFunction = false
 

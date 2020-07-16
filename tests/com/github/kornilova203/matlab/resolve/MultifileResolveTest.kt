@@ -14,7 +14,7 @@ class MultifileResolveTest : BasePlatformTestCase() {
 
     fun testFunction() = doTest("FunctionDeclaration")
     fun testClass() = doTest("ClassDeclaration")
-    fun testVariableUnresolved() = doTestUnresolved()
+    fun testVariableUnresolved() = doTestUnresolved("a")
 
     private fun doTest(name: String, shouldBeResolved: Boolean = true) {
         val testName = testDataPath + getTestName(false)
@@ -31,7 +31,7 @@ class MultifileResolveTest : BasePlatformTestCase() {
         }
     }
 
-    private fun doTestUnresolved() = doTest(name, false)
+    private fun doTestUnresolved(name: String) = doTest(name, false)
 
     private fun getExpectedDeclaration(refFileText: String, declFileText: String): Pair<MatlabReference, MatlabDeclaration?> {
         val refOffset = refFileText.indexOf(REF_MARKER)

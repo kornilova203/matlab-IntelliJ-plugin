@@ -8,14 +8,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabCompositePsiElement;
+import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
-public class MatlabIfBlockImpl extends MatlabCompositePsiElement implements MatlabIfBlock {
+public class MatlabIfBlockImpl extends MatlabASTWrapperPsiElement implements MatlabIfBlock {
 
-  public MatlabIfBlockImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabIfBlockImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -30,19 +29,19 @@ public class MatlabIfBlockImpl extends MatlabCompositePsiElement implements Matl
   @Override
   @Nullable
   public MatlabBlock getBlock() {
-    return PsiTreeUtil.getChildOfType(this, MatlabBlock.class);
+    return findChildByClass(MatlabBlock.class);
   }
 
   @Override
   @Nullable
   public MatlabCondition getCondition() {
-    return PsiTreeUtil.getChildOfType(this, MatlabCondition.class);
+    return findChildByClass(MatlabCondition.class);
   }
 
   @Override
   @Nullable
   public MatlabElseBlock getElseBlock() {
-    return PsiTreeUtil.getChildOfType(this, MatlabElseBlock.class);
+    return findChildByClass(MatlabElseBlock.class);
   }
 
   @Override

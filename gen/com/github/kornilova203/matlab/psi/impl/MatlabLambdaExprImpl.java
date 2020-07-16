@@ -10,12 +10,11 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 import com.github.kornilova203.matlab.psi.MatlabLambdaExprMixin;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
 public class MatlabLambdaExprImpl extends MatlabLambdaExprMixin implements MatlabLambdaExpr {
 
-  public MatlabLambdaExprImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabLambdaExprImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -30,13 +29,13 @@ public class MatlabLambdaExprImpl extends MatlabLambdaExprMixin implements Matla
   @Override
   @Nullable
   public MatlabLambdaBody getLambdaBody() {
-    return PsiTreeUtil.getChildOfType(this, MatlabLambdaBody.class);
+    return findChildByClass(MatlabLambdaBody.class);
   }
 
   @Override
   @NotNull
   public MatlabParameters getParameters() {
-    return PsiTreeUtil.getChildOfType(this, MatlabParameters.class);
+    return findNotNullChildByClass(MatlabParameters.class);
   }
 
 }

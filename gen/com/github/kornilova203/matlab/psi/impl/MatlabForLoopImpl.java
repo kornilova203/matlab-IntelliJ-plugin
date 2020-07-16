@@ -10,12 +10,11 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 import com.github.kornilova203.matlab.psi.MatlabForLoopMixin;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
 public class MatlabForLoopImpl extends MatlabForLoopMixin implements MatlabForLoop {
 
-  public MatlabForLoopImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabForLoopImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -30,13 +29,13 @@ public class MatlabForLoopImpl extends MatlabForLoopMixin implements MatlabForLo
   @Override
   @Nullable
   public MatlabBlock getBlock() {
-    return PsiTreeUtil.getChildOfType(this, MatlabBlock.class);
+    return findChildByClass(MatlabBlock.class);
   }
 
   @Override
   @Nullable
   public MatlabForLoopRange getForLoopRange() {
-    return PsiTreeUtil.getChildOfType(this, MatlabForLoopRange.class);
+    return findChildByClass(MatlabForLoopRange.class);
   }
 
 }

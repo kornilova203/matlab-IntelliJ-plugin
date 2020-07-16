@@ -9,12 +9,11 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
 public class MatlabMatrixOrExprImpl extends MatlabBinaryExprImpl implements MatlabMatrixOrExpr {
 
-  public MatlabMatrixOrExprImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabMatrixOrExprImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {

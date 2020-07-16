@@ -10,12 +10,11 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 import com.github.kornilova203.matlab.psi.MatlabCatchBlockMixin;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
 public class MatlabCatchBlockImpl extends MatlabCatchBlockMixin implements MatlabCatchBlock {
 
-  public MatlabCatchBlockImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabCatchBlockImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -30,7 +29,7 @@ public class MatlabCatchBlockImpl extends MatlabCatchBlockMixin implements Matla
   @Override
   @Nullable
   public MatlabBlock getBlock() {
-    return PsiTreeUtil.getChildOfType(this, MatlabBlock.class);
+    return findChildByClass(MatlabBlock.class);
   }
 
 }

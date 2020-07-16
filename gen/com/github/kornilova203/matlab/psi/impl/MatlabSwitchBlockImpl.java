@@ -8,14 +8,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabCompositePsiElement;
+import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
-public class MatlabSwitchBlockImpl extends MatlabCompositePsiElement implements MatlabSwitchBlock {
+public class MatlabSwitchBlockImpl extends MatlabASTWrapperPsiElement implements MatlabSwitchBlock {
 
-  public MatlabSwitchBlockImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabSwitchBlockImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -36,13 +35,13 @@ public class MatlabSwitchBlockImpl extends MatlabCompositePsiElement implements 
   @Override
   @Nullable
   public MatlabOtherwiseBlock getOtherwiseBlock() {
-    return PsiTreeUtil.getChildOfType(this, MatlabOtherwiseBlock.class);
+    return findChildByClass(MatlabOtherwiseBlock.class);
   }
 
   @Override
   @Nullable
   public MatlabSwitchExpression getSwitchExpression() {
-    return PsiTreeUtil.getChildOfType(this, MatlabSwitchExpression.class);
+    return findChildByClass(MatlabSwitchExpression.class);
   }
 
 }

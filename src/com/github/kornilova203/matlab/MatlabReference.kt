@@ -1,15 +1,13 @@
 package com.github.kornilova203.matlab
 
-import com.github.kornilova203.matlab.psi.MatlabDeclaration
-import com.github.kornilova203.matlab.psi.MatlabRefExpr
-import com.github.kornilova203.matlab.psi.MatlabResolvingScopeProcessor
-import com.github.kornilova203.matlab.psi.MatlabTypes
-import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.openapi.util.KeyWithDefaultValue
+import com.github.kornilova203.matlab.psi.*
+import com.github.kornilova203.matlab.stub.MatlabClassDeclarationIndex
+import com.github.kornilova203.matlab.stub.MatlabFunctionDeclarationIndex
 import com.intellij.psi.*
 import com.intellij.psi.impl.source.resolve.ResolveCache
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.stubs.StubIndex
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.psi.util.elementType
 
 /**
  * @author Liudmila Kornilova
@@ -32,22 +30,22 @@ class MatlabReference(myElement: MatlabRefExpr) : PsiReferenceBase<MatlabRefExpr
     private fun resolveInner(): MatlabDeclaration? {
         val processor = MatlabResolvingScopeProcessor(this)
         val containingFile = myElement.containingFile
+        val project = myElement.project
         PsiTreeUtil.treeWalkUp(processor, myElement, containingFile, ResolveState.initial())
         if (isResolved(processor)) {
             return processor.declaration
         }
-        val psiManager = PsiManager.getInstance(element.project)
-        ProjectRootManager.getInstance(element.project).fileIndex.iterateContent { file ->
-            if (!file.isDirectory) {
-                val psiFile = psiManager.findFile(file)
-                if (psiFile != null && psiFile != containingFile) {
-                    PsiTreeUtil.treeWalkUp(processor, psiFile.lastChild, psiFile, ResolveState.initial())
-                    if (isResolved(processor)) {
-                        return@iterateContent false
-                    }
-                }
+        val functionDeclarations = StubIndex.getElements(MatlabFunctionDeclarationIndex.KEY, myElement.text, project, GlobalSearchScope.projectScope(project), MatlabFunctionDeclaration::class.java)
+        for (functionDeclaration in functionDeclarations) {
+            if (functionDeclaration.containingFile != containingFile) {
+                processor.execute(functionDeclaration, ResolveState.initial())
             }
-            return@iterateContent true
+        }
+        val classDeclarations = StubIndex.getElements(MatlabClassDeclarationIndex.KEY, myElement.text, project, GlobalSearchScope.projectScope(project), MatlabClassDeclaration::class.java)
+        for (classDeclaration in classDeclarations) {
+            if (classDeclaration.containingFile != containingFile) {
+                processor.execute(classDeclaration, ResolveState.initial())
+            }
         }
         return if (processor.declaration == myElement) null else processor.declaration
     }

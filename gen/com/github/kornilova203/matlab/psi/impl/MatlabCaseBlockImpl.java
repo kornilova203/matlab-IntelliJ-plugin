@@ -8,14 +8,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabCompositePsiElement;
+import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
-public class MatlabCaseBlockImpl extends MatlabCompositePsiElement implements MatlabCaseBlock {
+public class MatlabCaseBlockImpl extends MatlabASTWrapperPsiElement implements MatlabCaseBlock {
 
-  public MatlabCaseBlockImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabCaseBlockImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -30,13 +29,13 @@ public class MatlabCaseBlockImpl extends MatlabCompositePsiElement implements Ma
   @Override
   @Nullable
   public MatlabBlock getBlock() {
-    return PsiTreeUtil.getChildOfType(this, MatlabBlock.class);
+    return findChildByClass(MatlabBlock.class);
   }
 
   @Override
   @Nullable
   public MatlabCaseExpression getCaseExpression() {
-    return PsiTreeUtil.getChildOfType(this, MatlabCaseExpression.class);
+    return findChildByClass(MatlabCaseExpression.class);
   }
 
 }

@@ -10,12 +10,11 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 import com.github.kornilova203.matlab.psi.MatlabAssignExprMixin;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
 public class MatlabAssignExprImpl extends MatlabAssignExprMixin implements MatlabAssignExpr {
 
-  public MatlabAssignExprImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabAssignExprImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {

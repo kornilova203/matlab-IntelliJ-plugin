@@ -8,14 +8,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabCompositePsiElement;
+import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
-public class MatlabOtherwiseBlockImpl extends MatlabCompositePsiElement implements MatlabOtherwiseBlock {
+public class MatlabOtherwiseBlockImpl extends MatlabASTWrapperPsiElement implements MatlabOtherwiseBlock {
 
-  public MatlabOtherwiseBlockImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabOtherwiseBlockImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -30,7 +29,7 @@ public class MatlabOtherwiseBlockImpl extends MatlabCompositePsiElement implemen
   @Override
   @Nullable
   public MatlabBlock getBlock() {
-    return PsiTreeUtil.getChildOfType(this, MatlabBlock.class);
+    return findChildByClass(MatlabBlock.class);
   }
 
 }

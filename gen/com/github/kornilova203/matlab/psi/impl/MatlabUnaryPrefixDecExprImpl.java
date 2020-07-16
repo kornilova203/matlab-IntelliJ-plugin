@@ -9,12 +9,11 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
 public class MatlabUnaryPrefixDecExprImpl extends MatlabBinaryExprImpl implements MatlabUnaryPrefixDecExpr {
 
-  public MatlabUnaryPrefixDecExprImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabUnaryPrefixDecExprImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -29,7 +28,7 @@ public class MatlabUnaryPrefixDecExprImpl extends MatlabBinaryExprImpl implement
   @Override
   @Nullable
   public MatlabExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, MatlabExpr.class);
+    return findChildByClass(MatlabExpr.class);
   }
 
 }

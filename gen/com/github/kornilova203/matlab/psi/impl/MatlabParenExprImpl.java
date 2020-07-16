@@ -9,12 +9,11 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
 public class MatlabParenExprImpl extends MatlabExprImpl implements MatlabParenExpr {
 
-  public MatlabParenExprImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabParenExprImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -29,7 +28,7 @@ public class MatlabParenExprImpl extends MatlabExprImpl implements MatlabParenEx
   @Override
   @Nullable
   public MatlabExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, MatlabExpr.class);
+    return findChildByClass(MatlabExpr.class);
   }
 
 }

@@ -9,12 +9,11 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
 public class MatlabLiteralExprImpl extends MatlabExprImpl implements MatlabLiteralExpr {
 
-  public MatlabLiteralExprImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabLiteralExprImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -29,31 +28,31 @@ public class MatlabLiteralExprImpl extends MatlabExprImpl implements MatlabLiter
   @Override
   @Nullable
   public MatlabCellArrayLiteral getCellArrayLiteral() {
-    return PsiTreeUtil.getChildOfType(this, MatlabCellArrayLiteral.class);
+    return findChildByClass(MatlabCellArrayLiteral.class);
   }
 
   @Override
   @Nullable
   public MatlabMatrixLiteral getMatrixLiteral() {
-    return PsiTreeUtil.getChildOfType(this, MatlabMatrixLiteral.class);
+    return findChildByClass(MatlabMatrixLiteral.class);
   }
 
   @Override
   @Nullable
   public PsiElement getFloat() {
-    return findPsiChildByType(FLOAT);
+    return findChildByType(FLOAT);
   }
 
   @Override
   @Nullable
   public PsiElement getFloatExponential() {
-    return findPsiChildByType(FLOAT_EXPONENTIAL);
+    return findChildByType(FLOAT_EXPONENTIAL);
   }
 
   @Override
   @Nullable
   public PsiElement getInteger() {
-    return findPsiChildByType(INTEGER);
+    return findChildByType(INTEGER);
   }
 
 }

@@ -55,10 +55,13 @@
                                  implementationClass="com.github.kornilova203.matlab.psi.MatlabElementManipulator"/>
         <lang.refactoringSupport language="Matlab"
                                  implementationClass="com.github.kornilova203.matlab.refactoring.MatlabRefactoringSupportProvider"/>
-        <lang.ast.factory language="Matlab" implementationClass="com.github.kornilova203.matlab.MatlabASTFactory"/>
         <lang.smartEnterProcessor language="Matlab"
                                   implementationClass="com.github.kornilova203.matlab.editor.smartEnter.MatlabSmartEnter"/>
         <lang.foldingBuilder language="Matlab" implementationClass="com.github.kornilova203.matlab.MatlabFoldingBuilder"/>
+
+        <stubElementTypeHolder class="com.github.kornilova203.matlab.psi.MatlabTypes"/>
+        <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabFunctionDeclarationIndex"/>
+        <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabClassDeclarationIndex"/>
     </extensions>
 
     <project-components>

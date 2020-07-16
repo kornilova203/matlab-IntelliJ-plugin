@@ -8,14 +8,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabCompositePsiElement;
+import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
-public class MatlabForLoopRangeImpl extends MatlabCompositePsiElement implements MatlabForLoopRange {
+public class MatlabForLoopRangeImpl extends MatlabASTWrapperPsiElement implements MatlabForLoopRange {
 
-  public MatlabForLoopRangeImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabForLoopRangeImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -30,7 +29,7 @@ public class MatlabForLoopRangeImpl extends MatlabCompositePsiElement implements
   @Override
   @NotNull
   public MatlabAssignExpr getAssignExpr() {
-    return PsiTreeUtil.getChildOfType(this, MatlabAssignExpr.class);
+    return findNotNullChildByClass(MatlabAssignExpr.class);
   }
 
 }
