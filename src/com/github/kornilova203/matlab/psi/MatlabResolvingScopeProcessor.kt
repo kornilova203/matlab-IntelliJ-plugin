@@ -14,7 +14,7 @@ class MatlabResolvingScopeProcessor(private val myReference: MatlabReference) : 
 
     override fun execute(decl: PsiElement, state: ResolveState): Boolean {
         if (decl !is MatlabDeclaration) return true
-        if (!state.get(MatlabReference.IS_ORIGINAL_FILE) && decl !is MatlabFunctionDeclaration && decl !is MatlabClassDeclaration) {
+        if (!isOriginalFile(decl) && decl !is MatlabFunctionDeclaration && decl !is MatlabClassDeclaration) {
             return true
         }
         if (decl.name == myReference.element.text && (decl is MatlabGlobalVariableDeclaration || declaration == null || isResolvedToItself())) {
@@ -33,5 +33,9 @@ class MatlabResolvingScopeProcessor(private val myReference: MatlabReference) : 
 
     private fun isResolvedToItself(): Boolean {
         return declaration?.identifyingElement == myReference.element.identifier()
+    }
+
+    private fun isOriginalFile(decl: PsiElement) : Boolean {
+        return myReference.element.containingFile == decl.containingFile
     }
 }

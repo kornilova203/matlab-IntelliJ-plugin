@@ -1,5 +1,6 @@
 package com.github.kornilova203.matlab
 
+import com.github.kornilova203.matlab.psi.MatlabAssignExpr
 import com.github.kornilova203.matlab.psi.MatlabDeclaration
 import com.github.kornilova203.matlab.psi.MatlabFunctionDeclaration
 import com.intellij.psi.PsiElement
@@ -45,7 +46,7 @@ fun PsiElement.findDeclaration(processor: PsiScopeProcessor, state: ResolveState
 fun processDeclarations(parent: PsiElement, processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement?, place: PsiElement): Boolean {
     val inCurrentScope = place.inCurrentFunction(parent)
 
-    if (!state.get(MatlabReference.IS_ORIGINAL_FILE) && lastParent != null) {
+    if (lastParent != null && lastParent !is MatlabAssignExpr) {
         if (!lastParent.findDeclaration(processor, state, inCurrentScope)) {
             return false
         }

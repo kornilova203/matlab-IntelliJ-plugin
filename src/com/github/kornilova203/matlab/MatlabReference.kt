@@ -18,7 +18,6 @@ class MatlabReference(myElement: MatlabRefExpr) : PsiReferenceBase<MatlabRefExpr
     companion object {
         private const val USE_CACHE = true
         private val RESOLVER = ResolveCache.AbstractResolver { ref: MatlabReference, _: Boolean -> ref.resolveInner() }
-        val IS_ORIGINAL_FILE = KeyWithDefaultValue.create<Boolean>("file_with_reference", true)
     }
 
     override fun resolve(): MatlabDeclaration? {
@@ -42,7 +41,7 @@ class MatlabReference(myElement: MatlabRefExpr) : PsiReferenceBase<MatlabRefExpr
             if (!file.isDirectory) {
                 val psiFile = psiManager.findFile(file)
                 if (psiFile != null && psiFile != containingFile) {
-                    PsiTreeUtil.treeWalkUp(processor, psiFile.lastChild, psiFile, ResolveState.initial().put(IS_ORIGINAL_FILE, false))
+                    PsiTreeUtil.treeWalkUp(processor, psiFile.lastChild, psiFile, ResolveState.initial())
                     if (isResolved(processor)) {
                         return@iterateContent false
                     }
