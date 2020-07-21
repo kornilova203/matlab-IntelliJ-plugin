@@ -6,6 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
 import com.github.kornilova203.matlab.stub.MatlabClassDeclarationElementType;
 import com.github.kornilova203.matlab.stub.MatlabFunctionDeclarationElementType;
+import com.github.kornilova203.matlab.stub.MatlabGlobalVariableElementType;
 import com.github.kornilova203.matlab.psi.impl.*;
 
 public interface MatlabTypes {
@@ -45,7 +46,7 @@ public interface MatlabTypes {
   IElementType FUNCTION_EXPR = new MatlabElementType("FUNCTION_EXPR");
   IElementType FUNCTION_REF_EXPR = new MatlabElementType("FUNCTION_REF_EXPR");
   IElementType GETTER_OR_SETTER_MODIFIER = new MatlabElementType("GETTER_OR_SETTER_MODIFIER");
-  IElementType GLOBAL_VARIABLE_DECLARATION = new MatlabElementType("GLOBAL_VARIABLE_DECLARATION");
+  IElementType GLOBAL_VARIABLE_DECLARATION = new MatlabGlobalVariableElementType("GLOBAL_VARIABLE_DECLARATION");
   IElementType IF_BLOCK = new MatlabElementType("IF_BLOCK");
   IElementType LAMBDA_BODY = new MatlabElementType("LAMBDA_BODY");
   IElementType LAMBDA_EXPR = new MatlabElementType("LAMBDA_EXPR");

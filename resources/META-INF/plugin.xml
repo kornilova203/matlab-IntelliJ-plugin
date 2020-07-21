@@ -62,6 +62,7 @@
         <stubElementTypeHolder class="com.github.kornilova203.matlab.psi.MatlabTypes"/>
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabFunctionDeclarationIndex"/>
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabClassDeclarationIndex"/>
+        <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabGlobalVariableIndex"/>
     </extensions>
 
     <project-components>

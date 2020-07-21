@@ -15,6 +15,7 @@
 
   elementTypeClass("function_declaration")="com.github.kornilova203.matlab.stub.MatlabFunctionDeclarationElementType"
   elementTypeClass("class_declaration")="com.github.kornilova203.matlab.stub.MatlabClassDeclarationElementType"
+  elementTypeClass("global_variable_declaration")="com.github.kornilova203.matlab.stub.MatlabGlobalVariableElementType"
 
   parserImports=[
     "static com.github.kornilova203.matlab.MatlabElementTypes.*"
@@ -85,7 +86,7 @@
     mixin("block")="com.github.kornilova203.matlab.psi.MatlabBlockMixin"
     mixin("for_loop")="com.github.kornilova203.matlab.psi.MatlabForLoopMixin"
     mixin("lambda_expr")="com.github.kornilova203.matlab.psi.MatlabLambdaExprMixin"
-    mixin("global_variable_declaration")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
+    mixin("global_variable_declaration")="com.github.kornilova203.matlab.psi.MatlabStubbedGlobalVariable"
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?

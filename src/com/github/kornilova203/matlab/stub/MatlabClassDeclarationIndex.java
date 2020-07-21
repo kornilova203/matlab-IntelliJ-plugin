@@ -12,4 +12,9 @@ public class MatlabClassDeclarationIndex extends StringStubIndexExtension<Matlab
     public @NotNull StubIndexKey<String, MatlabClassDeclaration> getKey() {
         return KEY;
     }
+
+    @Override
+    public int getVersion() {
+        return super.getVersion() + MatlabIndexVersion.INDEX_VERSION;
+    }
 }

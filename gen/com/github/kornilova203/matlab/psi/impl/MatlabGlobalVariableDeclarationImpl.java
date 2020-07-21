@@ -8,13 +8,24 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabDeclarationBase;
+import com.github.kornilova203.matlab.psi.MatlabStubbedGlobalVariable;
 import com.github.kornilova203.matlab.psi.*;
+import com.github.kornilova203.matlab.stub.MatlabGlobalVariableStub;
+import com.intellij.psi.stubs.IStubElementType;
+import com.intellij.psi.tree.IElementType;
 
-public class MatlabGlobalVariableDeclarationImpl extends MatlabDeclarationBase implements MatlabGlobalVariableDeclaration {
+public class MatlabGlobalVariableDeclarationImpl extends MatlabStubbedGlobalVariable implements MatlabGlobalVariableDeclaration {
+
+  public MatlabGlobalVariableDeclarationImpl(@NotNull MatlabGlobalVariableStub stub, @NotNull IStubElementType<?, ?> nodeType) {
+    super(stub, nodeType);
+  }
 
   public MatlabGlobalVariableDeclarationImpl(@NotNull ASTNode node) {
     super(node);
+  }
+
+  public MatlabGlobalVariableDeclarationImpl(@Nullable MatlabGlobalVariableStub stub, @Nullable IElementType type, @Nullable ASTNode node) {
+    super(stub, type, node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
