@@ -33,10 +33,9 @@ class MatlabCommandLineState(private val runConfiguration: MatlabRunConfiguratio
         }
 
         if (interpreter.contains("matlab")) {
-            cmd.addParameters(mutableListOf("-nodisplay", "-nosplash", "-nodesktop", "-r"))
-            cmd.addParameter("run('${runConfiguration.getFilePath()}');exit;")
+            cmd.addParameters("-batch",  "run('${runConfiguration.getFilePath()}'); if ~isempty(groot().Children) uiwait; end;")
         } else {
-            cmd.parametersList.addParametersString(runConfiguration.getFilePath())
+            cmd.addParameters("--eval", "run('${runConfiguration.getFilePath()}'); uiwait;")
         }
 
         cmd.withWorkDirectory(workingDir)
