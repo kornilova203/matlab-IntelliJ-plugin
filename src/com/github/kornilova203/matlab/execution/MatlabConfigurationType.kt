@@ -14,7 +14,10 @@ class MatlabConfigurationType
         val runConfiguration = super.createConfiguration(name, template)
         if (runConfiguration is MatlabRunConfiguration) {
             /* set default interpreter path */
-            val path = PropertiesComponent.getInstance().getValue(MatlabRunConfiguration.MATLAB_INTERPRETER)
+            var path = PropertiesComponent.getInstance(runConfiguration.project).getValue(MatlabRunConfiguration.MATLAB_INTERPRETER)
+            if (path == null) {
+                path = PropertiesComponent.getInstance().getValue(MatlabRunConfiguration.MATLAB_INTERPRETER)
+            }
             if (path != null) {
                 runConfiguration.setInterpreterPath(path)
             }
