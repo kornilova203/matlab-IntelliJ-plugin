@@ -8,14 +8,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabCompositePsiElement;
+import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
-public class MatlabFileOperationImpl extends MatlabCompositePsiElement implements MatlabFileOperation {
+public class MatlabFileOperationImpl extends MatlabASTWrapperPsiElement implements MatlabFileOperation {
 
-  public MatlabFileOperationImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabFileOperationImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -30,7 +29,7 @@ public class MatlabFileOperationImpl extends MatlabCompositePsiElement implement
   @Override
   @Nullable
   public MatlabVariables getVariables() {
-    return PsiTreeUtil.getChildOfType(this, MatlabVariables.class);
+    return findChildByClass(MatlabVariables.class);
   }
 
 }

@@ -8,14 +8,24 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabDeclarationBase;
+import com.github.kornilova203.matlab.psi.MatlabStubbedClassDeclaration;
 import com.github.kornilova203.matlab.psi.*;
+import com.github.kornilova203.matlab.stub.MatlabClassDeclarationStub;
+import com.intellij.psi.stubs.IStubElementType;
 import com.intellij.psi.tree.IElementType;
 
-public class MatlabClassDeclarationImpl extends MatlabDeclarationBase implements MatlabClassDeclaration {
+public class MatlabClassDeclarationImpl extends MatlabStubbedClassDeclaration implements MatlabClassDeclaration {
 
-  public MatlabClassDeclarationImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabClassDeclarationImpl(@NotNull MatlabClassDeclarationStub stub, @NotNull IStubElementType<?, ?> nodeType) {
+    super(stub, nodeType);
+  }
+
+  public MatlabClassDeclarationImpl(@NotNull ASTNode node) {
+    super(node);
+  }
+
+  public MatlabClassDeclarationImpl(@Nullable MatlabClassDeclarationStub stub, @Nullable IElementType type, @Nullable ASTNode node) {
+    super(stub, type, node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -30,7 +40,7 @@ public class MatlabClassDeclarationImpl extends MatlabDeclarationBase implements
   @Override
   @Nullable
   public MatlabAttributes getAttributes() {
-    return PsiTreeUtil.getChildOfType(this, MatlabAttributes.class);
+    return findChildByClass(MatlabAttributes.class);
   }
 
   @Override
@@ -60,7 +70,7 @@ public class MatlabClassDeclarationImpl extends MatlabDeclarationBase implements
   @Override
   @Nullable
   public MatlabSuperClasses getSuperClasses() {
-    return PsiTreeUtil.getChildOfType(this, MatlabSuperClasses.class);
+    return findChildByClass(MatlabSuperClasses.class);
   }
 
 }

@@ -8,14 +8,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabCompositePsiElement;
+import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
-public class MatlabTryBlockImpl extends MatlabCompositePsiElement implements MatlabTryBlock {
+public class MatlabTryBlockImpl extends MatlabASTWrapperPsiElement implements MatlabTryBlock {
 
-  public MatlabTryBlockImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabTryBlockImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -30,13 +29,13 @@ public class MatlabTryBlockImpl extends MatlabCompositePsiElement implements Mat
   @Override
   @Nullable
   public MatlabBlock getBlock() {
-    return PsiTreeUtil.getChildOfType(this, MatlabBlock.class);
+    return findChildByClass(MatlabBlock.class);
   }
 
   @Override
   @Nullable
   public MatlabCatchBlock getCatchBlock() {
-    return PsiTreeUtil.getChildOfType(this, MatlabCatchBlock.class);
+    return findChildByClass(MatlabCatchBlock.class);
   }
 
 }

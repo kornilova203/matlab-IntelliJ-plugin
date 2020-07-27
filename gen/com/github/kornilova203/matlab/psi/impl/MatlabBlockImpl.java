@@ -10,12 +10,11 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 import com.github.kornilova203.matlab.psi.MatlabBlockMixin;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
 public class MatlabBlockImpl extends MatlabBlockMixin implements MatlabBlock {
 
-  public MatlabBlockImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabBlockImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {

@@ -8,14 +8,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabCompositePsiElement;
+import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
-public class MatlabSwitchExpressionImpl extends MatlabCompositePsiElement implements MatlabSwitchExpression {
+public class MatlabSwitchExpressionImpl extends MatlabASTWrapperPsiElement implements MatlabSwitchExpression {
 
-  public MatlabSwitchExpressionImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabSwitchExpressionImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -30,7 +29,7 @@ public class MatlabSwitchExpressionImpl extends MatlabCompositePsiElement implem
   @Override
   @NotNull
   public MatlabExpr getExpr() {
-    return PsiTreeUtil.getChildOfType(this, MatlabExpr.class);
+    return findNotNullChildByClass(MatlabExpr.class);
   }
 
 }

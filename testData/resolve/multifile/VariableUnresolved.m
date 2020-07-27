@@ -1,0 +1,1 @@
+fprintf("a = %d\n", <ref>a)

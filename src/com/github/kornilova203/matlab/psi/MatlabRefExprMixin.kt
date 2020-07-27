@@ -1,12 +1,12 @@
 package com.github.kornilova203.matlab.psi
 
 import com.github.kornilova203.matlab.MatlabReference
-import com.intellij.psi.tree.IElementType
+import com.intellij.lang.ASTNode
 
 /**
  * @author Liudmila Kornilova
  **/
-abstract class MatlabRefExprMixin(elementType: IElementType) : MatlabCompositePsiElement(elementType), MatlabRefExpr {
+abstract class MatlabRefExprMixin(node: ASTNode) : MatlabASTWrapperPsiElement(node), MatlabRefExpr {
     override fun getReference(): MatlabReference = MatlabReference(this)
 
     override fun getName(): String? = text

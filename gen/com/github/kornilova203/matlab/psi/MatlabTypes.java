@@ -4,8 +4,10 @@ package com.github.kornilova203.matlab.psi;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
+import com.github.kornilova203.matlab.stub.MatlabClassDeclarationElementType;
+import com.github.kornilova203.matlab.stub.MatlabFunctionDeclarationElementType;
+import com.github.kornilova203.matlab.stub.MatlabGlobalVariableElementType;
 import com.github.kornilova203.matlab.psi.impl.*;
-import com.intellij.psi.impl.source.tree.CompositePsiElement;
 
 public interface MatlabTypes {
 
@@ -23,7 +25,7 @@ public interface MatlabTypes {
   IElementType CELL_ARRAY_ITEM = new MatlabElementType("CELL_ARRAY_ITEM");
   IElementType CELL_ARRAY_LITERAL = new MatlabElementType("CELL_ARRAY_LITERAL");
   IElementType CELL_ARRAY_ROW = new MatlabElementType("CELL_ARRAY_ROW");
-  IElementType CLASS_DECLARATION = new MatlabElementType("CLASS_DECLARATION");
+  IElementType CLASS_DECLARATION = new MatlabClassDeclarationElementType("CLASS_DECLARATION");
   IElementType CONDITION = new MatlabElementType("CONDITION");
   IElementType CTRANSPOSE_EXPR = new MatlabElementType("CTRANSPOSE_EXPR");
   IElementType ELEMENT_WISE_LDIV_EXPR = new MatlabElementType("ELEMENT_WISE_LDIV_EXPR");
@@ -40,11 +42,11 @@ public interface MatlabTypes {
   IElementType FILE_OPERATION = new MatlabElementType("FILE_OPERATION");
   IElementType FOR_LOOP = new MatlabElementType("FOR_LOOP");
   IElementType FOR_LOOP_RANGE = new MatlabElementType("FOR_LOOP_RANGE");
-  IElementType FUNCTION_DECLARATION = new MatlabElementType("FUNCTION_DECLARATION");
+  IElementType FUNCTION_DECLARATION = new MatlabFunctionDeclarationElementType("FUNCTION_DECLARATION");
   IElementType FUNCTION_EXPR = new MatlabElementType("FUNCTION_EXPR");
   IElementType FUNCTION_REF_EXPR = new MatlabElementType("FUNCTION_REF_EXPR");
   IElementType GETTER_OR_SETTER_MODIFIER = new MatlabElementType("GETTER_OR_SETTER_MODIFIER");
-  IElementType GLOBAL_VARIABLE_DECLARATION = new MatlabElementType("GLOBAL_VARIABLE_DECLARATION");
+  IElementType GLOBAL_VARIABLE_DECLARATION = new MatlabGlobalVariableElementType("GLOBAL_VARIABLE_DECLARATION");
   IElementType IF_BLOCK = new MatlabElementType("IF_BLOCK");
   IElementType LAMBDA_BODY = new MatlabElementType("LAMBDA_BODY");
   IElementType LAMBDA_EXPR = new MatlabElementType("LAMBDA_EXPR");
@@ -164,255 +166,256 @@ public interface MatlabTypes {
   IElementType WHILE = new MatlabTokenType("while");
 
   class Factory {
-    public static CompositePsiElement createElement(IElementType type) {
-       if (type == ALL_ITEMS_RANGE) {
-        return new MatlabAllItemsRangeImpl(type);
+    public static PsiElement createElement(ASTNode node) {
+      IElementType type = node.getElementType();
+      if (type == ALL_ITEMS_RANGE) {
+        return new MatlabAllItemsRangeImpl(node);
       }
       else if (type == AND_EXPR) {
-        return new MatlabAndExprImpl(type);
+        return new MatlabAndExprImpl(node);
       }
       else if (type == ARGUMENTS) {
-        return new MatlabArgumentsImpl(type);
+        return new MatlabArgumentsImpl(node);
       }
       else if (type == ASSIGN_EXPR) {
-        return new MatlabAssignExprImpl(type);
+        return new MatlabAssignExprImpl(node);
       }
       else if (type == ATTRIBUTE) {
-        return new MatlabAttributeImpl(type);
+        return new MatlabAttributeImpl(node);
       }
       else if (type == ATTRIBUTES) {
-        return new MatlabAttributesImpl(type);
+        return new MatlabAttributesImpl(node);
       }
       else if (type == BLOCK) {
-        return new MatlabBlockImpl(type);
+        return new MatlabBlockImpl(node);
       }
       else if (type == CASE_BLOCK) {
-        return new MatlabCaseBlockImpl(type);
+        return new MatlabCaseBlockImpl(node);
       }
       else if (type == CASE_EXPRESSION) {
-        return new MatlabCaseExpressionImpl(type);
+        return new MatlabCaseExpressionImpl(node);
       }
       else if (type == CATCH_BLOCK) {
-        return new MatlabCatchBlockImpl(type);
+        return new MatlabCatchBlockImpl(node);
       }
       else if (type == CELL_ARRAY_ACCESS_EXPR) {
-        return new MatlabCellArrayAccessExprImpl(type);
+        return new MatlabCellArrayAccessExprImpl(node);
       }
       else if (type == CELL_ARRAY_ITEM) {
-        return new MatlabCellArrayItemImpl(type);
+        return new MatlabCellArrayItemImpl(node);
       }
       else if (type == CELL_ARRAY_LITERAL) {
-        return new MatlabCellArrayLiteralImpl(type);
+        return new MatlabCellArrayLiteralImpl(node);
       }
       else if (type == CELL_ARRAY_ROW) {
-        return new MatlabCellArrayRowImpl(type);
+        return new MatlabCellArrayRowImpl(node);
       }
       else if (type == CLASS_DECLARATION) {
-        return new MatlabClassDeclarationImpl(type);
+        return new MatlabClassDeclarationImpl(node);
       }
       else if (type == CONDITION) {
-        return new MatlabConditionImpl(type);
+        return new MatlabConditionImpl(node);
       }
       else if (type == CTRANSPOSE_EXPR) {
-        return new MatlabCtransposeExprImpl(type);
+        return new MatlabCtransposeExprImpl(node);
       }
       else if (type == ELEMENT_WISE_LDIV_EXPR) {
-        return new MatlabElementWiseLdivExprImpl(type);
+        return new MatlabElementWiseLdivExprImpl(node);
       }
       else if (type == ELEMENT_WISE_MUL_EXPR) {
-        return new MatlabElementWiseMulExprImpl(type);
+        return new MatlabElementWiseMulExprImpl(node);
       }
       else if (type == ELEMENT_WISE_POW_EXPR) {
-        return new MatlabElementWisePowExprImpl(type);
+        return new MatlabElementWisePowExprImpl(node);
       }
       else if (type == ELEMENT_WISE_RDIV_EXPR) {
-        return new MatlabElementWiseRdivExprImpl(type);
+        return new MatlabElementWiseRdivExprImpl(node);
       }
       else if (type == ELSEIF_BLOCK) {
-        return new MatlabElseifBlockImpl(type);
+        return new MatlabElseifBlockImpl(node);
       }
       else if (type == ELSE_BLOCK) {
-        return new MatlabElseBlockImpl(type);
+        return new MatlabElseBlockImpl(node);
       }
       else if (type == ENUMERATION_BLOCK) {
-        return new MatlabEnumerationBlockImpl(type);
+        return new MatlabEnumerationBlockImpl(node);
       }
       else if (type == EQUAL_EXPR) {
-        return new MatlabEqualExprImpl(type);
+        return new MatlabEqualExprImpl(node);
       }
       else if (type == EVENTS_BLOCK) {
-        return new MatlabEventsBlockImpl(type);
+        return new MatlabEventsBlockImpl(node);
       }
       else if (type == EVENTS_LIST) {
-        return new MatlabEventsListImpl(type);
+        return new MatlabEventsListImpl(node);
       }
       else if (type == FILE_OPERATION) {
-        return new MatlabFileOperationImpl(type);
+        return new MatlabFileOperationImpl(node);
       }
       else if (type == FOR_LOOP) {
-        return new MatlabForLoopImpl(type);
+        return new MatlabForLoopImpl(node);
       }
       else if (type == FOR_LOOP_RANGE) {
-        return new MatlabForLoopRangeImpl(type);
+        return new MatlabForLoopRangeImpl(node);
       }
       else if (type == FUNCTION_DECLARATION) {
-        return new MatlabFunctionDeclarationImpl(type);
+        return new MatlabFunctionDeclarationImpl(node);
       }
       else if (type == FUNCTION_EXPR) {
-        return new MatlabFunctionExprImpl(type);
+        return new MatlabFunctionExprImpl(node);
       }
       else if (type == FUNCTION_REF_EXPR) {
-        return new MatlabFunctionRefExprImpl(type);
+        return new MatlabFunctionRefExprImpl(node);
       }
       else if (type == GETTER_OR_SETTER_MODIFIER) {
-        return new MatlabGetterOrSetterModifierImpl(type);
+        return new MatlabGetterOrSetterModifierImpl(node);
       }
       else if (type == GLOBAL_VARIABLE_DECLARATION) {
-        return new MatlabGlobalVariableDeclarationImpl(type);
+        return new MatlabGlobalVariableDeclarationImpl(node);
       }
       else if (type == IF_BLOCK) {
-        return new MatlabIfBlockImpl(type);
+        return new MatlabIfBlockImpl(node);
       }
       else if (type == LAMBDA_BODY) {
-        return new MatlabLambdaBodyImpl(type);
+        return new MatlabLambdaBodyImpl(node);
       }
       else if (type == LAMBDA_EXPR) {
-        return new MatlabLambdaExprImpl(type);
+        return new MatlabLambdaExprImpl(node);
       }
       else if (type == LDIV_EXPR) {
-        return new MatlabLdivExprImpl(type);
+        return new MatlabLdivExprImpl(node);
       }
       else if (type == LESS_EXPR) {
-        return new MatlabLessExprImpl(type);
+        return new MatlabLessExprImpl(node);
       }
       else if (type == LESS_OR_EQUAL_EXPR) {
-        return new MatlabLessOrEqualExprImpl(type);
+        return new MatlabLessOrEqualExprImpl(node);
       }
       else if (type == LITERAL_EXPR) {
-        return new MatlabLiteralExprImpl(type);
+        return new MatlabLiteralExprImpl(node);
       }
       else if (type == MATRIX_AND_EXPR) {
-        return new MatlabMatrixAndExprImpl(type);
+        return new MatlabMatrixAndExprImpl(node);
       }
       else if (type == MATRIX_ITEM) {
-        return new MatlabMatrixItemImpl(type);
+        return new MatlabMatrixItemImpl(node);
       }
       else if (type == MATRIX_LITERAL) {
-        return new MatlabMatrixLiteralImpl(type);
+        return new MatlabMatrixLiteralImpl(node);
       }
       else if (type == MATRIX_OR_EXPR) {
-        return new MatlabMatrixOrExprImpl(type);
+        return new MatlabMatrixOrExprImpl(node);
       }
       else if (type == MATRIX_ROW) {
-        return new MatlabMatrixRowImpl(type);
+        return new MatlabMatrixRowImpl(node);
       }
       else if (type == META_CLASS_EXPR) {
-        return new MatlabMetaClassExprImpl(type);
+        return new MatlabMetaClassExprImpl(node);
       }
       else if (type == METHODS_BLOCK) {
-        return new MatlabMethodsBlockImpl(type);
+        return new MatlabMethodsBlockImpl(node);
       }
       else if (type == MINUS_EXPR) {
-        return new MatlabMinusExprImpl(type);
+        return new MatlabMinusExprImpl(node);
       }
       else if (type == MORE_EXPR) {
-        return new MatlabMoreExprImpl(type);
+        return new MatlabMoreExprImpl(node);
       }
       else if (type == MORE_OR_EQUAL_EXPR) {
-        return new MatlabMoreOrEqualExprImpl(type);
+        return new MatlabMoreOrEqualExprImpl(node);
       }
       else if (type == MUL_EXPR) {
-        return new MatlabMulExprImpl(type);
+        return new MatlabMulExprImpl(node);
       }
       else if (type == NOT_EQUAL_EXPR) {
-        return new MatlabNotEqualExprImpl(type);
+        return new MatlabNotEqualExprImpl(node);
       }
       else if (type == OR_EXPR) {
-        return new MatlabOrExprImpl(type);
+        return new MatlabOrExprImpl(node);
       }
       else if (type == OTHERWISE_BLOCK) {
-        return new MatlabOtherwiseBlockImpl(type);
+        return new MatlabOtherwiseBlockImpl(node);
       }
       else if (type == PARAMETER) {
-        return new MatlabParameterImpl(type);
+        return new MatlabParameterImpl(node);
       }
       else if (type == PARAMETERS) {
-        return new MatlabParametersImpl(type);
+        return new MatlabParametersImpl(node);
       }
       else if (type == PAREN_EXPR) {
-        return new MatlabParenExprImpl(type);
+        return new MatlabParenExprImpl(node);
       }
       else if (type == PLUS_EXPR) {
-        return new MatlabPlusExprImpl(type);
+        return new MatlabPlusExprImpl(node);
       }
       else if (type == POW_EXPR) {
-        return new MatlabPowExprImpl(type);
+        return new MatlabPowExprImpl(node);
       }
       else if (type == PROPERTIES_BLOCK) {
-        return new MatlabPropertiesBlockImpl(type);
+        return new MatlabPropertiesBlockImpl(node);
       }
       else if (type == QUALIFIED_EXPR) {
-        return new MatlabQualifiedExprImpl(type);
+        return new MatlabQualifiedExprImpl(node);
       }
       else if (type == RANGE_EXPR) {
-        return new MatlabRangeExprImpl(type);
+        return new MatlabRangeExprImpl(node);
       }
       else if (type == RDIV_EXPR) {
-        return new MatlabRdivExprImpl(type);
+        return new MatlabRdivExprImpl(node);
       }
       else if (type == REF_EXPR) {
-        return new MatlabRefExprImpl(type);
+        return new MatlabRefExprImpl(node);
       }
       else if (type == RETURN_VALUES) {
-        return new MatlabReturnValuesImpl(type);
+        return new MatlabReturnValuesImpl(node);
       }
       else if (type == RET_VALUE) {
-        return new MatlabRetValueImpl(type);
+        return new MatlabRetValueImpl(node);
       }
       else if (type == SUPER_CLASSES) {
-        return new MatlabSuperClassesImpl(type);
+        return new MatlabSuperClassesImpl(node);
       }
       else if (type == SWITCH_BLOCK) {
-        return new MatlabSwitchBlockImpl(type);
+        return new MatlabSwitchBlockImpl(node);
       }
       else if (type == SWITCH_EXPRESSION) {
-        return new MatlabSwitchExpressionImpl(type);
+        return new MatlabSwitchExpressionImpl(node);
       }
       else if (type == TRANSPOSE_EXPR) {
-        return new MatlabTransposeExprImpl(type);
+        return new MatlabTransposeExprImpl(node);
       }
       else if (type == TRY_BLOCK) {
-        return new MatlabTryBlockImpl(type);
+        return new MatlabTryBlockImpl(node);
       }
       else if (type == UNARY_DEC_EXPR) {
-        return new MatlabUnaryDecExprImpl(type);
+        return new MatlabUnaryDecExprImpl(node);
       }
       else if (type == UNARY_INC_EXPR) {
-        return new MatlabUnaryIncExprImpl(type);
+        return new MatlabUnaryIncExprImpl(node);
       }
       else if (type == UNARY_MIN_EXPR) {
-        return new MatlabUnaryMinExprImpl(type);
+        return new MatlabUnaryMinExprImpl(node);
       }
       else if (type == UNARY_NEGATION_EXPR) {
-        return new MatlabUnaryNegationExprImpl(type);
+        return new MatlabUnaryNegationExprImpl(node);
       }
       else if (type == UNARY_PLUS_EXPR) {
-        return new MatlabUnaryPlusExprImpl(type);
+        return new MatlabUnaryPlusExprImpl(node);
       }
       else if (type == UNARY_PREFIX_DEC_EXPR) {
-        return new MatlabUnaryPrefixDecExprImpl(type);
+        return new MatlabUnaryPrefixDecExprImpl(node);
       }
       else if (type == UNARY_PREFIX_INC_EXPR) {
-        return new MatlabUnaryPrefixIncExprImpl(type);
+        return new MatlabUnaryPrefixIncExprImpl(node);
       }
       else if (type == VARIABLES) {
-        return new MatlabVariablesImpl(type);
+        return new MatlabVariablesImpl(node);
       }
       else if (type == WHILE_LOOP) {
-        return new MatlabWhileLoopImpl(type);
+        return new MatlabWhileLoopImpl(node);
       }
       else if (type == WHILE_LOOP_CONDITION) {
-        return new MatlabWhileLoopConditionImpl(type);
+        return new MatlabWhileLoopConditionImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

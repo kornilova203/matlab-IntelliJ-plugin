@@ -8,14 +8,13 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabCompositePsiElement;
+import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
-public class MatlabCellArrayRowImpl extends MatlabCompositePsiElement implements MatlabCellArrayRow {
+public class MatlabCellArrayRowImpl extends MatlabASTWrapperPsiElement implements MatlabCellArrayRow {
 
-  public MatlabCellArrayRowImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabCellArrayRowImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {

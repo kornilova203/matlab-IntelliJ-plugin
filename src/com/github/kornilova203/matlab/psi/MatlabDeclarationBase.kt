@@ -1,12 +1,12 @@
 package com.github.kornilova203.matlab.psi
 
+import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
-import com.intellij.psi.tree.IElementType
 
 /**
  * @author Liudmila Kornilova
  **/
-abstract class MatlabDeclarationBase(elementType: IElementType) : MatlabCompositePsiElement(elementType), MatlabDeclaration {
+abstract class MatlabDeclarationBase(node: ASTNode) : MatlabASTWrapperPsiElement(node), MatlabDeclaration {
 
     override val visibleOutsideFunction = true
 

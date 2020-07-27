@@ -9,12 +9,11 @@ import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 import com.github.kornilova203.matlab.psi.*;
-import com.intellij.psi.tree.IElementType;
 
 public class MatlabMetaClassExprImpl extends MatlabBinaryExprImpl implements MatlabMetaClassExpr {
 
-  public MatlabMetaClassExprImpl(@NotNull IElementType type) {
-    super(type);
+  public MatlabMetaClassExprImpl(@NotNull ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
@@ -29,7 +28,7 @@ public class MatlabMetaClassExprImpl extends MatlabBinaryExprImpl implements Mat
   @Override
   @Nullable
   public MatlabRefExpr getRefExpr() {
-    return PsiTreeUtil.getChildOfType(this, MatlabRefExpr.class);
+    return findChildByClass(MatlabRefExpr.class);
   }
 
 }

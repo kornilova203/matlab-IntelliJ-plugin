@@ -2,7 +2,7 @@
   parserClass="com.github.kornilova203.matlab.MatlabParser"
   parserUtilClass="com.github.kornilova203.matlab.MatlabParserUtil"
 
-  extends="com.github.kornilova203.matlab.psi.MatlabCompositePsiElement"
+  extends="com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement"
 
   psiClassPrefix="Matlab"
   psiImplClassSuffix="Impl"
@@ -12,6 +12,10 @@
   elementTypeHolderClass="com.github.kornilova203.matlab.psi.MatlabTypes"
   elementTypeClass="com.github.kornilova203.matlab.psi.MatlabElementType"
   tokenTypeClass="com.github.kornilova203.matlab.psi.MatlabTokenType"
+
+  elementTypeClass("function_declaration")="com.github.kornilova203.matlab.stub.MatlabFunctionDeclarationElementType"
+  elementTypeClass("class_declaration")="com.github.kornilova203.matlab.stub.MatlabClassDeclarationElementType"
+  elementTypeClass("global_variable_declaration")="com.github.kornilova203.matlab.stub.MatlabGlobalVariableElementType"
 
   parserImports=[
     "static com.github.kornilova203.matlab.MatlabElementTypes.*"
@@ -74,15 +78,15 @@
     ]
 
     mixin("ref_expr")="com.github.kornilova203.matlab.psi.MatlabRefExprMixin"
-    mixin("class_declaration")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
+    mixin("class_declaration")="com.github.kornilova203.matlab.psi.MatlabStubbedClassDeclaration"
     mixin("catch_block")="com.github.kornilova203.matlab.psi.MatlabCatchBlockMixin"
-    mixin("function_declaration")="com.github.kornilova203.matlab.psi.MatlabFunctionDeclarationMixin"
+    mixin("function_declaration")="com.github.kornilova203.matlab.psi.MatlabStubbedFunctionDeclaration"
     mixin("parameter")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
     mixin("ret_value")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
     mixin("block")="com.github.kornilova203.matlab.psi.MatlabBlockMixin"
     mixin("for_loop")="com.github.kornilova203.matlab.psi.MatlabForLoopMixin"
     mixin("lambda_expr")="com.github.kornilova203.matlab.psi.MatlabLambdaExprMixin"
-    mixin("global_variable_declaration")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
+    mixin("global_variable_declaration")="com.github.kornilova203.matlab.psi.MatlabStubbedGlobalVariable"
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?
