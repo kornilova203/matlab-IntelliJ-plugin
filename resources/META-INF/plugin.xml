@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>MatlabSupport</id>
     <name>Matlab Support</name>
-    <version>0.5.3</version>
+    <version>0.6</version>
 
     <vendor url="https://github.com/kornilova203" email="kornilova203@gmail.com"/>
 
@@ -12,8 +12,11 @@
 
     <change-notes><![CDATA[
     <ol>
-        <li>Smart Enter inserts semicolon where required (ctrl-shift-enter or cmd-shift-enter) (by @cyclic-reference)</li>
-        <li>Added plugin icon (by @cyclic-reference)</li>
+        <li>Code folding supported (by @YaPravaATyNet)</li>
+        <li>Completion popup will not appear after numeric literal is typed (by @YaPravaATyNet)</li>
+        <li>Resolve global variables inside on file (by @YaPravaATyNet)</li>
+        <li>Fix bug when field names were interpreted as keywords (by @YaPravaATyNet)</li>
+        <li>Class attributes can be specified without an expression (by @YaPravaATyNet)</li>
     </ol>
     ]]>
     </change-notes>
@@ -63,6 +66,7 @@
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabFunctionDeclarationIndex"/>
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabClassDeclarationIndex"/>
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabGlobalVariableIndex"/>
+        <lineIndentProvider implementation="com.github.kornilova203.matlab.MatlabLineIndentProvider"/>
     </extensions>
 
     <project-components>
