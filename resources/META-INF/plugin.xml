@@ -67,6 +67,8 @@
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabClassDeclarationIndex"/>
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabGlobalVariableIndex"/>
         <lineIndentProvider implementation="com.github.kornilova203.matlab.MatlabLineIndentProvider"/>
+        <localInspection language="Matlab" shortName="UnusedVariable" displayName="Unused variable and parameters" groupName="Matlab" enabledByDefault="true" level="WEAK WARNING"
+                         implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnusedVariableInspection"/>
     </extensions>
 
     <project-components>
