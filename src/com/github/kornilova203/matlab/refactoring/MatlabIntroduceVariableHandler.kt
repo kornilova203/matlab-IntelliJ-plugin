@@ -132,8 +132,11 @@ class MatlabIntroduceVariableHandler : RefactoringActionHandler {
         val occurrences = ArrayList<PsiElement>()
         val visitor = object : PsiRecursiveElementVisitor() {
             override fun visitElement(element: PsiElement) {
+                if (element is MatlabFunctionDeclaration) {
+                    return
+                }
                 if (PsiEquivalenceUtil.areElementsEquivalent(extractedElement, element) && !isAfterDot(element)) {
-                    occurrences.add(element) // вот подумай ещё какие могут быть условия кроме после точки
+                    occurrences.add(element)
                 } else {
                     super.visitElement(element)
                 }

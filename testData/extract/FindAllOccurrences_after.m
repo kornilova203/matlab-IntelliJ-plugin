@@ -3,6 +3,6 @@ a = x + 100500
 if x > 0
     b = x + foo()
     function res = foo()
-        res = x
+        res = 1 + abs(-3)
     end
 end

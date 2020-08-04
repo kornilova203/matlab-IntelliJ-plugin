@@ -1,6 +1,6 @@
 a = 1 + abs(-3) + 100500
-if 1 + abs(-3) > 0
-    b = <selection>1 + abs(-3)</selection> + foo()
+if <selection>1 + abs(-3)</selection> > 0
+    b = 1 + abs(-3) + foo()
     function res = foo()
         res = 1 + abs(-3)
     end
