@@ -38,16 +38,16 @@ public class MatlabParser implements PsiParser, LightPsiParser {
 
   public static final TokenSet[] EXTENDS_SETS_ = new TokenSet[] {
     create_token_set_(ALL_ITEMS_RANGE, AND_EXPR, ASSIGN_EXPR, CELL_ARRAY_ACCESS_EXPR,
-      CTRANSPOSE_EXPR, ELEMENT_WISE_LDIV_EXPR, ELEMENT_WISE_MUL_EXPR, ELEMENT_WISE_POW_EXPR,
-      ELEMENT_WISE_RDIV_EXPR, EQUAL_EXPR, EXPR, FUNCTION_EXPR,
-      FUNCTION_REF_EXPR, LAMBDA_EXPR, LDIV_EXPR, LESS_EXPR,
-      LESS_OR_EQUAL_EXPR, LITERAL_EXPR, MATRIX_AND_EXPR, MATRIX_OR_EXPR,
-      META_CLASS_EXPR, MINUS_EXPR, MORE_EXPR, MORE_OR_EQUAL_EXPR,
-      MUL_EXPR, NOT_EQUAL_EXPR, OR_EXPR, PAREN_EXPR,
-      PLUS_EXPR, POW_EXPR, QUALIFIED_EXPR, RANGE_EXPR,
-      RDIV_EXPR, REF_EXPR, TRANSPOSE_EXPR, UNARY_DEC_EXPR,
-      UNARY_INC_EXPR, UNARY_MIN_EXPR, UNARY_NEGATION_EXPR, UNARY_PLUS_EXPR,
-      UNARY_PREFIX_DEC_EXPR, UNARY_PREFIX_INC_EXPR),
+      CONTROL_EXPR, CTRANSPOSE_EXPR, ELEMENT_WISE_LDIV_EXPR, ELEMENT_WISE_MUL_EXPR,
+      ELEMENT_WISE_POW_EXPR, ELEMENT_WISE_RDIV_EXPR, EQUAL_EXPR, EXPR,
+      FUNCTION_EXPR, FUNCTION_REF_EXPR, LAMBDA_EXPR, LDIV_EXPR,
+      LESS_EXPR, LESS_OR_EQUAL_EXPR, LITERAL_EXPR, MATRIX_AND_EXPR,
+      MATRIX_OR_EXPR, META_CLASS_EXPR, MINUS_EXPR, MORE_EXPR,
+      MORE_OR_EQUAL_EXPR, MUL_EXPR, NOT_EQUAL_EXPR, OR_EXPR,
+      PAREN_EXPR, PLUS_EXPR, POW_EXPR, QUALIFIED_EXPR,
+      RANGE_EXPR, RDIV_EXPR, REF_EXPR, TRANSPOSE_EXPR,
+      UNARY_DEC_EXPR, UNARY_INC_EXPR, UNARY_MIN_EXPR, UNARY_NEGATION_EXPR,
+      UNARY_PLUS_EXPR, UNARY_PREFIX_DEC_EXPR, UNARY_PREFIX_INC_EXPR),
   };
 
   /* ********************************************************** */
@@ -3300,6 +3300,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   // 7: ATOM(literal_expr) POSTFIX(qualified_with_keyword_expr) BINARY(qualified_expr) ATOM(direct_function_expr)
   //    POSTFIX(function_expr) POSTFIX(cell_array_access_expr) ATOM(ref_expr) ATOM(paren_expr)
   //    ATOM(lambda_expr) ATOM(function_ref_expr)
+  // 8: ATOM(control_expr)
   public static boolean expr(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "expr")) return false;
     addVariant(b, "<expression>");
@@ -3317,6 +3318,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!r) r = paren_expr(b, l + 1);
     if (!r) r = lambda_expr(b, l + 1);
     if (!r) r = function_ref_expr(b, l + 1);
+    if (!r) r = control_expr(b, l + 1);
     p = r;
     r = r && expr_0(b, l + 1, g);
     exit_section_(b, l, m, null, r, p, null);
@@ -4067,6 +4069,18 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = r && ref_expr(b, l + 1);
     exit_section_(b, l, m, r, p, null);
     return r || p;
+  }
+
+  // return | break | continue
+  public static boolean control_expr(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "control_expr")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, CONTROL_EXPR, "<expression>");
+    r = consumeTokenSmart(b, RETURN);
+    if (!r) r = consumeTokenSmart(b, BREAK);
+    if (!r) r = consumeTokenSmart(b, CONTINUE);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   static final Parser argument_parser_ = new Parser() {

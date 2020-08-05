@@ -238,6 +238,7 @@ private enum_item ::= ident arguments?
     extends("lambda_expr")=expr
     extends("binary_expr")=expr
     extends("ref_expr")=expr
+    extends("control_expr")=expr
     extends(".*_expr")=binary_expr
     mixin("assign_expr")="com.github.kornilova203.matlab.psi.MatlabAssignExprMixin"
 }
@@ -250,6 +251,7 @@ expr ::= assign_expr
   | mul_group
   | unary_group
   | primary_group
+  | control_expr
 
 fake binary_expr ::= expr + {
   methods=[
@@ -388,6 +390,8 @@ function_ref_expr ::= '@' ref_expr { pin=1 }
 
 lambda_expr ::= '@' br* parameters br* lambda_body { pin=3 }
 lambda_body ::= expr
+
+control_expr ::= return | break | continue
 
 file_operation ::= (LOAD | DIR | LS | CD) br* FILE_NAME br* variables? { pin=1 }
 variables ::= variable+

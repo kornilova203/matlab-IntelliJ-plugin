@@ -1,10 +1,7 @@
 package com.github.kornilova203.matlab.completion
 
 import com.github.kornilova203.matlab.MatlabLanguage
-import com.github.kornilova203.matlab.psi.MatlabBlock
-import com.github.kornilova203.matlab.psi.MatlabFile
-import com.github.kornilova203.matlab.psi.MatlabRefExpr
-import com.github.kornilova203.matlab.psi.MatlabTypes
+import com.github.kornilova203.matlab.psi.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.patterns.PlatformPatterns.psiElement
@@ -23,16 +20,21 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
                 alwaysFalse<PsiElement>(),
                 or(psiElement(MatlabTypes.INTEGER), psiElement(MatlabTypes.FLOAT))
         )
+        private val IN_CYCLE = and(M, or(IDENT.inside(MatlabWhileLoop::class.java), IDENT.inside(MatlabForLoop::class.java)))
     }
 
     init {
         extend(CompletionType.BASIC,
                 psiElement().andOr(AT_TOP_LEVEL, IN_BLOCK),
-                provider("function", "if", "while", "for", "classdef"))
+                provider("function", "if", "while", "for", "classdef", "return"))
 
         extend(CompletionType.BASIC,
                 psiElement().and(IN_BLOCK),
                 provider("end"))
+
+        extend(CompletionType.BASIC,
+                psiElement().and(IN_CYCLE).and(IN_BLOCK),
+                provider("continue", "break"))
 
         // todo: completion in classdef
     }
