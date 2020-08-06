@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>MatlabSupport</id>
     <name>Matlab Support</name>
-    <version>0.6</version>
+    <version>0.7</version>
 
     <vendor url="https://github.com/kornilova203" email="kornilova203@gmail.com"/>
 
@@ -12,11 +12,9 @@
 
     <change-notes><![CDATA[
     <ol>
-        <li>Code folding supported (by @YaPravaATyNet)</li>
-        <li>Completion popup will not appear after numeric literal is typed (by @YaPravaATyNet)</li>
-        <li>Resolve global variables inside on file (by @YaPravaATyNet)</li>
-        <li>Fix bug when field names were interpreted as keywords (by @YaPravaATyNet)</li>
-        <li>Class attributes can be specified without an expression (by @YaPravaATyNet)</li>
+        <li>Resolve symbols across all project files (by @YaPravaATyNet)</li>
+        <li>Process enter key in string literals: wrap concatenation using strcat function (by @YaPravaATyNet)</li>
+        <li>Show plots and wait until they are closed by user (by @YaPravaATyNet)</li>
     </ol>
     ]]>
     </change-notes>
