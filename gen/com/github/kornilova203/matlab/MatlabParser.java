@@ -1017,26 +1017,40 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // elseif NEWLINE * if_block_body
+  // elseif br* condition NEWLINE * if_block_body
   public static boolean elseif_block(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "elseif_block")) return false;
     if (!nextTokenIs(b, ELSEIF)) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, ELSEIF_BLOCK, null);
     r = consumeToken(b, ELSEIF);
-    r = r && elseif_block_1(b, l + 1);
-    r = r && if_block_body(b, l + 1);
-    exit_section_(b, m, ELSEIF_BLOCK, r);
-    return r;
+    p = r; // pin = 1
+    r = r && report_error_(b, elseif_block_1(b, l + 1));
+    r = p && report_error_(b, condition(b, l + 1)) && r;
+    r = p && report_error_(b, elseif_block_3(b, l + 1)) && r;
+    r = p && if_block_body(b, l + 1) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
   }
 
-  // NEWLINE *
+  // br*
   private static boolean elseif_block_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "elseif_block_1")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!consumeToken(b, NEWLINE)) break;
+      if (!br(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "elseif_block_1", c)) break;
+    }
+    return true;
+  }
+
+  // NEWLINE *
+  private static boolean elseif_block_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "elseif_block_3")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!consumeToken(b, NEWLINE)) break;
+      if (!empty_element_parsed_guard_(b, "elseif_block_3", c)) break;
     }
     return true;
   }

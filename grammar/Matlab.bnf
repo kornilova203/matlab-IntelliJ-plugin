@@ -133,7 +133,7 @@ condition ::= expr
 private if_block_body ::= <<block element>> { recoverWhile=not_end_or_elseif_or_else }
 private not_end_or_elseif_or_else ::= !( NEWLINE* (end | elseif | else) )
 
-elseif_block ::= elseif NEWLINE * if_block_body
+elseif_block ::= elseif br* condition NEWLINE * if_block_body { pin=1 }
 else_block ::= else NEWLINE* if_block_body
 
 switch_block ::= switch br* switch_expression NEWLINE*

@@ -7,7 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface MatlabElseifBlock extends PsiElement {
 
-  @NotNull
+  @Nullable
   MatlabBlock getBlock();
+
+  @Nullable
+  MatlabCondition getCondition();
 
 }

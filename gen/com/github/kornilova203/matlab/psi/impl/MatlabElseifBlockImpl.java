@@ -27,9 +27,15 @@ public class MatlabElseifBlockImpl extends MatlabASTWrapperPsiElement implements
   }
 
   @Override
-  @NotNull
+  @Nullable
   public MatlabBlock getBlock() {
-    return findNotNullChildByClass(MatlabBlock.class);
+    return findChildByClass(MatlabBlock.class);
+  }
+
+  @Override
+  @Nullable
+  public MatlabCondition getCondition() {
+    return findChildByClass(MatlabCondition.class);
   }
 
 }

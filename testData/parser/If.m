@@ -10,4 +10,4 @@ end
 
 if a == a b = a end
 if a == a b = a; end
-if a == a b = a elseif a = 5 else 5 end
+if a == a b = a elseif a < b a = 5 else 5 end
