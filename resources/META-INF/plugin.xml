@@ -67,6 +67,8 @@
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabClassDeclarationIndex"/>
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabGlobalVariableIndex"/>
         <lineIndentProvider implementation="com.github.kornilova203.matlab.MatlabLineIndentProvider"/>
+        <localInspection language="Matlab" shortName="UnreachableCode" displayName="Unreachable code" groupName="Matlab" enabledByDefault="true" level="WARNING"
+                         implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnreachableCodeInspection"/>
     </extensions>
 
     <project-components>
