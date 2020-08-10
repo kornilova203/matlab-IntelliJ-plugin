@@ -20,6 +20,7 @@ fun evaluateExpr(expr: MatlabExpr?): Any? {
         is MatlabBinaryExpr -> evaluateBinaryExpr(expr)
         is MatlabParenExpr -> evaluateExpr(expr.expr)
         is MatlabRefExpr -> evaluateRefExpr(expr)
+        is MatlabFunctionExpr -> evaluateRefExpr(expr.expr as MatlabRefExpr)
         else -> null
     }
 }

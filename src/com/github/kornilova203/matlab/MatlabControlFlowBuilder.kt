@@ -10,10 +10,10 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfTypes
 
 class MatlabControlFlowBuilder : MatlabVisitor(), PsiRecursiveVisitor {
-    private val myBuilder = ControlFlowBuilder()
+    private val builder = ControlFlowBuilder()
 
     fun buildControlFlow(owner: PsiElement): ControlFlow? {
-        return myBuilder.build(this, owner)
+        return builder.build(this, owner)
     }
 
     override fun visitElement(element: PsiElement) {
@@ -21,93 +21,90 @@ class MatlabControlFlowBuilder : MatlabVisitor(), PsiRecursiveVisitor {
     }
 
     override fun visitExpr(node: MatlabExpr) {
-        myBuilder.startNode(node)
+        builder.startNode(node)
         super.visitExpr(node)
     }
 
     override fun visitWhileLoop(node: MatlabWhileLoop) {
-        val instruction = myBuilder.startNode(node)
+        val instruction = builder.startNode(node)
         val block = node.block
         val condition = node.whileLoopCondition
         condition?.accept(this)
         val statically: Boolean? = evaluateAsBoolean(condition?.expr)
         if (statically != true) {
-            myBuilder.addPendingEdge(node, myBuilder.prevInstruction)
+            builder.addPendingEdge(node, builder.prevInstruction)
         }
         if (statically == false) {
-            myBuilder.prevInstruction = null
+            builder.prevInstruction = null
         }
-        myBuilder.startConditionalNode(block, condition, true)
+        builder.startConditionalNode(block, condition, true)
         block?.accept(this)
-        if (myBuilder.prevInstruction != null) {
-            myBuilder.addEdge(myBuilder.prevInstruction, instruction)
+        if (builder.prevInstruction != null) {
+            builder.addEdge(builder.prevInstruction, instruction)
         }
-        myBuilder.checkPending(instruction)
-        myBuilder.flowAbrupted()
+        builder.checkPending(instruction)
+        builder.flowAbrupted()
     }
 
     override fun visitForLoop(node: MatlabForLoop) {
-        val instruction = myBuilder.startNode(node)
+        val instruction = builder.startNode(node)
         val block = node.block
         val loopRange = node.forLoopRange?.assignExpr
         loopRange?.accept(this)
-        myBuilder.addPendingEdge(node, myBuilder.prevInstruction)
-        myBuilder.startNode(block)
+        builder.addPendingEdge(node, builder.prevInstruction)
+        builder.startNode(block)
         block?.accept(this)
-        if (myBuilder.prevInstruction != null) {
-            myBuilder.addEdge(myBuilder.prevInstruction, instruction)
+        if (builder.prevInstruction != null) {
+            builder.addEdge(builder.prevInstruction, instruction)
         }
-        myBuilder.checkPending(instruction)
-        myBuilder.flowAbrupted()
+        builder.checkPending(instruction)
+        builder.flowAbrupted()
     }
 
-    override fun visitIfBlock(node: MatlabIfBlock) {        //не забудь вынести общую часть и заменить на flowAbrupted и myBuilder-> builder
-        myBuilder.startNode(node)
+    override fun visitIfBlock(node: MatlabIfBlock) {
+        builder.startNode(node)
         var condition = node.condition
-        val block = node.block
         val elseifList = node.elseifBlockList
         val elseBlock = node.elseBlock
         condition?.accept(this)
-        var conditionInstruction = myBuilder.prevInstruction
+        var conditionInstruction = builder.prevInstruction
         var statically: Boolean? = evaluateAsBoolean(condition?.expr)
-        if (elseBlock == null && elseifList.isEmpty() && statically != true) {
-            myBuilder.addPendingEdge(node, myBuilder.prevInstruction)
-        }
-        if (statically == false) {
-            myBuilder.prevInstruction = null
-        }
-        myBuilder.startConditionalNode(block, condition, true)
-        block?.accept(this)
-        myBuilder.addPendingEdge(node, myBuilder.prevInstruction)
+        var isLastBlock = elseBlock == null && elseifList.isEmpty()
+        addConditionBlock(node, condition, node.block, statically, isLastBlock)
 
         for (elseif in elseifList) {
-            myBuilder.prevInstruction = if (statically == true) null else conditionInstruction
-            myBuilder.startConditionalNode(elseif, condition, false)
+            builder.prevInstruction = if (statically == true) null else conditionInstruction
+            builder.startConditionalNode(elseif, condition, false)
             condition = elseif.condition
             condition?.accept(this)
-            conditionInstruction = myBuilder.prevInstruction
+            conditionInstruction = builder.prevInstruction
             statically = evaluateAsBoolean(condition?.expr)
-            if (elseBlock == null && elseif == elseifList.last() && statically != true) {
-                myBuilder.addPendingEdge(node, myBuilder.prevInstruction)
-            }
-            if (statically == false) {
-                myBuilder.prevInstruction = null
-            }
-            myBuilder.startConditionalNode(elseif.block, condition, true)
-            elseif.block?.accept(this)
-            myBuilder.addPendingEdge(node, myBuilder.prevInstruction)
+            isLastBlock = elseBlock == null && elseif == elseifList.last()
+            addConditionBlock(node, condition, elseif.block, statically, isLastBlock)
         }
 
         if (elseBlock != null) {
-            myBuilder.prevInstruction = if (statically == true) null else conditionInstruction
-            myBuilder.startConditionalNode(elseBlock, condition, false)
-            myBuilder.startConditionalNode(elseBlock.block, condition, false)
+            builder.prevInstruction = if (statically == true) null else conditionInstruction
+            builder.startConditionalNode(elseBlock, condition, false)
+            builder.startConditionalNode(elseBlock.block, condition, false)
             elseBlock.accept(this)
         }
     }
 
+    private fun addConditionBlock(node: MatlabIfBlock, condition: MatlabCondition?, block: MatlabBlock?, statically: Boolean?, isLastBlock: Boolean) {
+        if (isLastBlock && statically != true) {
+            builder.addPendingEdge(node, builder.prevInstruction)
+        }
+        if (statically == false) {
+            builder.flowAbrupted()
+        }
+        builder.startConditionalNode(block, condition, true)
+        block?.accept(this)
+        builder.addPendingEdge(node, builder.prevInstruction)
+    }
+
     override fun visitSwitchBlock(node: MatlabSwitchBlock) {
-        myBuilder.startNode(node)
+        builder.startNode(node)
         val switchExpr = node.switchExpression
         val caseList = node.caseBlockList
         val otherwise = node.otherwiseBlock
@@ -116,59 +113,59 @@ class MatlabControlFlowBuilder : MatlabVisitor(), PsiRecursiveVisitor {
         var prevConditionInstruction: Instruction? = null
         for (case in caseList) {
             if (prevCondition == null) {
-                myBuilder.startNode(case)
+                builder.startNode(case)
             } else {
-                myBuilder.prevInstruction = prevConditionInstruction
-                myBuilder.startConditionalNode(case, prevCondition, false)
+                builder.prevInstruction = prevConditionInstruction
+                builder.startConditionalNode(case, prevCondition, false)
             }
             case.caseExpression?.accept(this)
-            prevConditionInstruction = myBuilder.prevInstruction
+            prevConditionInstruction = builder.prevInstruction
             prevCondition = case.caseExpression
-            myBuilder.startConditionalNode(case.block, case.caseExpression, true)
+            builder.startConditionalNode(case.block, case.caseExpression, true)
             case.block?.accept(this)
-            myBuilder.addPendingEdge(node, myBuilder.prevInstruction)
+            builder.addPendingEdge(node, builder.prevInstruction)
         }
         if (otherwise != null) {
             if (prevCondition == null) {
-                myBuilder.startNode(otherwise)
-                myBuilder.startNode(otherwise.block)
+                builder.startNode(otherwise)
+                builder.startNode(otherwise.block)
             } else {
-                myBuilder.prevInstruction = prevConditionInstruction
-                myBuilder.startConditionalNode(otherwise, prevCondition, false)
-                myBuilder.startConditionalNode(otherwise.block, prevCondition, false)
+                builder.prevInstruction = prevConditionInstruction
+                builder.startConditionalNode(otherwise, prevCondition, false)
+                builder.startConditionalNode(otherwise.block, prevCondition, false)
             }
             otherwise.block?.accept(this)
         }
     }
 
     override fun visitTryBlock(node: MatlabTryBlock) {
-        myBuilder.startNode(node)
+        builder.startNode(node)
         val block = node.block
         val catch = node.catchBlock
-        val firstTryInstruction = myBuilder.instructionCount
+        val firstTryInstruction = builder.instructionCount
         block?.accept(this)
-        myBuilder.addPendingEdge(node, myBuilder.prevInstruction)
-        val lastTryInstruction = myBuilder.instructionCount
-        myBuilder.flowAbrupted()
+        builder.addPendingEdge(node, builder.prevInstruction)
+        val lastTryInstruction = builder.instructionCount
+        builder.flowAbrupted()
         if (catch != null) {
-            val catchInstruction = myBuilder.startNode(catch)
+            val catchInstruction = builder.startNode(catch)
             catch.block?.accept(this)
             for (i in firstTryInstruction until lastTryInstruction) {
-                myBuilder.addEdge(myBuilder.instructions[i], catchInstruction)
+                builder.addEdge(builder.instructions[i], catchInstruction)
             }
         }
     }
 
     override fun visitFunctionDeclaration(node: MatlabFunctionDeclaration) {
-        val backupPrevInstruction = myBuilder.prevInstruction
-        myBuilder.flowAbrupted()
-        myBuilder.startNode(node)
+        val backupPrevInstruction = builder.prevInstruction
+        builder.flowAbrupted()
+        builder.startNode(node)
         node.block?.accept(this)
-        myBuilder.prevInstruction = backupPrevInstruction
+        builder.prevInstruction = backupPrevInstruction
     }
 
     override fun visitClassDeclaration(node: MatlabClassDeclaration) {
-        myBuilder.startNode(node)
+        builder.startNode(node)
         val methods = node.methodsBlockList
         for (method in methods) {
             method.block?.accept(this)
@@ -176,15 +173,15 @@ class MatlabControlFlowBuilder : MatlabVisitor(), PsiRecursiveVisitor {
     }
 
     override fun visitControlExpr(node: MatlabControlExpr) {
-        val instruction = myBuilder.startNode(node)
+        val instruction = builder.startNode(node)
         val loop = findLoop(node)
         if (loop != null) {
             when (node.firstChild.elementType) {
-                MatlabTypes.BREAK -> myBuilder.addPendingEdge(loop, instruction)
-                MatlabTypes.CONTINUE -> myBuilder.addEdge(instruction, myBuilder.findInstructionByElement(loop))
+                MatlabTypes.BREAK -> builder.addPendingEdge(loop, instruction)
+                MatlabTypes.CONTINUE -> builder.addEdge(instruction, builder.findInstructionByElement(loop))
             }
         }
-        myBuilder.flowAbrupted()
+        builder.flowAbrupted()
     }
 
     private fun findLoop(expr: MatlabControlExpr): PsiElement? {

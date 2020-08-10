@@ -3301,20 +3301,22 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   // Expression root: expr
   // Operator priority table:
   // 0: BINARY(assign_expr)
-  // 1: BINARY(equal_expr) BINARY(not_equal_expr) BINARY(less_expr) BINARY(less_or_equal_expr)
+  // 1: BINARY(or_expr)
+  // 2: BINARY(and_expr)
+  // 3: BINARY(matrix_or_expr)
+  // 4: BINARY(matrix_and_expr)
+  // 5: BINARY(equal_expr) BINARY(not_equal_expr) BINARY(less_expr) BINARY(less_or_equal_expr)
   //    BINARY(more_expr) BINARY(more_or_equal_expr)
-  // 2: BINARY(or_expr) BINARY(matrix_or_expr) BINARY(and_expr) BINARY(matrix_and_expr)
-  // 3: BINARY(range_expr)
-  // 4: BINARY(plus_expr) BINARY(minus_expr)
-  // 5: BINARY(mul_expr) BINARY(element_wise_mul_expr) BINARY(rdiv_expr) BINARY(element_wise_rdiv_expr)
+  // 6: BINARY(range_expr)
+  // 7: BINARY(plus_expr) BINARY(minus_expr)
+  // 8: BINARY(mul_expr) BINARY(element_wise_mul_expr) BINARY(rdiv_expr) BINARY(element_wise_rdiv_expr)
   //    BINARY(ldiv_expr) BINARY(element_wise_ldiv_expr) BINARY(pow_expr) BINARY(element_wise_pow_expr)
-  // 6: POSTFIX(unary_inc_expr) POSTFIX(unary_dec_expr) PREFIX(unary_prefix_dec_expr) PREFIX(unary_prefix_inc_expr)
+  // 9: POSTFIX(unary_inc_expr) POSTFIX(unary_dec_expr) PREFIX(unary_prefix_dec_expr) PREFIX(unary_prefix_inc_expr)
   //    PREFIX(unary_plus_expr) PREFIX(unary_min_expr) POSTFIX(ctranspose_expr) POSTFIX(transpose_expr)
   //    PREFIX(unary_negation_expr) PREFIX(meta_class_expr)
-  // 7: ATOM(literal_expr) POSTFIX(qualified_with_keyword_expr) BINARY(qualified_expr) ATOM(direct_function_expr)
+  // 10: ATOM(literal_expr) POSTFIX(qualified_with_keyword_expr) BINARY(qualified_expr) ATOM(direct_function_expr)
   //    POSTFIX(function_expr) POSTFIX(cell_array_access_expr) ATOM(ref_expr) ATOM(paren_expr)
-  //    ATOM(lambda_expr) ATOM(function_ref_expr)
-  // 8: ATOM(control_expr)
+  //    ATOM(lambda_expr) ATOM(function_ref_expr) ATOM(control_expr)
   public static boolean expr(PsiBuilder b, int l, int g) {
     if (!recursion_guard_(b, l, "expr")) return false;
     addVariant(b, "<expression>");
@@ -3348,120 +3350,120 @@ public class MatlabParser implements PsiParser, LightPsiParser {
         r = expr(b, l, -1);
         exit_section_(b, l, m, ASSIGN_EXPR, r, true, null);
       }
-      else if (g < 1 && equal_expr_0(b, l + 1)) {
+      else if (g < 1 && or_expr_0(b, l + 1)) {
         r = expr(b, l, 1);
-        exit_section_(b, l, m, EQUAL_EXPR, r, true, null);
-      }
-      else if (g < 1 && not_equal_expr_0(b, l + 1)) {
-        r = expr(b, l, 1);
-        exit_section_(b, l, m, NOT_EQUAL_EXPR, r, true, null);
-      }
-      else if (g < 1 && less_expr_0(b, l + 1)) {
-        r = expr(b, l, 1);
-        exit_section_(b, l, m, LESS_EXPR, r, true, null);
-      }
-      else if (g < 1 && less_or_equal_expr_0(b, l + 1)) {
-        r = expr(b, l, 1);
-        exit_section_(b, l, m, LESS_OR_EQUAL_EXPR, r, true, null);
-      }
-      else if (g < 1 && more_expr_0(b, l + 1)) {
-        r = expr(b, l, 1);
-        exit_section_(b, l, m, MORE_EXPR, r, true, null);
-      }
-      else if (g < 1 && more_or_equal_expr_0(b, l + 1)) {
-        r = expr(b, l, 1);
-        exit_section_(b, l, m, MORE_OR_EQUAL_EXPR, r, true, null);
-      }
-      else if (g < 2 && or_expr_0(b, l + 1)) {
-        r = expr(b, l, 2);
         exit_section_(b, l, m, OR_EXPR, r, true, null);
-      }
-      else if (g < 2 && matrix_or_expr_0(b, l + 1)) {
-        r = expr(b, l, 2);
-        exit_section_(b, l, m, MATRIX_OR_EXPR, r, true, null);
       }
       else if (g < 2 && and_expr_0(b, l + 1)) {
         r = expr(b, l, 2);
         exit_section_(b, l, m, AND_EXPR, r, true, null);
       }
-      else if (g < 2 && matrix_and_expr_0(b, l + 1)) {
-        r = expr(b, l, 2);
+      else if (g < 3 && matrix_or_expr_0(b, l + 1)) {
+        r = expr(b, l, 3);
+        exit_section_(b, l, m, MATRIX_OR_EXPR, r, true, null);
+      }
+      else if (g < 4 && matrix_and_expr_0(b, l + 1)) {
+        r = expr(b, l, 4);
         exit_section_(b, l, m, MATRIX_AND_EXPR, r, true, null);
       }
-      else if (g < 3 && range_expr_0(b, l + 1)) {
-        r = report_error_(b, expr(b, l, 3));
+      else if (g < 5 && equal_expr_0(b, l + 1)) {
+        r = expr(b, l, 5);
+        exit_section_(b, l, m, EQUAL_EXPR, r, true, null);
+      }
+      else if (g < 5 && not_equal_expr_0(b, l + 1)) {
+        r = expr(b, l, 5);
+        exit_section_(b, l, m, NOT_EQUAL_EXPR, r, true, null);
+      }
+      else if (g < 5 && less_expr_0(b, l + 1)) {
+        r = expr(b, l, 5);
+        exit_section_(b, l, m, LESS_EXPR, r, true, null);
+      }
+      else if (g < 5 && less_or_equal_expr_0(b, l + 1)) {
+        r = expr(b, l, 5);
+        exit_section_(b, l, m, LESS_OR_EQUAL_EXPR, r, true, null);
+      }
+      else if (g < 5 && more_expr_0(b, l + 1)) {
+        r = expr(b, l, 5);
+        exit_section_(b, l, m, MORE_EXPR, r, true, null);
+      }
+      else if (g < 5 && more_or_equal_expr_0(b, l + 1)) {
+        r = expr(b, l, 5);
+        exit_section_(b, l, m, MORE_OR_EQUAL_EXPR, r, true, null);
+      }
+      else if (g < 6 && range_expr_0(b, l + 1)) {
+        r = report_error_(b, expr(b, l, 6));
         r = range_expr_1(b, l + 1) && r;
         exit_section_(b, l, m, RANGE_EXPR, r, true, null);
       }
-      else if (g < 4 && plus_expr_0(b, l + 1)) {
-        r = expr(b, l, 4);
+      else if (g < 7 && plus_expr_0(b, l + 1)) {
+        r = expr(b, l, 7);
         exit_section_(b, l, m, PLUS_EXPR, r, true, null);
       }
-      else if (g < 4 && minus_expr_0(b, l + 1)) {
-        r = expr(b, l, 4);
+      else if (g < 7 && minus_expr_0(b, l + 1)) {
+        r = expr(b, l, 7);
         exit_section_(b, l, m, MINUS_EXPR, r, true, null);
       }
-      else if (g < 5 && mul_expr_0(b, l + 1)) {
-        r = expr(b, l, 5);
+      else if (g < 8 && mul_expr_0(b, l + 1)) {
+        r = expr(b, l, 8);
         exit_section_(b, l, m, MUL_EXPR, r, true, null);
       }
-      else if (g < 5 && element_wise_mul_expr_0(b, l + 1)) {
-        r = expr(b, l, 5);
+      else if (g < 8 && element_wise_mul_expr_0(b, l + 1)) {
+        r = expr(b, l, 8);
         exit_section_(b, l, m, ELEMENT_WISE_MUL_EXPR, r, true, null);
       }
-      else if (g < 5 && rdiv_expr_0(b, l + 1)) {
-        r = expr(b, l, 5);
+      else if (g < 8 && rdiv_expr_0(b, l + 1)) {
+        r = expr(b, l, 8);
         exit_section_(b, l, m, RDIV_EXPR, r, true, null);
       }
-      else if (g < 5 && element_wise_rdiv_expr_0(b, l + 1)) {
-        r = expr(b, l, 5);
+      else if (g < 8 && element_wise_rdiv_expr_0(b, l + 1)) {
+        r = expr(b, l, 8);
         exit_section_(b, l, m, ELEMENT_WISE_RDIV_EXPR, r, true, null);
       }
-      else if (g < 5 && ldiv_expr_0(b, l + 1)) {
-        r = expr(b, l, 5);
+      else if (g < 8 && ldiv_expr_0(b, l + 1)) {
+        r = expr(b, l, 8);
         exit_section_(b, l, m, LDIV_EXPR, r, true, null);
       }
-      else if (g < 5 && element_wise_ldiv_expr_0(b, l + 1)) {
-        r = expr(b, l, 5);
+      else if (g < 8 && element_wise_ldiv_expr_0(b, l + 1)) {
+        r = expr(b, l, 8);
         exit_section_(b, l, m, ELEMENT_WISE_LDIV_EXPR, r, true, null);
       }
-      else if (g < 5 && pow_expr_0(b, l + 1)) {
-        r = expr(b, l, 5);
+      else if (g < 8 && pow_expr_0(b, l + 1)) {
+        r = expr(b, l, 8);
         exit_section_(b, l, m, POW_EXPR, r, true, null);
       }
-      else if (g < 5 && element_wise_pow_expr_0(b, l + 1)) {
-        r = expr(b, l, 5);
+      else if (g < 8 && element_wise_pow_expr_0(b, l + 1)) {
+        r = expr(b, l, 8);
         exit_section_(b, l, m, ELEMENT_WISE_POW_EXPR, r, true, null);
       }
-      else if (g < 6 && unary_inc_expr_0(b, l + 1)) {
+      else if (g < 9 && unary_inc_expr_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, UNARY_INC_EXPR, r, true, null);
       }
-      else if (g < 6 && unary_dec_expr_0(b, l + 1)) {
+      else if (g < 9 && unary_dec_expr_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, UNARY_DEC_EXPR, r, true, null);
       }
-      else if (g < 6 && ctranspose_expr_0(b, l + 1)) {
+      else if (g < 9 && ctranspose_expr_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, CTRANSPOSE_EXPR, r, true, null);
       }
-      else if (g < 6 && transpose_expr_0(b, l + 1)) {
+      else if (g < 9 && transpose_expr_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, TRANSPOSE_EXPR, r, true, null);
       }
-      else if (g < 7 && qualified_with_keyword_expr_0(b, l + 1)) {
+      else if (g < 10 && qualified_with_keyword_expr_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, QUALIFIED_EXPR, r, true, null);
       }
-      else if (g < 7 && consumeTokenSmart(b, DOT)) {
-        r = expr(b, l, 7);
+      else if (g < 10 && consumeTokenSmart(b, DOT)) {
+        r = expr(b, l, 10);
         exit_section_(b, l, m, QUALIFIED_EXPR, r, true, null);
       }
-      else if (g < 7 && function_expr_0(b, l + 1)) {
+      else if (g < 10 && function_expr_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, FUNCTION_EXPR, r, true, null);
       }
-      else if (g < 7 && cell_array_access_expr_0(b, l + 1)) {
+      else if (g < 10 && cell_array_access_expr_0(b, l + 1)) {
         r = true;
         exit_section_(b, l, m, CELL_ARRAY_ACCESS_EXPR, r, true, null);
       }
@@ -3480,6 +3482,54 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = parseWhiteSpace(b, l + 1, br_parser_);
     r = r && consumeToken(b, ASSIGN);
+    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ws '||' ws
+  private static boolean or_expr_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "or_expr_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && consumeToken(b, OR);
+    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ws '&&' ws
+  private static boolean and_expr_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "and_expr_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && consumeToken(b, AND);
+    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ws '|' ws
+  private static boolean matrix_or_expr_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "matrix_or_expr_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && consumeToken(b, MATRIX_OR);
+    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ws '&' ws
+  private static boolean matrix_and_expr_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "matrix_and_expr_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && consumeToken(b, MATRIX_AND);
     r = r && parseWhiteSpace(b, l + 1, br_parser_);
     exit_section_(b, m, null, r);
     return r;
@@ -3552,54 +3602,6 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = parseWhiteSpace(b, l + 1, br_parser_);
     r = r && consumeToken(b, MORE_OR_EQUAL);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ws '||' ws
-  private static boolean or_expr_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "or_expr_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
-    r = r && consumeToken(b, OR);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ws '|' ws
-  private static boolean matrix_or_expr_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "matrix_or_expr_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
-    r = r && consumeToken(b, MATRIX_OR);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ws '&&' ws
-  private static boolean and_expr_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "and_expr_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
-    r = r && consumeToken(b, AND);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ws '&' ws
-  private static boolean matrix_and_expr_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "matrix_and_expr_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
-    r = r && consumeToken(b, MATRIX_AND);
     r = r && parseWhiteSpace(b, l + 1, br_parser_);
     exit_section_(b, m, null, r);
     return r;
@@ -3786,7 +3788,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = unary_prefix_dec_expr_0(b, l + 1);
     p = r;
-    r = p && expr(b, l, 6);
+    r = p && expr(b, l, 9);
     exit_section_(b, l, m, UNARY_PREFIX_DEC_EXPR, r, p, null);
     return r || p;
   }
@@ -3809,7 +3811,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = unary_prefix_inc_expr_0(b, l + 1);
     p = r;
-    r = p && expr(b, l, 6);
+    r = p && expr(b, l, 9);
     exit_section_(b, l, m, UNARY_PREFIX_INC_EXPR, r, p, null);
     return r || p;
   }
@@ -3832,7 +3834,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = unary_plus_expr_0(b, l + 1);
     p = r;
-    r = p && expr(b, l, 6);
+    r = p && expr(b, l, 9);
     exit_section_(b, l, m, UNARY_PLUS_EXPR, r, p, null);
     return r || p;
   }
@@ -3855,7 +3857,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = unary_min_expr_0(b, l + 1);
     p = r;
-    r = p && expr(b, l, 6);
+    r = p && expr(b, l, 9);
     exit_section_(b, l, m, UNARY_MIN_EXPR, r, p, null);
     return r || p;
   }
@@ -3900,7 +3902,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = unary_negation_expr_0(b, l + 1);
     p = r;
-    r = p && expr(b, l, 6);
+    r = p && expr(b, l, 9);
     exit_section_(b, l, m, UNARY_NEGATION_EXPR, r, p, null);
     return r || p;
   }
@@ -3923,7 +3925,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = meta_class_expr_0(b, l + 1);
     p = r;
-    r = p && expr(b, l, 6);
+    r = p && expr(b, l, 9);
     exit_section_(b, l, m, META_CLASS_EXPR, r, p, null);
     return r || p;
   }

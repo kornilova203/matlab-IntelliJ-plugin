@@ -244,14 +244,16 @@ private enum_item ::= ident arguments?
 }
 
 expr ::= assign_expr
+  | or_expr
+  | and_expr
+  | matrix_or_expr
+  | matrix_and_expr
   | compare_group
-  | logic_group
   | range_expr
   | add_group
   | mul_group
   | unary_group
   | primary_group
-  | control_expr
 
 fake binary_expr ::= expr + {
   methods=[
@@ -268,11 +270,6 @@ private compare_group ::= equal_expr
   | less_or_equal_expr
   | more_expr
   | more_or_equal_expr
-
-private logic_group ::= or_expr
-  | matrix_or_expr
-  | and_expr
-  | matrix_and_expr
 
 private unary_group ::= unary_inc_expr
   | unary_dec_expr
@@ -307,6 +304,7 @@ private primary_group ::= literal_expr
   | paren_expr
   | lambda_expr
   | function_ref_expr
+  | control_expr
 
 literal_expr ::= number_literal
   | string_literal
