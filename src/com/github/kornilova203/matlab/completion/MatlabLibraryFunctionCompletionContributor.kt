@@ -7,12 +7,13 @@ import com.github.kornilova203.matlab.psi.MatlabTypes
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.icons.AllIcons
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns.*
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import java.io.BufferedReader
-import javax.xml.parsers.DocumentBuilderFactory
+import java.nio.file.Paths
 import kotlin.collections.HashSet
 
 class MatlabLibraryFunctionCompletionContributor : CompletionContributor() {
@@ -54,26 +55,10 @@ class MatlabLibraryFunctionCompletionContributor : CompletionContributor() {
     }
 
     private fun getDocs() {
-        try {
-            val doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse("https://www.mathworks.com/help/matlab/referencelist_function_cat.xml")
-            val refs = doc.getElementsByTagName("ref")
-            for (i in 0 until refs.length) {
-                val name = refs.item(i).attributes.getNamedItem("name").nodeValue
-                if (name.matches("^[a-zA-Z0-9.]*$".toRegex())) {
-                    parseName(name)
-                }
-            }
-        } catch (e: Exception) {
-            val stream = javaClass.classLoader.getResourceAsStream("/docs/function_list") ?: return
-            BufferedReader(stream.reader()).use { reader ->
-                var line = reader.readLine()
-                while (line != null) {
-                    parseName(line)
-                    line = reader.readLine()
-                }
-            }
+        val stream = javaClass.classLoader.getResourceAsStream("docs/function_list") ?: return
+        BufferedReader(stream.reader()).forEachLine { line ->
+            parseName(line)
         }
-
     }
 
     private fun parseName(name: String) {
@@ -82,19 +67,24 @@ class MatlabLibraryFunctionCompletionContributor : CompletionContributor() {
         }
         if (name.contains('.')) {
             val names = name.split('.')
-            functions.add(LookupElementBuilder.create(names[0]))
-            for (j in 1 until names.size) {
-                functions.add(LookupElementBuilder.create(names[j]))
-                if (packages.containsKey(names[j - 1])) {
-                    packages[names[j - 1]]?.add(LookupElementBuilder.create(names[j]))
+            for (j in 0 until names.size - 1) {
+                functions.add(packageElement(names[j]))
+                val nextElement = if (j + 1 == names.size - 1) funcElement(names[j + 1]) else packageElement(names[j + 1])
+                if (packages.containsKey(names[j])) {
+                    packages[names[j]]?.add(nextElement)
                 } else {
-                    packages[names[j - 1]] = mutableSetOf<LookupElement>(LookupElementBuilder.create(names[j]))
+                    packages[names[j]] = mutableSetOf<LookupElement>(nextElement)
                 }
             }
+            functions.add(funcElement(names.last()))
         } else {
-            functions.add(LookupElementBuilder.create(name))
+            functions.add(funcElement(name))
         }
     }
+
+    private fun funcElement(name: String) = LookupElementBuilder.create(name).withIcon(AllIcons.Nodes.Function)
+
+    private fun packageElement(name: String) = LookupElementBuilder.create(name).withIcon(AllIcons.Nodes.Package)
 }
 
 
