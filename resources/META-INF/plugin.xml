@@ -70,6 +70,10 @@
         <lineIndentProvider implementation="com.github.kornilova203.matlab.MatlabLineIndentProvider"/>
         <localInspection language="Matlab" shortName="UnreachableCode" displayName="Unreachable code" groupName="Matlab" enabledByDefault="true" level="WARNING"
                          implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnreachableCodeInspection"/>
+        <localInspection language="Matlab" shortName="MatlabUnnecessaryContinue" displayName="Unnecessary 'continue' statement" groupName="Matlab" enabledByDefault="true" level="WARNING"
+                         implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnnecessaryContinueInspection"/>
+        <localInspection language="Matlab" shortName="MatlabUnnecessaryReturn" displayName="Unnecessary 'return' statement" groupName="Matlab" enabledByDefault="true" level="WARNING"
+                         implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnnecessaryReturnInspection"/>
         <localInspection language="Matlab" shortName="UnusedVariable" displayName="Unused variable and parameters" groupName="Matlab" enabledByDefault="true" level="WEAK WARNING"
                          implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnusedVariableInspection"/>
         <enterHandlerDelegate implementation="com.github.kornilova203.matlab.editor.actions.MatlabEnterInStringLiteralHandler"/>
