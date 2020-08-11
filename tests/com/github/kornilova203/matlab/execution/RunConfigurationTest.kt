@@ -1,10 +1,11 @@
 package com.github.kornilova203.matlab.execution
 
-import com.github.kornilova203.matlab.execution.MatlabCannotRunException
 import com.intellij.execution.executors.DefaultRunExecutor
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.ide.util.PropertiesComponent
 import com.intellij.util.ThrowableRunnable
 import junit.framework.TestCase
+
 
 class RunConfigurationTest : RunConfigurationTestCase() {
 
@@ -41,6 +42,8 @@ class RunConfigurationTest : RunConfigurationTestCase() {
 
         val myFile2 = myFixture.configureByText("hello2.m", fileContent)
         assertInterpreterPath(createConfiguration(myFile2), interpreterPath)
+
+        PropertiesComponent.getInstance().setValue(MatlabRunConfiguration.MATLAB_INTERPRETER, null)
     }
 
     fun testRunnerExceptions() {
