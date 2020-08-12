@@ -150,8 +150,18 @@ class MatlabControlFlowBuilder : MatlabVisitor(), PsiRecursiveVisitor {
         if (catch != null) {
             val catchInstruction = builder.startNode(catch)
             catch.block?.accept(this)
+            var tryCnt = 0
             for (i in firstTryInstruction until lastTryInstruction) {
-                builder.addEdge(builder.instructions[i], catchInstruction)
+                val element = builder.instructions[i].element
+                if (element is MatlabTryBlock) {
+                    tryCnt++
+                }
+                if (element is MatlabCatchBlock) {
+                    tryCnt--
+                }
+                if (element is MatlabExpr && tryCnt == 0) {
+                    builder.addEdge(builder.instructions[i], catchInstruction)
+                }
             }
         }
     }
@@ -159,9 +169,12 @@ class MatlabControlFlowBuilder : MatlabVisitor(), PsiRecursiveVisitor {
     override fun visitFunctionDeclaration(node: MatlabFunctionDeclaration) {
         val backupPrevInstruction = builder.prevInstruction
         builder.flowAbrupted()
+        val pendingBackup = builder.pending
+        builder.pending = mutableListOf()
         builder.startNode(node)
         node.block?.accept(this)
         builder.prevInstruction = backupPrevInstruction
+        builder.pending = pendingBackup
     }
 
     override fun visitClassDeclaration(node: MatlabClassDeclaration) {

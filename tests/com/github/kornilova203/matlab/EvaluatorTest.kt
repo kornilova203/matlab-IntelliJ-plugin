@@ -1,4 +1,5 @@
-import com.github.kornilova203.matlab.evaluateAsBoolean
+package com.github.kornilova203.matlab
+
 import com.github.kornilova203.matlab.psi.MatlabExpr
 import com.intellij.testFramework.UsefulTestCase
 import com.intellij.testFramework.fixtures.BasePlatformTestCase

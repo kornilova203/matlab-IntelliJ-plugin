@@ -17,36 +17,20 @@ class MatlabUnreachableCodeInspection : LocalInspectionTool() {
                 override fun visitFile(file: PsiFile) {
                     val controlFlow = MatlabControlFlowBuilder().buildControlFlow(file) ?: return
                     for (instruction in controlFlow.instructions) {
+                        // First instruction is entry, it's always null and it shouldn't be checked
+                        // Second instruction is first command, so it will always be executed and it shouldn't be checked too
                         if (instruction.num() < 2 || instruction.element is MatlabFunctionDeclaration) {
                             continue
                         }
-                        if (instruction.allPred().isEmpty()) {
+                        if (instruction.allPred().all {unreachable.contains(it.element)}) {
                             unreachable.add(instruction.element)
-                        } else {
-                            var allPredUnreachable = true
-                            for (pred in instruction.allPred()) {
-                                if (!unreachable.contains(pred.element)) {
-                                    allPredUnreachable = false
-                                    break
-                                }
-                            }
-                            if (allPredUnreachable) {
-                                unreachable.add(instruction.element)
-                            }
                         }
                     }
                     for (element in unreachable) {
                         if (element == null) {
                             continue
                         }
-                        var isParentUnreachable = false
-                        for (parent in element.parents) {
-                            if (unreachable.contains(parent)) {
-                                isParentUnreachable = true
-                                break
-                            }
-                        }
-                        if (!isParentUnreachable) {
+                        if (!element.parents.any {unreachable.contains(it)}) {
                             holder.registerProblem(element, "Unreachable code")
                         }
                     }
