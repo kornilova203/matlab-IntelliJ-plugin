@@ -5,9 +5,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 @TestDataPath("inspections/unusedvariable")
-class UnusedVariableTest : BasePlatformTestCase() {
-    override fun getTestDataPath(): String = getTestDataRoot(javaClass)
-
+class UnusedVariableTest : MatlabInspectionTest() {
     fun testVar() = doTest()
     fun testVarInFunction() = doTest()
     fun testRemoveSemicolon() = doTest()
@@ -17,14 +15,7 @@ class UnusedVariableTest : BasePlatformTestCase() {
     fun testLastParameter() = doTest()
     fun testException() = doTest()
 
-
     private fun doTest() {
-        myFixture.configureByFile(getTestName(false) + ".m")
-        myFixture.enableInspections(MatlabUnusedVariableInspection::class.java)
-        myFixture.checkHighlighting()
-        val action = myFixture.findSingleIntention("Remove")
-        myFixture.launchAction(action)
-        myFixture.checkResultByFile(getTestName(false) + "_after.m")
-
+        super.doTest(true, MatlabUnusedVariableInspection::class.java)
     }
 }

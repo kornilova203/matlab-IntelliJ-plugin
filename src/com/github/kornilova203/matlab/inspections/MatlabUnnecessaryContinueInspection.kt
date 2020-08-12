@@ -8,11 +8,11 @@ class MatlabUnnecessaryContinueInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) =
             object : MatlabUnnecessaryControlExprVisitor(holder, MatlabTypes.CONTINUE, "continue") {
                 override fun visitWhileLoop(node: MatlabWhileLoop) {
-                    findLastReturn(node.block)
+                    findUnnecessaryExpr(node.block)
                 }
 
                 override fun visitForLoop(node: MatlabForLoop) {
-                    findLastReturn(node.block)
+                    findUnnecessaryExpr(node.block)
                 }
             }
 }

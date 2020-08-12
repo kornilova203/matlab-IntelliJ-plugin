@@ -9,11 +9,11 @@ class MatlabUnnecessaryReturnInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) =
             object : MatlabUnnecessaryControlExprVisitor(holder, MatlabTypes.RETURN, "return") {
                 override fun visitFile(file: PsiFile) {
-                    findLastReturn(file)
+                    findUnnecessaryExpr(file)
                 }
 
                 override fun visitFunctionDeclaration(node: MatlabFunctionDeclaration) {
-                    findLastReturn(node.block)
+                    findUnnecessaryExpr(node.block)
                 }
             }
 }
