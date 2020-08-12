@@ -1,79 +1,27 @@
-null
-|
-v
-SWITCH_BLOCK
-|
-v
-REF_EXPR: n
-|
-v
-CASE_BLOCK
-|
-v
-LITERAL_EXPR: 0------------------+
-|                                |
-v                                |
-BLOCK - if 0 is true             |
-|                                |
-v                                |
-ASSIGN_EXPR: a = 0               |
-|                                |
-v                                |
-REF_EXPR: a                      |
-|                                |
-v                                |
-LITERAL_EXPR: 0------------------|--+
-                                 |  |
-                                 |  |
-CASE_BLOCK - if 0 is false<------+  |
-|                                   |
-v                                   |
-LITERAL_EXPR: 1------------------+  |
-|                                |  |
-v                                |  |
-BLOCK - if 1 is true             |  |
-|                                |  |
-v                                |  |
-ASSIGN_EXPR: a = 1               |  |
-|                                |  |
-v                                |  |
-REF_EXPR: a                      |  |
-|                                |  |
-v                                |  |
-LITERAL_EXPR: 1------------------|--|--+
-                                 |  |  |
-                                 |  |  |
-CASE_BLOCK - if 1 is false<------+  |  |
-|                                   |  |
-v                                   |  |
-LITERAL_EXPR: 2------------------+  |  |
-|                                |  |  |
-v                                |  |  |
-BLOCK - if 2 is true             |  |  |
-|                                |  |  |
-v                                |  |  |
-ASSIGN_EXPR: a = 2               |  |  |
-|                                |  |  |
-v                                |  |  |
-REF_EXPR: a                      |  |  |
-|                                |  |  |
-v                                |  |  |
-LITERAL_EXPR: 2------------------|--|--|--+
-                                 |  |  |  |
-                                 |  |  |  |
-OTHERWISE_BLOCK - if 2 is false<-+  |  |  |
-|                                   |  |  |
-v                                   |  |  |
-BLOCK - if 2 is false               |  |  |
-|                                   |  |  |
-v                                   |  |  |
-ASSIGN_EXPR: a = 3                  |  |  |
-|                                   |  |  |
-v                                   |  |  |
-REF_EXPR: a                         |  |  |
-|                                   |  |  |
-v                                   |  |  |
-LITERAL_EXPR: 3                     |  |  |
-|                                   |  |  |
-v                                   |  |  |
-null<-------------------------------+--+--+
+0(1) element: null
+1(2) element: MatlabSwitchBlockImpl(SWITCH_BLOCK)
+2(3) element: MatlabRefExprImpl(REF_EXPR)
+3(4) element: MatlabCaseBlockImpl(CASE_BLOCK)
+4(5,9) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+5(6) element: MatlabBlockImpl(BLOCK). Condition: 0:true
+6(7) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+7(8) element: MatlabRefExprImpl(REF_EXPR)
+8(26) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+9(10) element: MatlabCaseBlockImpl(CASE_BLOCK). Condition: 0:false
+10(11,15) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+11(12) element: MatlabBlockImpl(BLOCK). Condition: 1:true
+12(13) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+13(14) element: MatlabRefExprImpl(REF_EXPR)
+14(26) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+15(16) element: MatlabCaseBlockImpl(CASE_BLOCK). Condition: 1:false
+16(17,21) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+17(18) element: MatlabBlockImpl(BLOCK). Condition: 2:true
+18(19) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+19(20) element: MatlabRefExprImpl(REF_EXPR)
+20(26) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+21(22) element: MatlabOtherwiseBlockImpl(OTHERWISE_BLOCK). Condition: 2:false
+22(23) element: MatlabBlockImpl(BLOCK). Condition: 2:false
+23(24) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+24(25) element: MatlabRefExprImpl(REF_EXPR)
+25(26) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+26() element: null

@@ -11,6 +11,7 @@ import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import java.io.File
+import java.lang.StringBuilder
 
 @TestDataPath("controlflow")
 class ControlFlowTest : BasePlatformTestCase() {
@@ -31,10 +32,21 @@ class ControlFlowTest : BasePlatformTestCase() {
     private fun doTest() {
         val file = myFixture.configureByFile(getTestName(false) + ".m")
         val controlFlow = MatlabControlFlowBuilder().buildControlFlow(file)
-        val actual = drawGraph(controlFlow!!)
+        val actual = printControlFlow(controlFlow!!)
         val expectedFile = File(testDataPath + "/" + getTestName(false) + ".txt")
         val expected = expectedFile.readText()
         TestCase.assertEquals(expected, actual)
+        val actualGraph = drawGraph(controlFlow)
+        val expectedGraph = File(testDataPath + "/" + getTestName(false) + "_graph.txt").readText()
+        TestCase.assertEquals(expectedGraph, actualGraph)
+    }
+    
+    private fun printControlFlow(controlFlow: ControlFlow): String {
+        val result = StringBuilder()
+        for (instruction in controlFlow.instructions) {
+            result.append(instruction, "\n")
+        }
+        return result.toString()
     }
 
     private fun drawGraph(controlFlow: ControlFlow): String {

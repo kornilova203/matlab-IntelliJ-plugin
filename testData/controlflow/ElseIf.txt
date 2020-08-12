@@ -1,142 +1,48 @@
-null
-|
-v
-IF_BLOCK
-|
-v
-LESS_EXPR: a < 0
-|
-v
-REF_EXPR: a
-|
-v
-LITERAL_EXPR: 0-------------------+
-|                                 |
-v                                 |
-BLOCK - if a < 0 is true          |
-|                                 |
-v                                 |
-ASSIGN_EXPR: b = 0                |
-|                                 |
-v                                 |
-REF_EXPR: b                       |
-|                                 |
-v                                 |
-LITERAL_EXPR: 0-------------------|--+
-                                  |  |
-                                  |  |
-ELSEIF_BLOCK - if a < 0 is false<-+  |
-|                                    |
-v                                    |
-LESS_EXPR: a < 5                     |
-|                                    |
-v                                    |
-REF_EXPR: a                          |
-|                                    |
-v                                    |
-LITERAL_EXPR: 5-------------------+  |
-|                                 |  |
-v                                 |  |
-BLOCK - if a < 5 is true          |  |
-|                                 |  |
-v                                 |  |
-ASSIGN_EXPR: b = 5                |  |
-|                                 |  |
-v                                 |  |
-REF_EXPR: b                       |  |
-|                                 |  |
-v                                 |  |
-LITERAL_EXPR: 5-------------------|--|--+
-                                  |  |  |
-                                  |  |  |
-ELSEIF_BLOCK - if a < 5 is false<-+  |  |
-|                                    |  |
-v                                    |  |
-LESS_EXPR: a < 10                    |  |
-|                                    |  |
-v                                    |  |
-REF_EXPR: a                          |  |
-|                                    |  |
-v                                    |  |
-LITERAL_EXPR: 10------------------+  |  |
-|                                 |  |  |
-v                                 |  |  |
-BLOCK - if a < 10 is true         |  |  |
-|                                 |  |  |
-v                                 |  |  |
-ASSIGN_EXPR: b = 10               |  |  |
-|                                 |  |  |
-v                                 |  |  |
-REF_EXPR: b                       |  |  |
-|                                 |  |  |
-v                                 |  |  |
-LITERAL_EXPR: 10------------------|--|--|--+
-                                  |  |  |  |
-                                  |  |  |  |
-ELSE_BLOCK - if a < 10 is false<--+  |  |  |
-|                                    |  |  |
-v                                    |  |  |
-BLOCK - if a < 10 is false           |  |  |
-|                                    |  |  |
-v                                    |  |  |
-ASSIGN_EXPR: b = 15                  |  |  |
-|                                    |  |  |
-v                                    |  |  |
-REF_EXPR: b                          |  |  |
-|                                    |  |  |
-v                                    |  |  |
-LITERAL_EXPR: 15                     |  |  |
-|                                    |  |  |
-v                                    |  |  |
-IF_BLOCK<----------------------------+--+--+
-|
-v
-LITERAL_EXPR: 0-------------------+
-                                  |
-                                  |
-BLOCK - if 0 is true              |
-|                                 |
-v                                 |
-ASSIGN_EXPR: a = 0                |
-|                                 |
-v                                 |
-REF_EXPR: a                       |
-|                                 |
-v                                 |
-LITERAL_EXPR: 0-------------------|--+
-                                  |  |
-                                  |  |
-ELSEIF_BLOCK - if 0 is false<-----+  |
-|                                    |
-v                                    |
-LITERAL_EXPR: 1                      |
-|                                    |
-v                                    |
-BLOCK - if 1 is true                 |
-|                                    |
-v                                    |
-ASSIGN_EXPR: a = 1                   |
-|                                    |
-v                                    |
-REF_EXPR: a                          |
-|                                    |
-v                                    |
-LITERAL_EXPR: 1-------------------+  |
-                                  |  |
-                                  |  |
-ELSE_BLOCK - if 1 is false        |  |
-|                                 |  |
-v                                 |  |
-BLOCK - if 1 is false             |  |
-|                                 |  |
-v                                 |  |
-ASSIGN_EXPR: a = 2                |  |
-|                                 |  |
-v                                 |  |
-REF_EXPR: a                       |  |
-|                                 |  |
-v                                 |  |
-LITERAL_EXPR: 2                   |  |
-|                                 |  |
-v                                 |  |
-null<-----------------------------+--+
+0(1) element: null
+1(2) element: MatlabIfBlockImpl(IF_BLOCK)
+2(3) element: MatlabLessExprImpl(LESS_EXPR)
+3(4) element: MatlabRefExprImpl(REF_EXPR)
+4(5,9) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+5(6) element: MatlabBlockImpl(BLOCK). Condition: a < 0:true
+6(7) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+7(8) element: MatlabRefExprImpl(REF_EXPR)
+8(30) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+9(10) element: MatlabElseifBlockImpl(ELSEIF_BLOCK). Condition: a < 0:false
+10(11) element: MatlabLessExprImpl(LESS_EXPR)
+11(12) element: MatlabRefExprImpl(REF_EXPR)
+12(13,17) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+13(14) element: MatlabBlockImpl(BLOCK). Condition: a < 5:true
+14(15) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+15(16) element: MatlabRefExprImpl(REF_EXPR)
+16(30) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+17(18) element: MatlabElseifBlockImpl(ELSEIF_BLOCK). Condition: a < 5:false
+18(19) element: MatlabLessExprImpl(LESS_EXPR)
+19(20) element: MatlabRefExprImpl(REF_EXPR)
+20(21,25) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+21(22) element: MatlabBlockImpl(BLOCK). Condition: a < 10:true
+22(23) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+23(24) element: MatlabRefExprImpl(REF_EXPR)
+24(30) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+25(26) element: MatlabElseBlockImpl(ELSE_BLOCK). Condition: a < 10:false
+26(27) element: MatlabBlockImpl(BLOCK). Condition: a < 10:false
+27(28) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+28(29) element: MatlabRefExprImpl(REF_EXPR)
+29(30) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+30(31) element: MatlabIfBlockImpl(IF_BLOCK)
+31(36) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+32(33) element: MatlabBlockImpl(BLOCK). Condition: 0:true
+33(34) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+34(35) element: MatlabRefExprImpl(REF_EXPR)
+35(47) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+36(37) element: MatlabElseifBlockImpl(ELSEIF_BLOCK). Condition: 0:false
+37(38) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+38(39) element: MatlabBlockImpl(BLOCK). Condition: 1:true
+39(40) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+40(41) element: MatlabRefExprImpl(REF_EXPR)
+41(47) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+42(43) element: MatlabElseBlockImpl(ELSE_BLOCK). Condition: 1:false
+43(44) element: MatlabBlockImpl(BLOCK). Condition: 1:false
+44(45) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+45(46) element: MatlabRefExprImpl(REF_EXPR)
+46(47) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+47() element: null

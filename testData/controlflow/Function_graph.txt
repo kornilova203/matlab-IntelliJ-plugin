@@ -1,0 +1,37 @@
+null
+|
+v
+ASSIGN_EXPR: a = 1
+|
+v
+REF_EXPR: a
+|
+v
+LITERAL_EXPR: 1---------------+
+                              |
+                              |
+FUNCTION_DECLARATION          |
+|                             |
+v                             |
+FUNCTION_EXPR: disp("hello")  |
+|                             |
+v                             |
+REF_EXPR: disp                |
+|                             |
+v                             |
+LITERAL_EXPR: "hello"         |
+                              |
+                              |
+ASSIGN_EXPR: b = 1<-----------+
+|
+v
+REF_EXPR: b
+|
+v
+LITERAL_EXPR: 1---------------+
+                              |
+                              |
+FUNCTION_DECLARATION          |
+                              |
+                              |
+null<-------------------------+

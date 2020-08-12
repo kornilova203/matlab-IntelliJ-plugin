@@ -1,37 +1,13 @@
-null
-|
-v
-ASSIGN_EXPR: a = 1
-|
-v
-REF_EXPR: a
-|
-v
-LITERAL_EXPR: 1
-|
-v
-ASSIGN_EXPR: b = a + abs(-3)
-|
-v
-REF_EXPR: b
-|
-v
-PLUS_EXPR: a + abs(-3)
-|
-v
-REF_EXPR: a
-|
-v
-FUNCTION_EXPR: abs(-3)
-|
-v
-REF_EXPR: abs
-|
-v
-UNARY_MIN_EXPR: -3
-|
-v
-LITERAL_EXPR: 3
-|
-v
-null
+0(1) element: null
+1(2) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+2(3) element: MatlabRefExprImpl(REF_EXPR)
+3(4) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+4(5) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+5(6) element: MatlabRefExprImpl(REF_EXPR)
+6(7) element: MatlabPlusExprImpl(PLUS_EXPR)
+7(8) element: MatlabRefExprImpl(REF_EXPR)
+8(9) element: MatlabFunctionExprImpl(FUNCTION_EXPR)
+9(10) element: MatlabRefExprImpl(REF_EXPR)
+10(11) element: MatlabUnaryMinExprImpl(UNARY_MIN_EXPR)
+11(12) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+12() element: null

@@ -1,193 +1,65 @@
-            null
-            |
-            v
-+--+------->WHILE_LOOP
-|  |        |
-|  |        v
-|  |        LESS_EXPR: a < 10
-|  |        |
-|  |        v
-|  |        REF_EXPR: a
-|  |        |
-|  |        v
-|  |        LITERAL_EXPR: 10-----------+
-|  |        |                          |
-|  |        v                          |
-|  |        BLOCK - if a < 10 is true  |
-|  |        |                          |
-|  |        v                          |
-|  |        IF_BLOCK                   |
-|  |        |                          |
-|  |        v                          |
-|  |        EQUAL_EXPR: a == 5         |
-|  |        |                          |
-|  |        v                          |
-|  |        REF_EXPR: a                |
-|  |        |                          |
-|  |        v                          |
-|  |        LITERAL_EXPR: 5------------|--+
-|  |        |                          |  |
-|  |        v                          |  |
-|  |        BLOCK - if a == 5 is true  |  |
-|  |        |                          |  |
-|  |        v                          |  |
-|  |        ASSIGN_EXPR: a = a + 2     |  |
-|  |        |                          |  |
-|  |        v                          |  |
-|  |        REF_EXPR: a                |  |
-|  |        |                          |  |
-|  |        v                          |  |
-|  |        PLUS_EXPR: a + 2           |  |
-|  |        |                          |  |
-|  |        v                          |  |
-|  |        REF_EXPR: a                |  |
-|  |        |                          |  |
-|  |        v                          |  |
-|  |        LITERAL_EXPR: 2            |  |
-|  |        |                          |  |
-|  |        v                          |  |
-|  +--------CONTROL_EXPR: continue     |  |
-|                                      |  |
-|                                      |  |
-|           ASSIGN_EXPR: a = a + 1<----|--+
-|           |                          |
-|           v                          |
-|           REF_EXPR: a                |
-|           |                          |
-|           v                          |
-|           PLUS_EXPR: a + 1           |
-|           |                          |
-|           v                          |
-|           REF_EXPR: a                |
-|           |                          |
-|           v                          |
-+-----------LITERAL_EXPR: 1            |
-                                       |
-                                       |
-   +------->WHILE_LOOP<----------------+
-   |        |
-   |        v
-   |        LESS_EXPR: a < 10
-   |        |
-   |        v
-   |        REF_EXPR: a
-   |        |
-   |        v
-   |        LITERAL_EXPR: 10-----------+
-   |        |                          |
-   |        v                          |
-   |        BLOCK - if a < 10 is true  |
-   |        |                          |
-   |        v                          |
-   |        IF_BLOCK                   |
-   |        |                          |
-   |        v                          |
-   |        EQUAL_EXPR: a == 5         |
-   |        |                          |
-   |        v                          |
-   |        REF_EXPR: a                |
-   |        |                          |
-   |        v                          |
-   |        LITERAL_EXPR: 5------------|--+
-   |        |                          |  |
-   |        v                          |  |
-   |        BLOCK - if a == 5 is true  |  |
-   |        |                          |  |
-   |        v                          |  |
-   |        CONTROL_EXPR: break--------|--|--+
-   |                                   |  |  |
-   |                                   |  |  |
-   |        ASSIGN_EXPR: a = a + 1<----|--+  |
-   |        |                          |     |
-   |        v                          |     |
-   |        REF_EXPR: a                |     |
-   |        |                          |     |
-   |        v                          |     |
-   |        PLUS_EXPR: a + 1           |     |
-   |        |                          |     |
-   |        v                          |     |
-   |        REF_EXPR: a                |     |
-   |        |                          |     |
-   |        v                          |     |
-   +--------LITERAL_EXPR: 1            |     |
-                                       |     |
-                                       |     |
-   +------->WHILE_LOOP<----------------+-----+
-   |        |
-   |        v
-   |        LESS_EXPR: a < 10
-   |        |
-   |        v
-   |        REF_EXPR: a
-   |        |
-   |        v
-   |        LITERAL_EXPR: 10-----------+
-   |        |                          |
-   |        v                          |
-   |        BLOCK - if a < 10 is true  |
-   |        |                          |
-   |        v                          |
-   |        IF_BLOCK                   |
-   |        |                          |
-   |        v                          |
-   |        EQUAL_EXPR: a == 5         |
-   |        |                          |
-   |        v                          |
-   |        REF_EXPR: a                |
-   |        |                          |
-   |        v                          |
-   |        LITERAL_EXPR: 5------------|--+
-   |        |                          |  |
-   |        v                          |  |
-   |        BLOCK - if a == 5 is true  |  |
-   |        |                          |  |
-   |        v                          |  |
-   |        CONTROL_EXPR: return       |  |
-   |                                   |  |
-   |                                   |  |
-   |        ASSIGN_EXPR: a = a + 1<----|--+
-   |        |                          |
-   |        v                          |
-   |        REF_EXPR: a                |
-   |        |                          |
-   |        v                          |
-   |        PLUS_EXPR: a + 1           |
-   |        |                          |
-   |        v                          |
-   |        REF_EXPR: a                |
-   |        |                          |
-   |        v                          |
-   +--------LITERAL_EXPR: 1            |
-                                       |
-                                       |
-            FUNCTION_DECLARATION       |
-            |                          |
-            v                          |
-            IF_BLOCK                   |
-            |                          |
-            v                          |
-            LESS_EXPR: a < b           |
-            |                          |
-            v                          |
-            REF_EXPR: a                |
-            |                          |
-            v                          |
-            REF_EXPR: b----------------|--+
-            |                          |  |
-            v                          |  |
-            BLOCK - if a < b is true   |  |
-            |                          |  |
-            v                          |  |
-            CONTROL_EXPR: return       |  |
-                                       |  |
-                                       |  |
-            ASSIGN_EXPR: a = b<--------|--+
-            |                          |
-            v                          |
-            REF_EXPR: a                |
-            |                          |
-            v                          |
-            REF_EXPR: b                |
-                                       |
-                                       |
-            null<----------------------+
+0(1) element: null
+1(2) element: MatlabWhileLoopImpl(WHILE_LOOP)
+2(3) element: MatlabLessExprImpl(LESS_EXPR)
+3(4) element: MatlabRefExprImpl(REF_EXPR)
+4(5,22) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+5(6) element: MatlabBlockImpl(BLOCK). Condition: a < 10:true
+6(7) element: MatlabIfBlockImpl(IF_BLOCK)
+7(8) element: MatlabEqualExprImpl(EQUAL_EXPR)
+8(9) element: MatlabRefExprImpl(REF_EXPR)
+9(10,17) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+10(11) element: MatlabBlockImpl(BLOCK). Condition: a == 5:true
+11(12) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+12(13) element: MatlabRefExprImpl(REF_EXPR)
+13(14) element: MatlabPlusExprImpl(PLUS_EXPR)
+14(15) element: MatlabRefExprImpl(REF_EXPR)
+15(16) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+16(1) element: MatlabControlExprImpl(CONTROL_EXPR)
+17(18) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+18(19) element: MatlabRefExprImpl(REF_EXPR)
+19(20) element: MatlabPlusExprImpl(PLUS_EXPR)
+20(21) element: MatlabRefExprImpl(REF_EXPR)
+21(1) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+22(23) element: MatlabWhileLoopImpl(WHILE_LOOP)
+23(24) element: MatlabLessExprImpl(LESS_EXPR)
+24(25) element: MatlabRefExprImpl(REF_EXPR)
+25(26,38) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+26(27) element: MatlabBlockImpl(BLOCK). Condition: a < 10:true
+27(28) element: MatlabIfBlockImpl(IF_BLOCK)
+28(29) element: MatlabEqualExprImpl(EQUAL_EXPR)
+29(30) element: MatlabRefExprImpl(REF_EXPR)
+30(31,33) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+31(32) element: MatlabBlockImpl(BLOCK). Condition: a == 5:true
+32(38) element: MatlabControlExprImpl(CONTROL_EXPR)
+33(34) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+34(35) element: MatlabRefExprImpl(REF_EXPR)
+35(36) element: MatlabPlusExprImpl(PLUS_EXPR)
+36(37) element: MatlabRefExprImpl(REF_EXPR)
+37(22) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+38(39) element: MatlabWhileLoopImpl(WHILE_LOOP)
+39(40) element: MatlabLessExprImpl(LESS_EXPR)
+40(41) element: MatlabRefExprImpl(REF_EXPR)
+41(42,64) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+42(43) element: MatlabBlockImpl(BLOCK). Condition: a < 10:true
+43(44) element: MatlabIfBlockImpl(IF_BLOCK)
+44(45) element: MatlabEqualExprImpl(EQUAL_EXPR)
+45(46) element: MatlabRefExprImpl(REF_EXPR)
+46(47,49) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+47(48) element: MatlabBlockImpl(BLOCK). Condition: a == 5:true
+48() element: MatlabControlExprImpl(CONTROL_EXPR)
+49(50) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+50(51) element: MatlabRefExprImpl(REF_EXPR)
+51(52) element: MatlabPlusExprImpl(PLUS_EXPR)
+52(53) element: MatlabRefExprImpl(REF_EXPR)
+53(38) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+54(55) element: MatlabFunctionDeclarationImpl(FUNCTION_DECLARATION)
+55(56) element: MatlabIfBlockImpl(IF_BLOCK)
+56(57) element: MatlabLessExprImpl(LESS_EXPR)
+57(58) element: MatlabRefExprImpl(REF_EXPR)
+58(59,61) element: MatlabRefExprImpl(REF_EXPR)
+59(60) element: MatlabBlockImpl(BLOCK). Condition: a < b:true
+60() element: MatlabControlExprImpl(CONTROL_EXPR)
+61(62) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+62(63) element: MatlabRefExprImpl(REF_EXPR)
+63() element: MatlabRefExprImpl(REF_EXPR)
+64() element: null

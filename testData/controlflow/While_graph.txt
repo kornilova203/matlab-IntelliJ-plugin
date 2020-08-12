@@ -1,0 +1,100 @@
+         null
+         |
+         v
+         ASSIGN_EXPR: a = 0
+         |
+         v
+         REF_EXPR: a
+         |
+         v
+         LITERAL_EXPR: 0
+         |
+         v
++------->WHILE_LOOP
+|        |
+|        v
+|        LESS_EXPR: a < 10
+|        |
+|        v
+|        REF_EXPR: a
+|        |
+|        v
+|        LITERAL_EXPR: 10----------------+
+|        |                               |
+|        v                               |
+|        BLOCK - if a < 10 is true       |
+|        |                               |
+|        v                               |
+|        ASSIGN_EXPR: a = a + 1          |
+|        |                               |
+|        v                               |
+|        REF_EXPR: a                     |
+|        |                               |
+|        v                               |
+|        PLUS_EXPR: a + 1                |
+|        |                               |
+|        v                               |
+|        REF_EXPR: a                     |
+|        |                               |
+|        v                               |
++--------LITERAL_EXPR: 1                 |
+                                         |
+                                         |
++------->WHILE_LOOP<---------------------+
+|        |
+|        v
+|        REF_EXPR: false-----------------+
+|                                        |
+|                                        |
+|        BLOCK - if false is true        |
+|        |                               |
+|        v                               |
+|        ASSIGN_EXPR: a = a + 1          |
+|        |                               |
+|        v                               |
+|        REF_EXPR: a                     |
+|        |                               |
+|        v                               |
+|        PLUS_EXPR: a + 1                |
+|        |                               |
+|        v                               |
+|        REF_EXPR: a                     |
+|        |                               |
+|        v                               |
++--------LITERAL_EXPR: 1                 |
+                                         |
+                                         |
++------->WHILE_LOOP<---------------------+
+|        |
+|        v
+|        REF_EXPR: true
+|        |
+|        v
+|        BLOCK - if true is true
+|        |
+|        v
+|        ASSIGN_EXPR: a = a + 1
+|        |
+|        v
+|        REF_EXPR: a
+|        |
+|        v
+|        PLUS_EXPR: a + 1
+|        |
+|        v
+|        REF_EXPR: a
+|        |
+|        v
++--------LITERAL_EXPR: 1
+         
+         
+         FUNCTION_EXPR: disp("The End")
+         |
+         v
+         REF_EXPR: disp
+         |
+         v
+         LITERAL_EXPR: "The End"
+         |
+         v
+         null
