@@ -6,7 +6,7 @@ if x > 0<fold text='...'>
 
 if r == c<fold text='...'>
     A(r,c) = 2;
-</fold>elseif<fold text='...'> abs(r-c) == 1
+</fold>elseif abs(r-c) == 1<fold text='...'>
     A(r,c) = -1;
 </fold>else<fold text='...'>
     A(r,c) = 0;

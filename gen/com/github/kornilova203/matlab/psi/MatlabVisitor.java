@@ -75,6 +75,10 @@ public class MatlabVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitControlExpr(@NotNull MatlabControlExpr o) {
+    visitExpr(o);
+  }
+
   public void visitCtransposeExpr(@NotNull MatlabCtransposeExpr o) {
     visitBinaryExpr(o);
   }

@@ -24,7 +24,7 @@ public class MatlabParserUtil extends GeneratedParserUtilBase {
     static final String NEW_LINE_ALLOWED = "NEW_LINE_ALLOWED";
     private static final Key<TObjectLongHashMap<String>> MODES_KEY = Key.create("MODES_KEY");
     static final HashSet<IElementType> KEYWORDS = new HashSet<>(Arrays.asList(FUNCTION, END, IF, ELSE, ELSEIF, WHILE,
-            SWITCH, CASE, OTHERWISE, FOR, CLASSDEF, TRY, CATCH, GLOBAL));
+            SWITCH, CASE, OTHERWISE, FOR, CLASSDEF, TRY, CATCH, GLOBAL, RETURN, CONTINUE, BREAK));
 
     public static boolean parseIdentifier(PsiBuilder builder, int level) {
         if (builder.getTokenType() == IDENTIFIER) {

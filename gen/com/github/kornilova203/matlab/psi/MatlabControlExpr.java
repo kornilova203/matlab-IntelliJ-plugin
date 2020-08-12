@@ -5,12 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface MatlabElseifBlock extends PsiElement {
-
-  @Nullable
-  MatlabBlock getBlock();
-
-  @Nullable
-  MatlabCondition getCondition();
+public interface MatlabControlExpr extends MatlabExpr {
 
 }

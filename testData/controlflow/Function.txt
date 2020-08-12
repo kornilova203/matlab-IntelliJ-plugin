@@ -1,0 +1,13 @@
+0(1) element: null
+1(2) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+2(3) element: MatlabRefExprImpl(REF_EXPR)
+3(8) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+4(5) element: MatlabFunctionDeclarationImpl(FUNCTION_DECLARATION)
+5(6) element: MatlabFunctionExprImpl(FUNCTION_EXPR)
+6(7) element: MatlabRefExprImpl(REF_EXPR)
+7() element: MatlabLiteralExprImpl(LITERAL_EXPR)
+8(9) element: MatlabAssignExprImpl(ASSIGN_EXPR)
+9(10) element: MatlabRefExprImpl(REF_EXPR)
+10(12) element: MatlabLiteralExprImpl(LITERAL_EXPR)
+11() element: MatlabFunctionDeclarationImpl(FUNCTION_DECLARATION)
+12() element: null

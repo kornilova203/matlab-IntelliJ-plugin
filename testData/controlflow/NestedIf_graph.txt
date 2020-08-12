@@ -1,0 +1,76 @@
+null
+|
+v
+IF_BLOCK
+|
+v
+LESS_EXPR: a < b
+|
+v
+REF_EXPR: a
+|
+v
+REF_EXPR: b----------------+
+|                          |
+v                          |
+BLOCK - if a < b is true   |
+|                          |
+v                          |
+IF_BLOCK                   |
+|                          |
+v                          |
+MORE_EXPR: a > b           |
+|                          |
+v                          |
+REF_EXPR: a                |
+|                          |
+v                          |
+REF_EXPR: b----------------|--+
+|                          |  |
+v                          |  |
+BLOCK - if a > b is true   |  |
+|                          |  |
+v                          |  |
+ASSIGN_EXPR: a = 0         |  |
+|                          |  |
+v                          |  |
+REF_EXPR: a                |  |
+|                          |  |
+v                          |  |
+LITERAL_EXPR: 0            |  |
+|                          |  |
+v                          |  |
+ASSIGN_EXPR: b = 1<--------|--+
+|                          |
+v                          |
+REF_EXPR: b                |
+|                          |
+v                          |
+LITERAL_EXPR: 1            |
+|                          |
+v                          |
+IF_BLOCK                   |
+|                          |
+v                          |
+EQUAL_EXPR: a == b         |
+|                          |
+v                          |
+REF_EXPR: a                |
+|                          |
+v                          |
+REF_EXPR: b----------------|--+
+|                          |  |
+v                          |  |
+BLOCK - if a == b is true  |  |
+|                          |  |
+v                          |  |
+FUNCTION_EXPR: disp("a")   |  |
+|                          |  |
+v                          |  |
+REF_EXPR: disp             |  |
+|                          |  |
+v                          |  |
+LITERAL_EXPR: "a"          |  |
+|                          |  |
+v                          |  |
+null<----------------------+--+

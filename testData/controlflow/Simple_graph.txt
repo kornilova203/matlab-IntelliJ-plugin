@@ -1,0 +1,37 @@
+null
+|
+v
+ASSIGN_EXPR: a = 1
+|
+v
+REF_EXPR: a
+|
+v
+LITERAL_EXPR: 1
+|
+v
+ASSIGN_EXPR: b = a + abs(-3)
+|
+v
+REF_EXPR: b
+|
+v
+PLUS_EXPR: a + abs(-3)
+|
+v
+REF_EXPR: a
+|
+v
+FUNCTION_EXPR: abs(-3)
+|
+v
+REF_EXPR: abs
+|
+v
+UNARY_MIN_EXPR: -3
+|
+v
+LITERAL_EXPR: 3
+|
+v
+null

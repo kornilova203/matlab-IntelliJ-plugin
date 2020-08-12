@@ -1,0 +1,109 @@
+null
+|
+v
+IF_BLOCK
+|
+v
+LESS_EXPR: a < b
+|
+v
+REF_EXPR: a
+|
+v
+REF_EXPR: b---------------------+
+|                               |
+v                               |
+BLOCK - if a < b is true        |
+|                               |
+v                               |
+ASSIGN_EXPR: a = 1              |
+|                               |
+v                               |
+REF_EXPR: a                     |
+|                               |
+v                               |
+LITERAL_EXPR: 1-----------------|--+
+                                |  |
+                                |  |
+ELSE_BLOCK - if a < b is false<-+  |
+|                                  |
+v                                  |
+BLOCK - if a < b is false          |
+|                                  |
+v                                  |
+ASSIGN_EXPR: b = 1                 |
+|                                  |
+v                                  |
+REF_EXPR: b                        |
+|                                  |
+v                                  |
+LITERAL_EXPR: 1                    |
+|                                  |
+v                                  |
+IF_BLOCK<--------------------------+
+|
+v
+LITERAL_EXPR: 1
+|
+v
+BLOCK - if 1 is true
+|
+v
+ASSIGN_EXPR: a = 2
+|
+v
+REF_EXPR: a
+|
+v
+LITERAL_EXPR: 2-----------------+
+                                |
+                                |
+ELSE_BLOCK - if 1 is false      |
+|                               |
+v                               |
+BLOCK - if 1 is false           |
+|                               |
+v                               |
+ASSIGN_EXPR: b = 2              |
+|                               |
+v                               |
+REF_EXPR: b                     |
+|                               |
+v                               |
+LITERAL_EXPR: 2                 |
+|                               |
+v                               |
+IF_BLOCK<-----------------------+
+|
+v
+LITERAL_EXPR: 0-----------------+
+                                |
+                                |
+BLOCK - if 0 is true            |
+|                               |
+v                               |
+ASSIGN_EXPR: a = 3              |
+|                               |
+v                               |
+REF_EXPR: a                     |
+|                               |
+v                               |
+LITERAL_EXPR: 3-----------------|--+
+                                |  |
+                                |  |
+ELSE_BLOCK - if 0 is false<-----+  |
+|                                  |
+v                                  |
+BLOCK - if 0 is false              |
+|                                  |
+v                                  |
+ASSIGN_EXPR: b = 3                 |
+|                                  |
+v                                  |
+REF_EXPR: b                        |
+|                                  |
+v                                  |
+LITERAL_EXPR: 3                    |
+|                                  |
+v                                  |
+null<------------------------------+

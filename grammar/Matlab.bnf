@@ -133,7 +133,7 @@ condition ::= expr
 private if_block_body ::= <<block element>> { recoverWhile=not_end_or_elseif_or_else }
 private not_end_or_elseif_or_else ::= !( NEWLINE* (end | elseif | else) )
 
-elseif_block ::= elseif NEWLINE * if_block_body
+elseif_block ::= elseif br* condition NEWLINE * if_block_body { pin=1 }
 else_block ::= else NEWLINE* if_block_body
 
 switch_block ::= switch br* switch_expression NEWLINE*
@@ -238,13 +238,17 @@ private enum_item ::= ident arguments?
     extends("lambda_expr")=expr
     extends("binary_expr")=expr
     extends("ref_expr")=expr
+    extends("control_expr")=expr
     extends(".*_expr")=binary_expr
     mixin("assign_expr")="com.github.kornilova203.matlab.psi.MatlabAssignExprMixin"
 }
 
 expr ::= assign_expr
+  | or_expr
+  | and_expr
+  | matrix_or_expr
+  | matrix_and_expr
   | compare_group
-  | logic_group
   | range_expr
   | add_group
   | mul_group
@@ -266,11 +270,6 @@ private compare_group ::= equal_expr
   | less_or_equal_expr
   | more_expr
   | more_or_equal_expr
-
-private logic_group ::= or_expr
-  | matrix_or_expr
-  | and_expr
-  | matrix_and_expr
 
 private unary_group ::= unary_inc_expr
   | unary_dec_expr
@@ -305,6 +304,7 @@ private primary_group ::= literal_expr
   | paren_expr
   | lambda_expr
   | function_ref_expr
+  | control_expr
 
 literal_expr ::= number_literal
   | string_literal
@@ -388,6 +388,8 @@ function_ref_expr ::= '@' ref_expr { pin=1 }
 
 lambda_expr ::= '@' br* parameters br* lambda_body { pin=3 }
 lambda_body ::= expr
+
+control_expr ::= return | break | continue
 
 file_operation ::= (LOAD | DIR | LS | CD) br* FILE_NAME br* variables? { pin=1 }
 variables ::= variable+

@@ -1,0 +1,142 @@
+null
+|
+v
+IF_BLOCK
+|
+v
+LESS_EXPR: a < 0
+|
+v
+REF_EXPR: a
+|
+v
+LITERAL_EXPR: 0-------------------+
+|                                 |
+v                                 |
+BLOCK - if a < 0 is true          |
+|                                 |
+v                                 |
+ASSIGN_EXPR: b = 0                |
+|                                 |
+v                                 |
+REF_EXPR: b                       |
+|                                 |
+v                                 |
+LITERAL_EXPR: 0-------------------|--+
+                                  |  |
+                                  |  |
+ELSEIF_BLOCK - if a < 0 is false<-+  |
+|                                    |
+v                                    |
+LESS_EXPR: a < 5                     |
+|                                    |
+v                                    |
+REF_EXPR: a                          |
+|                                    |
+v                                    |
+LITERAL_EXPR: 5-------------------+  |
+|                                 |  |
+v                                 |  |
+BLOCK - if a < 5 is true          |  |
+|                                 |  |
+v                                 |  |
+ASSIGN_EXPR: b = 5                |  |
+|                                 |  |
+v                                 |  |
+REF_EXPR: b                       |  |
+|                                 |  |
+v                                 |  |
+LITERAL_EXPR: 5-------------------|--|--+
+                                  |  |  |
+                                  |  |  |
+ELSEIF_BLOCK - if a < 5 is false<-+  |  |
+|                                    |  |
+v                                    |  |
+LESS_EXPR: a < 10                    |  |
+|                                    |  |
+v                                    |  |
+REF_EXPR: a                          |  |
+|                                    |  |
+v                                    |  |
+LITERAL_EXPR: 10------------------+  |  |
+|                                 |  |  |
+v                                 |  |  |
+BLOCK - if a < 10 is true         |  |  |
+|                                 |  |  |
+v                                 |  |  |
+ASSIGN_EXPR: b = 10               |  |  |
+|                                 |  |  |
+v                                 |  |  |
+REF_EXPR: b                       |  |  |
+|                                 |  |  |
+v                                 |  |  |
+LITERAL_EXPR: 10------------------|--|--|--+
+                                  |  |  |  |
+                                  |  |  |  |
+ELSE_BLOCK - if a < 10 is false<--+  |  |  |
+|                                    |  |  |
+v                                    |  |  |
+BLOCK - if a < 10 is false           |  |  |
+|                                    |  |  |
+v                                    |  |  |
+ASSIGN_EXPR: b = 15                  |  |  |
+|                                    |  |  |
+v                                    |  |  |
+REF_EXPR: b                          |  |  |
+|                                    |  |  |
+v                                    |  |  |
+LITERAL_EXPR: 15                     |  |  |
+|                                    |  |  |
+v                                    |  |  |
+IF_BLOCK<----------------------------+--+--+
+|
+v
+LITERAL_EXPR: 0-------------------+
+                                  |
+                                  |
+BLOCK - if 0 is true              |
+|                                 |
+v                                 |
+ASSIGN_EXPR: a = 0                |
+|                                 |
+v                                 |
+REF_EXPR: a                       |
+|                                 |
+v                                 |
+LITERAL_EXPR: 0-------------------|--+
+                                  |  |
+                                  |  |
+ELSEIF_BLOCK - if 0 is false<-----+  |
+|                                    |
+v                                    |
+LITERAL_EXPR: 1                      |
+|                                    |
+v                                    |
+BLOCK - if 1 is true                 |
+|                                    |
+v                                    |
+ASSIGN_EXPR: a = 1                   |
+|                                    |
+v                                    |
+REF_EXPR: a                          |
+|                                    |
+v                                    |
+LITERAL_EXPR: 1-------------------+  |
+                                  |  |
+                                  |  |
+ELSE_BLOCK - if 1 is false        |  |
+|                                 |  |
+v                                 |  |
+BLOCK - if 1 is false             |  |
+|                                 |  |
+v                                 |  |
+ASSIGN_EXPR: a = 2                |  |
+|                                 |  |
+v                                 |  |
+REF_EXPR: a                       |  |
+|                                 |  |
+v                                 |  |
+LITERAL_EXPR: 2                   |  |
+|                                 |  |
+v                                 |  |
+null<-----------------------------+--+

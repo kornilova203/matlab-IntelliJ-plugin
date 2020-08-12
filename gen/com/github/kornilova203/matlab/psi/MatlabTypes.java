@@ -27,6 +27,7 @@ public interface MatlabTypes {
   IElementType CELL_ARRAY_ROW = new MatlabElementType("CELL_ARRAY_ROW");
   IElementType CLASS_DECLARATION = new MatlabClassDeclarationElementType("CLASS_DECLARATION");
   IElementType CONDITION = new MatlabElementType("CONDITION");
+  IElementType CONTROL_EXPR = new MatlabElementType("CONTROL_EXPR");
   IElementType CTRANSPOSE_EXPR = new MatlabElementType("CTRANSPOSE_EXPR");
   IElementType ELEMENT_WISE_LDIV_EXPR = new MatlabElementType("ELEMENT_WISE_LDIV_EXPR");
   IElementType ELEMENT_WISE_MUL_EXPR = new MatlabElementType("ELEMENT_WISE_MUL_EXPR");
@@ -99,6 +100,7 @@ public interface MatlabTypes {
   IElementType AND = new MatlabTokenType("&&");
   IElementType ASSIGN = new MatlabTokenType("=");
   IElementType AT = new MatlabTokenType("@");
+  IElementType BREAK = new MatlabTokenType("break");
   IElementType CASE = new MatlabTokenType("case");
   IElementType CATCH = new MatlabTokenType("catch");
   IElementType CD = new MatlabTokenType("CD");
@@ -106,6 +108,7 @@ public interface MatlabTypes {
   IElementType COLON = new MatlabTokenType(":");
   IElementType COMMA = new MatlabTokenType(",");
   IElementType COMMENT = new MatlabTokenType("COMMENT");
+  IElementType CONTINUE = new MatlabTokenType("continue");
   IElementType CTRANS = new MatlabTokenType("'");
   IElementType DIR = new MatlabTokenType("DIR");
   IElementType DOT = new MatlabTokenType(".");
@@ -155,6 +158,7 @@ public interface MatlabTypes {
   IElementType RBRACE = new MatlabTokenType("}");
   IElementType RBRACKET = new MatlabTokenType("]");
   IElementType RDIV = new MatlabTokenType("/");
+  IElementType RETURN = new MatlabTokenType("return");
   IElementType RPARENTH = new MatlabTokenType(")");
   IElementType SEMICOLON = new MatlabTokenType(";");
   IElementType SINGLE_QUOTE_STRING = new MatlabTokenType("SINGLE_QUOTE_STRING");
@@ -215,6 +219,9 @@ public interface MatlabTypes {
       }
       else if (type == CONDITION) {
         return new MatlabConditionImpl(node);
+      }
+      else if (type == CONTROL_EXPR) {
+        return new MatlabControlExprImpl(node);
       }
       else if (type == CTRANSPOSE_EXPR) {
         return new MatlabCtransposeExprImpl(node);
