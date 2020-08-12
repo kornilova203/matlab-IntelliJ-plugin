@@ -48,7 +48,7 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
                     return
                 }
                 for (keyword in keywords) {
-                    result.addElement(LookupElementBuilder.create(keyword).bold())
+                    result.addElement(PrioritizedLookupElement.withPriority(LookupElementBuilder.create(keyword).bold(), 1.0))
                 }
             }
         }

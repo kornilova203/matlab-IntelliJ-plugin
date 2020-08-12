@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'com.github.kornilova203'
-version '0.6'
+version '0.7'
 
 sourceCompatibility = 1.8
 
@@ -17,6 +17,7 @@ repositories {
 intellij {
     version = '2020.1.2'
     patchPluginXml.sinceBuild = "191"
+    patchPluginXml.untilBuild = ""
     downloadSources = true
 }
 

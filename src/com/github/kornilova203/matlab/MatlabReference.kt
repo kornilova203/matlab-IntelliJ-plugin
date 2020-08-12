@@ -40,24 +40,23 @@ class MatlabReference(myElement: MatlabRefExpr) : PsiPolyVariantReferenceBase<Ma
         val processor = MatlabResolvingScopeProcessor(this)
         val containingFile = myElement.containingFile
         PsiTreeUtil.treeWalkUp(processor, myElement, containingFile, ResolveState.initial())
-        if (isResolved(processor)) {
-            return arrayOf(PsiElementResolveResult(processor.declaration!!))
-        }
         resolveIndex(processor, MatlabFunctionDeclarationIndex.KEY, MatlabFunctionDeclaration::class.java)
         resolveIndex(processor, MatlabClassDeclarationIndex.KEY, MatlabClassDeclaration::class.java)
-        if (processor.declaration !is MatlabGlobalVariableDeclaration) {
-            return if (isResolved(processor)) arrayOf(PsiElementResolveResult(processor.declaration!!)) else emptyArray()
+        if (processor.declaration !is MatlabGlobalVariableDeclaration && processor.declaration !is MatlabAssignExpr) {
+            return if (processor.declaration != null) arrayOf(PsiElementResolveResult(processor.declaration!!)) else emptyArray()
         }
+        var isGlobalVariable = false
         StubIndex.getInstance().processElements(MatlabGlobalVariableIndex.KEY, myElement.text, myElement.project, GlobalSearchScope.projectScope(myElement.project), MatlabGlobalVariableDeclaration::class.java) { psiElement ->
             res.add(PsiElementResolveResult(psiElement))
+            if (psiElement.containingFile == myElement.containingFile) {
+                isGlobalVariable = true
+            }
             return@processElements true
         }
-        return res.toTypedArray()
-    }
-
-    private fun isResolved(processor: MatlabResolvingScopeProcessor): Boolean {
-        val declaration = processor.declaration
-        return declaration != null && declaration != myElement && declaration !is MatlabGlobalVariableDeclaration
+        if (isGlobalVariable) {
+            return res.toTypedArray()
+        }
+        return arrayOf(PsiElementResolveResult(processor.declaration!!))
     }
 
     private fun <Psi : PsiElement?> resolveIndex(processor: PsiScopeProcessor, indexKey: StubIndexKey<String, Psi>, requiredClass : Class<Psi>) {

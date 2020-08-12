@@ -5,6 +5,7 @@ import com.github.kornilova203.matlab.psi.MatlabDeclaration
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import java.io.File
+import kotlin.test.assertNotEquals
 
 private const val DECL_MARKER = "<decl>"
 private const val REF_MARKER = "<ref>"
@@ -17,6 +18,7 @@ class MultifileResolveTest : BasePlatformTestCase() {
     fun testClass() = doTest("ClassDeclaration")
     fun testVariableUnresolved() = doTestUnresolved("a")
     fun testGlobal() = doTestMulti("a", 2)
+    fun testGlobalUnresolved() = doTestUnresolved("a")
 
     private fun doTest(name: String, shouldBeResolved: Boolean = true) {
         val testName = testDataPath + getTestName(false)
@@ -29,7 +31,9 @@ class MultifileResolveTest : BasePlatformTestCase() {
             assertEquals(name, resolvedDecl?.nameIdentifier?.text)
             assertEquals(resolvedDecl, decl)
         } else {
-            assertNull("Declaration should not be found", resolvedDecl)
+            if (resolvedDecl != null) {
+                assertEquals(resolvedDecl.containingFile, ref.element.containingFile)
+            }
         }
     }
 

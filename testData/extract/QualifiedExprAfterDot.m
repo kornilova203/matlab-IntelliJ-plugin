@@ -1,0 +1,1 @@
+foo().<selection>boo()</selection>

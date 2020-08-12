@@ -34,6 +34,7 @@ class MatlabRunConfiguration(project: Project, configurationFactory: Configurati
             interpreterPath = path
             /* update project level interpreter */
             PropertiesComponent.getInstance(project).setValue(MATLAB_INTERPRETER, path)
+            PropertiesComponent.getInstance().setValue(MATLAB_INTERPRETER, path)
         }
     }
 
