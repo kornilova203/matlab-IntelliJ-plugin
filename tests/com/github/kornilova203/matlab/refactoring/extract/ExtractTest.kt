@@ -24,6 +24,8 @@ class ExtractTest : BasePlatformTestCase() {
     fun testFindOnlyFunctionOccurrences() = doTest()
     fun testRemoveParen() = doTest()
     fun testRemoveParenInDeclaration() = doTest()
+    fun testInsertBeforeCommonParent() = doTest()
+    fun testOccurrencesInsideOneExpr() = doTest()
 
     private fun doTest() {
         myFixture.configureByFile(getTestName(false) + ".m")

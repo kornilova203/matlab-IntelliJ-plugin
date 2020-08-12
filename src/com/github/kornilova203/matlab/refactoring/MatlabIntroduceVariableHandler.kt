@@ -181,7 +181,17 @@ class MatlabIntroduceVariableHandler : RefactoringActionHandler {
                 element = occurrence
             }
         }
-        while (element.parent !is MatlabBlock && element.parent !is MatlabFile) {
+        element = findTopLevelExpr(element)
+        val commonParent = PsiTreeUtil.findCommonParent(occurrences)
+        if (commonParent != null && element.parent != commonParent) {
+            element = findTopLevelExpr(commonParent)
+        }
+        return element
+    }
+    
+    private fun findTopLevelExpr(el: PsiElement): PsiElement {
+        var element = el
+        while (element.parent != null && element.parent is MatlabExpr) {
             element = element.parent
         }
         return element
