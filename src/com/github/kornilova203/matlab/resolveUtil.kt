@@ -1,8 +1,6 @@
 package com.github.kornilova203.matlab
 
-import com.github.kornilova203.matlab.psi.MatlabAssignExpr
-import com.github.kornilova203.matlab.psi.MatlabDeclaration
-import com.github.kornilova203.matlab.psi.MatlabFunctionDeclaration
+import com.github.kornilova203.matlab.psi.*
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveState
 import com.intellij.psi.scope.PsiScopeProcessor
@@ -44,7 +42,7 @@ fun PsiElement.findDeclaration(processor: PsiScopeProcessor, state: ResolveState
 }
 
 fun processDeclarations(parent: PsiElement, processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement?, place: PsiElement): Boolean {
-    val inCurrentScope = place.inCurrentFunction(parent)
+    val inCurrentScope = place.inCurrentFunction(parent) && place.parent !is MatlabFunctionExpr
 
     if (lastParent != null && lastParent !is MatlabAssignExpr) {
         if (!lastParent.findDeclaration(processor, state, inCurrentScope)) {
