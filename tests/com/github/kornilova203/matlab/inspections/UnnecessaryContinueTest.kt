@@ -8,6 +8,7 @@ class UnnecessaryContinueTest : MatlabInspectionTest() {
     fun testFor() = doTest(true)
     fun testOutsideLoop() = doTest(false)
     fun testNecessaryContinue() = doTest(false)
+    fun testSingleStatementInBlock() = doTest(true)
     
     fun doTest(checkQuickFix: Boolean) {
         super.doTest(checkQuickFix, MatlabUnnecessaryContinueInspection::class.java)
