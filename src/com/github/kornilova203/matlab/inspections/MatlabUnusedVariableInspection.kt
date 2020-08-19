@@ -89,17 +89,12 @@ class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) 
         )
     }
 
-    fun getReferences(element: PsiElement): MutableCollection<PsiReference> {
+    private fun getReferences(element: PsiElement): MutableCollection<PsiReference> {
         val scope = GlobalSearchScope.fileScope(element.containingFile)
         val query = ReferencesSearch.search(element, scope)
-        val refs = query.findAll()
+        var refs = query.findAll()
         if (element is MatlabAssignExpr) {
-            for (ref in refs) {
-                if (PsiEquivalenceUtil.areElementsEquivalent(ref.element, element.left)) {
-                    refs.remove(ref)
-                    break
-                }
-            }
+            refs = refs.filter { ref -> ref.element != element.left }
         }
         return refs
     }

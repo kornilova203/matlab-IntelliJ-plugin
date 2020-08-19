@@ -5,6 +5,7 @@ import com.github.kornilova203.matlab.psi.*
 import com.github.kornilova203.matlab.psi.MatlabTypes.*
 import com.intellij.lang.Language
 import com.intellij.lang.refactoring.InlineActionHandler
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
@@ -32,7 +33,7 @@ class MatlabInlineVariableHandler : InlineActionHandler() {
         
         val file = element.containingFile
         var selectedElement = file.findElementAt(editor.caretModel.offset)
-        if (selectedElement == null || selectedElement is PsiWhiteSpace) {
+        if (selectedElement == null || selectedElement is PsiWhiteSpace || selectedElement.elementType == NEWLINE) {
             selectedElement = file.findElementAt(editor.caretModel.offset - 1) ?: return
         }
         selectedElement = selectedElement.parentOfTypes(MatlabRefExpr::class) ?: return
@@ -49,19 +50,18 @@ class MatlabInlineVariableHandler : InlineActionHandler() {
             return
         }
 
-        val refs = ReferencesSearch.search(declaration).findAll().sortedBy { ref: PsiReference ->
-            return@sortedBy ref.element.startOffset
+        if (declaration.parentOfTypes(MatlabForLoopRange::class, MatlabWhileLoopCondition::class) != null) {
+            showHint(project, editor, "Cannot find a single definition to inline")
+            return
         }
-        val occurrences = mutableListOf<PsiElement>()
-        for (ref in refs) {
-            if (ref.element == declaration.firstChild) {
-                continue
-            }
-            if (ref.element.findSameDeclaration() != null) {
-                break
-            }
-            occurrences.add(ref.element)
-        }
+
+        val refs = ReferencesSearch.search(declaration).findAll().sortedBy { ref: PsiReference -> ref.element.startOffset }
+
+        val occurrences = refs
+                .map { ref -> ref.element }
+                .filter { ref ->  ref != declaration.firstChild }
+                .takeWhile { ref -> ref.findSameDeclaration() == null }
+                .toMutableList()         
         
         if (!occurrences.contains(selectedElement) && !isDeclaration) {
             showHint(project, editor, "Cannot find a single definition to inline")
@@ -74,7 +74,7 @@ class MatlabInlineVariableHandler : InlineActionHandler() {
         }
 
         var removeDeclaration = true
-        if (!isDeclaration) {
+        if (!isDeclaration && !ApplicationManager.getApplication().isUnitTestMode) {
             val localDialog = MatlabInlineLocalDialog(project, selectedElement, occurrences.size)
             if (localDialog.showAndGet()) {
                 if (localDialog.isInlineThisOnly) {

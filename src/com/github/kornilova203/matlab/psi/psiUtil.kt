@@ -9,6 +9,8 @@ import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.elementType
+import com.intellij.refactoring.suggested.endOffset
+import com.intellij.refactoring.suggested.startOffset
 
 private fun createFile(project: Project, text: String): PsiFile {
     return PsiFileFactory.getInstance(project).createFileFromText("a.m", MatlabLanguage.INSTANCE, text, false, false)
@@ -75,8 +77,9 @@ fun deleteElementInList(element: PsiElement, separator: IElementType) {
 }
 
 fun trim(element: PsiElement) {
-    deleteWhiteSpace(element.nextSibling)
-    deleteWhiteSpace(element.prevSibling)
+    val file = element.containingFile
+    deleteWhiteSpace(file.findElementAt(element.startOffset - 1))
+    deleteWhiteSpace(file.findElementAt(element.endOffset))
 }
 
 fun deleteWhiteSpace(element: PsiElement?) {

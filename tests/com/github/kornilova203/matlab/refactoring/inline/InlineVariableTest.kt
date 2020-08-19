@@ -25,6 +25,8 @@ class InlineVariableTest: BasePlatformTestCase() {
     fun testMultiDeclaration() = doTestCannotPerform("Cannot perform refactoring\nCannot find a single definition to inline")
     fun testDoubleDeclaration() = doTest()
     fun testParenthesis() = doTest()
+    fun testInlineUsage() = doTest()
+    fun testDeclarationInLoop() = doTestCannotPerform("Cannot perform refactoring\nCannot find a single definition to inline")
     
     private fun doTest() {
         val file = myFixture.configureByFile(getTestName(false) + ".m")
