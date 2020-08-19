@@ -12,6 +12,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReference
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
+import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentOfTypes
 
 class MatlabUnusedVariableInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) = MatlabUnusedVariableInspectionVisitor(holder)
@@ -19,10 +21,13 @@ class MatlabUnusedVariableInspection : LocalInspectionTool() {
 
 class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) : MatlabVisitor() {
     override fun visitAssignExpr(expr: MatlabAssignExpr) {
+        val element = expr.left
+        if (!isMustBeChecked(element)) {
+            return
+        }
         val refs = getReferences(expr)
         if (!refs.isEmpty()) return
-        val element = expr.left
-        holder.registerProblem(expr.firstChild,
+        holder.registerProblem(element,
                 "Variable '${element.text}' is never used",
                 ProblemHighlightType.LIKE_UNUSED_SYMBOL,
                 object : LocalQuickFixOnPsiElement(element) {
@@ -67,12 +72,47 @@ class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) 
         )
     }
 
-    private fun getReferences(element: PsiElement): MutableCollection<PsiReference> {
+    override fun visitRetValue(retValue: MatlabRetValue) {
+        val refs = getReferences(retValue)
+        if (!refs.isEmpty()) return
+        holder.registerProblem(retValue,
+                "Return value '${retValue.text}' is never used",
+                ProblemHighlightType.LIKE_UNUSED_SYMBOL,
+                object : LocalQuickFixOnPsiElement(retValue) {
+                    override fun getFamilyName(): String = "Remove return value"
+                    override fun getText(): String = "Remove return value '${retValue.text}'"
+                    override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
+                        val retValues = retValue.parent
+                        if (retValues.children.size == 1 && retValues.firstChild.elementType != MatlabTypes.LBRACKET) {
+                            deleteWhiteSpace(retValues.nextSibling)
+                            if (retValues.nextSibling.elementType == MatlabTypes.ASSIGN) {
+                                retValues.nextSibling.delete()
+                                deleteWhiteSpace(retValues.nextSibling)
+                            }
+                            retValues.delete()
+                        } else {
+                            deleteElementInList(retValue, MatlabTypes.COMMA)
+                        }
+                    }
+                }
+        )
+    }
+
+    private fun isMustBeChecked(element: PsiElement): Boolean {
+        val function = element.parentOfTypes(MatlabFunctionDeclaration::class)
+        val retValues = function?.returnValues?.retValueList?.map { it.text } ?: emptyList()
+        if (element is MatlabQualifiedExpr || retValues.contains(element.text) || element.parentOfTypes(MatlabPropertiesBlock::class) != null) {
+            return false
+        }
+        return true
+    }
+
+    private fun getReferences(element: PsiElement): Collection<PsiReference> {
         val scope = GlobalSearchScope.fileScope(element.containingFile)
         val query = ReferencesSearch.search(element, scope)
-        var refs = query.findAll()
+        val refs = query.findAll()
         if (element is MatlabAssignExpr) {
-            refs = refs.filter { ref -> ref.element != element.left }
+            return refs.filter { ref -> ref.element != element.left }
         }
         return refs
     }

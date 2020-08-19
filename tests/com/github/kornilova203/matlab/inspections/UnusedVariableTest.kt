@@ -14,6 +14,9 @@ class UnusedVariableTest : MatlabInspectionTest() {
     fun testMiddleParameter() = doTest()
     fun testLastParameter() = doTest()
     fun testException() = doTest()
+    fun testRetValue() = doTest()
+    fun testNotHighlightRetValue() = doTest()
+    fun testSkipQualified() = doTest()
 
     private fun doTest() {
         super.doTest(true, MatlabUnusedVariableInspection::class.java)
