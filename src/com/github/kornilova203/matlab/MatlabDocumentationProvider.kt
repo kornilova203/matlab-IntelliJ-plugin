@@ -4,6 +4,7 @@ import com.github.kornilova203.matlab.psi.*
 import com.intellij.lang.documentation.DocumentationMarkup.*
 import com.intellij.lang.documentation.DocumentationProvider
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
 import java.lang.StringBuilder
 import java.util.*
@@ -17,7 +18,7 @@ class MatlabDocumentationProvider : DocumentationProvider {
         val stream = javaClass.classLoader.getResourceAsStream("docs/function_url.properties")
         val properties = Properties()
         properties.load(stream)
-        val url = properties.getProperty(originalElement?.text)
+        val url = properties.getProperty(originalElement?.text) ?: return emptyList()
         return listOf("https://www.mathworks.com/help/matlab/$url")
     }
 
@@ -32,8 +33,17 @@ class MatlabDocumentationProvider : DocumentationProvider {
             return result + CONTENT_START + description + CONTENT_END
         }
         if (element is MatlabFunctionDeclaration || element is MatlabClassDeclaration) {
-            val comment = element.getChildOfType(MatlabTypes.COMMENT) ?: return result
-            return result + CONTENT_START + comment.text.removePrefix("%").removePrefix("%") + CONTENT_END
+            var comment: PsiElement? = element.getChildOfType(MatlabTypes.COMMENT) ?: return result
+            val commentText = StringBuilder()
+            while (comment != null && comment.elementType == MatlabTypes.COMMENT) {
+                commentText.append(" ", printComment(comment))
+                if (comment.nextSibling.elementType == MatlabTypes.NEWLINE) {
+                    comment = PsiTreeUtil.skipWhitespacesForward(comment.nextSibling)
+                } else {
+                    break
+                }
+            }
+            return result + CONTENT_START + commentText.removePrefix(" ") + CONTENT_END
         }
         return result
     }
@@ -78,5 +88,10 @@ class MatlabDocumentationProvider : DocumentationProvider {
 
     private fun printElement(element: PsiElement?, prefix: String, suffix: String): String {
         return if (element == null) "" else prefix + element.text + suffix
+    }
+
+    private fun printComment(comment: PsiElement?): String {
+        comment ?: return ""
+        return comment.text.removePrefix("%").removePrefix("%")
     }
 }
