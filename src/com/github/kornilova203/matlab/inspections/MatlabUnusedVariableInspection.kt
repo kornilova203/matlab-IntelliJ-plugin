@@ -1,6 +1,7 @@
 package com.github.kornilova203.matlab.inspections
 
 import com.github.kornilova203.matlab.psi.*
+import com.intellij.codeInsight.PsiEquivalenceUtil
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.codeInspection.ProblemHighlightType
@@ -21,8 +22,8 @@ class MatlabUnusedVariableInspection : LocalInspectionTool() {
 class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) : MatlabVisitor() {
     override fun visitAssignExpr(expr: MatlabAssignExpr) {
         val refs = getReferences(expr)
-        if (refs.size != 1) return
-        val element = refs.iterator().next().element
+        if (!refs.isEmpty()) return
+        val element = expr.left
         holder.registerProblem(expr.firstChild,
                 "Variable '${element.text}' is never used",
                 ProblemHighlightType.LIKE_UNUSED_SYMBOL,
@@ -88,10 +89,14 @@ class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) 
         )
     }
 
-    fun getReferences(element: PsiElement): MutableCollection<PsiReference> {
+    private fun getReferences(element: PsiElement): MutableCollection<PsiReference> {
         val scope = GlobalSearchScope.fileScope(element.containingFile)
         val query = ReferencesSearch.search(element, scope)
-        return query.findAll()
+        var refs = query.findAll()
+        if (element is MatlabAssignExpr) {
+            refs = refs.filter { ref -> ref.element != element.left }
+        }
+        return refs
     }
 
     private fun trim(element: PsiElement) {
