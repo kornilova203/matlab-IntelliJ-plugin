@@ -61,6 +61,8 @@
         <lang.smartEnterProcessor language="Matlab"
                                   implementationClass="com.github.kornilova203.matlab.editor.smartEnter.MatlabSmartEnter"/>
         <lang.foldingBuilder language="Matlab" implementationClass="com.github.kornilova203.matlab.MatlabFoldingBuilder"/>
+        <lineIndentProvider implementation="com.github.kornilova203.matlab.MatlabLineIndentProvider"/>
+        <enterHandlerDelegate implementation="com.github.kornilova203.matlab.editor.actions.MatlabEnterInStringLiteralHandler"/>
         <lang.documentationProvider language="Matlab" implementationClass="com.github.kornilova203.matlab.MatlabDocumentationProvider"/>
         <elementDescriptionProvider implementation="com.github.kornilova203.matlab.MatlabElementDescriptionProvider"/>
         <inlineActionHandler implementation="com.github.kornilova203.matlab.refactoring.MatlabInlineVariableHandler"/>
@@ -69,13 +71,16 @@
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabFunctionDeclarationIndex"/>
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabClassDeclarationIndex"/>
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabGlobalVariableIndex"/>
-
-        <lineIndentProvider implementation="com.github.kornilova203.matlab.MatlabLineIndentProvider"/>
-        <localInspection language="Matlab" shortName="UnreachableCode" displayName="Unreachable code" groupName="Matlab" enabledByDefault="true" level="WARNING"
+        
+        <localInspection language="Matlab" shortName="MatlabUnreachableCode" displayName="Unreachable code" groupName="Matlab" enabledByDefault="true" level="WARNING"
                          implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnreachableCodeInspection"/>
-        <localInspection language="Matlab" shortName="UnusedVariable" displayName="Unused variable and parameters" groupName="Matlab" enabledByDefault="true" level="WEAK WARNING"
+        <localInspection language="Matlab" shortName="MatlabUnnecessaryContinue" displayName="Unnecessary 'continue' statement" groupName="Matlab" enabledByDefault="true" level="WARNING"
+                         implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnnecessaryContinueInspection"/>
+        <localInspection language="Matlab" shortName="MatlabUnnecessaryReturn" displayName="Unnecessary 'return' statement" groupName="Matlab" enabledByDefault="true" level="WARNING"
+                         implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnnecessaryReturnInspection"/>
+        <localInspection language="Matlab" shortName="MatlabUnusedVariable" displayName="Unused variable and parameters" groupName="Matlab" enabledByDefault="true" level="WEAK WARNING"
                          implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnusedVariableInspection"/>
-        <enterHandlerDelegate implementation="com.github.kornilova203.matlab.editor.actions.MatlabEnterInStringLiteralHandler"/>
+        
     </extensions>
 
     <project-components>

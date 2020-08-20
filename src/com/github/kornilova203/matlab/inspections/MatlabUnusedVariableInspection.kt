@@ -10,10 +10,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiReference
-import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.searches.ReferencesSearch
-import com.intellij.psi.util.elementType
 
 class MatlabUnusedVariableInspection : LocalInspectionTool() {
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean) = MatlabUnusedVariableInspectionVisitor(holder)
@@ -31,17 +29,7 @@ class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) 
                     override fun getFamilyName(): String = "Remove variable"
                     override fun getText(): String = "Remove variable '${element.text}'"
                     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-                        trim(expr)
-                        if (expr.nextSibling.elementType == MatlabTypes.SEMICOLON) {
-                            expr.nextSibling.delete()
-                            trim(expr)
-                        }
-                        when {
-                            expr.nextSibling.elementType == MatlabTypes.NEWLINE -> expr.nextSibling
-                            expr.prevSibling.elementType == MatlabTypes.NEWLINE -> expr.prevSibling
-                            else -> null
-                        }?.delete()
-                        expr.delete()
+                        deleteExpr(expr)
                     }
                 })
     }
@@ -56,17 +44,7 @@ class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) 
                     override fun getFamilyName(): String = "Remove parameter"
                     override fun getText(): String = "Remove parameter '${parameter.text}'"
                     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-                        deleteWhiteSpace(parameter.nextSibling)
-                        if (parameter.nextSibling.elementType == MatlabTypes.COMMA) {
-                            parameter.nextSibling.delete()
-                            deleteWhiteSpace(parameter.nextSibling)
-                        } else {
-                            deleteWhiteSpace(parameter.prevSibling)
-                            if (parameter.prevSibling.elementType == MatlabTypes.COMMA) {
-                                parameter.prevSibling.delete()
-                            }
-                        }
-                        parameter.delete()
+                        deleteElementInList(parameter, MatlabTypes.COMMA)
                     }
                 })
     }
@@ -97,17 +75,6 @@ class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) 
             refs = refs.filter { ref -> ref.element != element.left }
         }
         return refs
-    }
-
-    private fun trim(element: PsiElement) {
-        deleteWhiteSpace(element.nextSibling)
-        deleteWhiteSpace(element.prevSibling)
-    }
-
-    private fun deleteWhiteSpace(element: PsiElement?) {
-        if (element != null && element is PsiWhiteSpace) {
-            element.delete()
-        }
     }
 }
 
