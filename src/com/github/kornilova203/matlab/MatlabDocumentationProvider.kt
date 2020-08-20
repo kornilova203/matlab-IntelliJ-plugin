@@ -6,7 +6,6 @@ import com.intellij.lang.documentation.DocumentationProvider
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
-import java.lang.StringBuilder
 import java.util.*
 
 class MatlabDocumentationProvider : DocumentationProvider {
@@ -35,15 +34,18 @@ class MatlabDocumentationProvider : DocumentationProvider {
         if (element is MatlabFunctionDeclaration || element is MatlabClassDeclaration) {
             var comment: PsiElement? = element.getChildOfType(MatlabTypes.COMMENT) ?: return result
             val commentText = StringBuilder()
+            var isFirst = true
             while (comment != null && comment.elementType == MatlabTypes.COMMENT) {
-                commentText.append(" ", printComment(comment))
+                if (isFirst) isFirst = false
+                else commentText.append("<br/>")
+                commentText.append(comment.text.trimStart('%').trim())
                 if (comment.nextSibling.elementType == MatlabTypes.NEWLINE) {
                     comment = PsiTreeUtil.skipWhitespacesForward(comment.nextSibling)
                 } else {
                     break
                 }
             }
-            return result + CONTENT_START + commentText.removePrefix(" ") + CONTENT_END
+            return result + CONTENT_START + commentText + CONTENT_END
         }
         return result
     }
@@ -88,10 +90,5 @@ class MatlabDocumentationProvider : DocumentationProvider {
 
     private fun printElement(element: PsiElement?, prefix: String, suffix: String): String {
         return if (element == null) "" else prefix + element.text + suffix
-    }
-
-    private fun printComment(comment: PsiElement?): String {
-        comment ?: return ""
-        return comment.text.removePrefix("%").removePrefix("%")
     }
 }
