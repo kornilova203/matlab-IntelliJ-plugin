@@ -24,6 +24,10 @@ fun createIdentifierFromText(project: Project, text: String): PsiElement {
     return createRefFromText(project, text).identifier()
 }
 
+fun createElementFromText(project: Project, text: String): PsiElement {
+    return createFile(project, text).firstChild
+}
+
 fun MatlabRefExpr.identifier(): PsiElement {
     return getChildOfType(IDENTIFIER)!!
 }
@@ -44,7 +48,7 @@ private fun PsiElement.findSiblingForward(type: IElementType): PsiElement? {
     return null
 }
 
-fun deleteExpr(expr: PsiElement){
+fun deleteExpr(expr: PsiElement) {
     trim(expr)
     if (expr.nextSibling.elementType == MatlabTypes.SEMICOLON) {
         expr.nextSibling.delete()
@@ -83,4 +87,3 @@ fun deleteWhiteSpace(element: PsiElement?) {
         element.delete()
     }
 }
-
