@@ -1,7 +1,6 @@
 package com.github.kornilova203.matlab.inspections
 
 import com.github.kornilova203.matlab.psi.*
-import com.intellij.codeInsight.PsiEquivalenceUtil
 import com.intellij.codeInspection.LocalInspectionTool
 import com.intellij.codeInspection.LocalQuickFixOnPsiElement
 import com.intellij.codeInspection.ProblemHighlightType
@@ -21,78 +20,80 @@ class MatlabUnusedVariableInspection : LocalInspectionTool() {
 
 class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) : MatlabVisitor() {
     override fun visitAssignExpr(expr: MatlabAssignExpr) {
-        val element = expr.left
-        if (!isMustBeChecked(element)) {
-            return
+        if (expr.left is MatlabLiteralExpr && expr.left.firstChild is MatlabMatrixLiteral) {
+            registerMatrixItems(expr.left.firstChild as MatlabMatrixLiteral)
+        } else {
+            if (isMustBeChecked(expr.left)) {
+                registerProblem(expr as MatlabDeclaration, "variable") { deleteExpr(expr) }
+            }
         }
-        val refs = getReferences(expr)
-        if (!refs.isEmpty()) return
-        holder.registerProblem(element,
-                "Variable '${element.text}' is never used",
-                ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-                object : LocalQuickFixOnPsiElement(element) {
-                    override fun getFamilyName(): String = "Remove variable"
-                    override fun getText(): String = "Remove variable '${element.text}'"
-                    override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-                        deleteExpr(expr)
-                    }
-                })
     }
 
     override fun visitParameter(parameter: MatlabParameter) {
-        val refs = getReferences(parameter)
-        if (!refs.isEmpty()) return
-        holder.registerProblem(parameter,
-                "Parameter '${parameter.text}' is never used",
-                ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-                object : LocalQuickFixOnPsiElement(parameter) {
-                    override fun getFamilyName(): String = "Remove parameter"
-                    override fun getText(): String = "Remove parameter '${parameter.text}'"
-                    override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-                        deleteElementInList(parameter, MatlabTypes.COMMA)
-                    }
-                })
+        val function = parameter.parentOfTypes(MatlabFunctionDeclaration::class)
+        val retValues = function?.returnValues?.retValueList
+        if (retValues != null) {
+            for (retValue in retValues) {
+                if (retValue.text == parameter.text) {
+                    registerProblem(retValue as MatlabDeclaration, "parameter", parameter) { deleteElementInList(parameter, MatlabTypes.COMMA) }
+                    return
+                }
+            }
+        }
+        registerProblem(parameter as MatlabDeclaration, "parameter") { deleteElementInList(parameter, MatlabTypes.COMMA) }
     }
 
     override fun visitCatchBlock(block: MatlabCatchBlock) {
-        val exception = block.getChildOfType(MatlabTypes.IDENTIFIER) ?: return
-        val refs = getReferences(block)
-        if (!refs.isEmpty()) return
-        holder.registerProblem(exception,
-                "Exception '${exception.text}' is never used",
-                ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-                object : LocalQuickFixOnPsiElement(exception) {
-                    override fun getFamilyName(): String = "Remove exception"
-                    override fun getText(): String = "Remove exception '${exception.text}'"
-                    override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-                        trim(exception)
-                        exception.delete()
-                    }
-                }
-        )
+        val exception = (block as MatlabDeclaration).identifyingElement ?: return
+        registerProblem(block as MatlabDeclaration, "exception") {
+            trim(exception)
+            exception.delete()
+        }
     }
 
     override fun visitRetValue(retValue: MatlabRetValue) {
-        val refs = getReferences(retValue)
+        val retValues = retValue.parent
+        registerProblem(retValue as MatlabDeclaration, "return value") {
+            if (retValues.children.size == 1 && retValues.firstChild.elementType != MatlabTypes.LBRACKET) {
+                deleteWhiteSpace(retValues.nextSibling)
+                if (retValues.nextSibling.elementType == MatlabTypes.ASSIGN) {
+                    retValues.nextSibling.delete()
+                    deleteWhiteSpace(retValues.nextSibling)
+                }
+                retValues.delete()
+            } else {
+                deleteElementInList(retValue, MatlabTypes.COMMA)
+            }
+        }
+    }
+
+    private fun registerMatrixItems(matrix: MatlabMatrixLiteral) {
+        for (row in matrix.matrixRowList) {
+            for (item in row.matrixItemList) {
+                if ((item as MatlabDeclaration).identifyingElement != null && isMustBeChecked(item)) {
+                    registerProblem(item as MatlabDeclaration, "variable") {
+                        deleteElementInList(item, MatlabTypes.COMMA)
+                    }
+                }
+            }
+        }
+    }
+    
+    private fun registerProblem(declaration: MatlabDeclaration, name: String, invoke: (PsiElement) -> Unit) {
+        registerProblem(declaration, name, null, invoke)
+    }
+
+    private fun registerProblem(declaration: MatlabDeclaration, name: String, selectedElement: PsiElement?, invoke: (PsiElement) -> Unit) {
+        val refs = getReferences(declaration)
         if (!refs.isEmpty()) return
-        holder.registerProblem(retValue,
-                "Return value '${retValue.text}' is never used",
+        holder.registerProblem(selectedElement ?: declaration.identifyingElement ?: declaration,
+                "${name.capitalize()} '${declaration.name}' is never used",
                 ProblemHighlightType.LIKE_UNUSED_SYMBOL,
-                object : LocalQuickFixOnPsiElement(retValue) {
-                    override fun getFamilyName(): String = "Remove return value"
-                    override fun getText(): String = "Remove return value '${retValue.text}'"
+                object : LocalQuickFixOnPsiElement(declaration) {
+                    override fun getFamilyName(): String = "Remove $name"
+                    override fun getText(): String = "Remove $name '${declaration.name}'"
                     override fun invoke(project: Project, file: PsiFile, startElement: PsiElement, endElement: PsiElement) {
-                        val retValues = retValue.parent
-                        if (retValues.children.size == 1 && retValues.firstChild.elementType != MatlabTypes.LBRACKET) {
-                            deleteWhiteSpace(retValues.nextSibling)
-                            if (retValues.nextSibling.elementType == MatlabTypes.ASSIGN) {
-                                retValues.nextSibling.delete()
-                                deleteWhiteSpace(retValues.nextSibling)
-                            }
-                            retValues.delete()
-                        } else {
-                            deleteElementInList(retValue, MatlabTypes.COMMA)
-                        }
+                        invoke(declaration)
                     }
                 }
         )
@@ -101,10 +102,12 @@ class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) 
     private fun isMustBeChecked(element: PsiElement): Boolean {
         val function = element.parentOfTypes(MatlabFunctionDeclaration::class)
         val retValues = function?.returnValues?.retValueList?.map { it.text } ?: emptyList()
-        if (element is MatlabQualifiedExpr || retValues.contains(element.text) || element.parentOfTypes(MatlabPropertiesBlock::class) != null) {
+        if (element is MatlabQualifiedExpr || element is MatlabFunctionExpr || retValues.contains(element.text) 
+                || element.parentOfTypes(MatlabPropertiesBlock::class, MatlabForLoopRange::class) != null) {
             return false
         }
-        return true
+        val block = element.parentOfTypes(MatlabBlock::class) ?: return true
+        return block.parent is MatlabFunctionDeclaration
     }
 
     private fun getReferences(element: PsiElement): Collection<PsiReference> {
