@@ -90,6 +90,7 @@
     mixin("qualified_expr")="com.github.kornilova203.matlab.psi.MatlabQualifiedExprMixin"
     mixin("property")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
     mixin("enum_item")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
+    mixin("function_expr")="com.github.kornilova203.matlab.psi.MatlabFunctionExprMixin"
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?
@@ -207,7 +208,7 @@ private properties_token ::= <<parseIdentifierAsKeyword 'PROPERTIES'>>
 attributes ::= <<p_opt_list attribute>>
 attribute ::= [ '~' ] ref_expr [ sep '=' sep expr ] { pin(".*")=2 }
 properties_list ::= (property NEWLINE*)* { recoverWhile=block_inside_class_recovery }
-property ::= ident property_size? class_name? property_validation_functions? ('=' default_value)?
+property ::= ident property_size? class_name? property_validation_functions? ('=' default_value)? [ ';' ]
 property_size ::= <<p_opt_list dimension>>
 dimension ::= INTEGER | ':'
 class_name ::= ref_expr

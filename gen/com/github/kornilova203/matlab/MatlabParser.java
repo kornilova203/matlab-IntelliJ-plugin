@@ -2778,7 +2778,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ident property_size? class_name? property_validation_functions? ('=' default_value)?
+  // ident property_size? class_name? property_validation_functions? ('=' default_value)? [ ';' ]
   public static boolean property(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property")) return false;
     boolean r;
@@ -2788,6 +2788,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = r && property_2(b, l + 1);
     r = r && property_3(b, l + 1);
     r = r && property_4(b, l + 1);
+    r = r && property_5(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
@@ -2829,6 +2830,13 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = r && default_value(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // [ ';' ]
+  private static boolean property_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "property_5")) return false;
+    consumeToken(b, SEMICOLON);
+    return true;
   }
 
   /* ********************************************************** */

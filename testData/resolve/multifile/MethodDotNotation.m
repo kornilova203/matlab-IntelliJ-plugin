@@ -1,0 +1,1 @@
+MethodDotNotationDeclaration.<ref>foo()
