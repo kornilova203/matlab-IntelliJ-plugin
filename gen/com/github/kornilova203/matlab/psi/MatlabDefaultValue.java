@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface MatlabEnumerationBlock extends PsiElement {
+public interface MatlabDefaultValue extends PsiElement {
 
   @NotNull
-  List<MatlabEnumItem> getEnumItemList();
+  MatlabExpr getExpr();
 
 }

@@ -34,8 +34,8 @@ public class MatlabPropertiesBlockImpl extends MatlabASTWrapperPsiElement implem
 
   @Override
   @Nullable
-  public MatlabBlock getBlock() {
-    return findChildByClass(MatlabBlock.class);
+  public MatlabPropertiesList getPropertiesList() {
+    return findChildByClass(MatlabPropertiesList.class);
   }
 
 }

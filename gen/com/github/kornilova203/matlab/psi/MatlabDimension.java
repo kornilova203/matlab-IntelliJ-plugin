@@ -5,9 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface MatlabEnumerationBlock extends PsiElement {
+public interface MatlabDimension extends PsiElement {
 
-  @NotNull
-  List<MatlabEnumItem> getEnumItemList();
+  @Nullable
+  PsiElement getInteger();
 
 }

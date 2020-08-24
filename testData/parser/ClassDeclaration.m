@@ -81,3 +81,13 @@ classdef MyClass
       end
    end
 end
+
+classdef ClassName
+   properties
+      Prop1
+      Prop2 = 'some text'
+      Prop3 = sin(pi/12) 
+      Prop5 (1,1) double {mustBePositive} = 1
+      Prop6(1,:) char {mustBeMember(Label,{'High','Medium','Low'})} = 'Low'
+   end
+end

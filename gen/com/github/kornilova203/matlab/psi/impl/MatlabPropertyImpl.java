@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
+import com.github.kornilova203.matlab.psi.MatlabDeclarationBase;
 import com.github.kornilova203.matlab.psi.*;
 
-public class MatlabMethodsBlockImpl extends MatlabASTWrapperPsiElement implements MatlabMethodsBlock {
+public class MatlabPropertyImpl extends MatlabDeclarationBase implements MatlabProperty {
 
-  public MatlabMethodsBlockImpl(@NotNull ASTNode node) {
+  public MatlabPropertyImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
-    visitor.visitMethodsBlock(this);
+    visitor.visitProperty(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,14 +28,26 @@ public class MatlabMethodsBlockImpl extends MatlabASTWrapperPsiElement implement
 
   @Override
   @Nullable
-  public MatlabAttributes getAttributes() {
-    return findChildByClass(MatlabAttributes.class);
+  public MatlabClassName getClassName() {
+    return findChildByClass(MatlabClassName.class);
   }
 
   @Override
   @Nullable
-  public MatlabMethodsList getMethodsList() {
-    return findChildByClass(MatlabMethodsList.class);
+  public MatlabDefaultValue getDefaultValue() {
+    return findChildByClass(MatlabDefaultValue.class);
+  }
+
+  @Override
+  @Nullable
+  public MatlabPropertySize getPropertySize() {
+    return findChildByClass(MatlabPropertySize.class);
+  }
+
+  @Override
+  @Nullable
+  public MatlabPropertyValidationFunctions getPropertyValidationFunctions() {
+    return findChildByClass(MatlabPropertyValidationFunctions.class);
   }
 
 }

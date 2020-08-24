@@ -11,14 +11,14 @@ import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
 import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
 import com.github.kornilova203.matlab.psi.*;
 
-public class MatlabEnumerationBlockImpl extends MatlabASTWrapperPsiElement implements MatlabEnumerationBlock {
+public class MatlabDefaultValueImpl extends MatlabASTWrapperPsiElement implements MatlabDefaultValue {
 
-  public MatlabEnumerationBlockImpl(@NotNull ASTNode node) {
+  public MatlabDefaultValueImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
-    visitor.visitEnumerationBlock(this);
+    visitor.visitDefaultValue(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,8 +28,8 @@ public class MatlabEnumerationBlockImpl extends MatlabASTWrapperPsiElement imple
 
   @Override
   @NotNull
-  public List<MatlabEnumItem> getEnumItemList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, MatlabEnumItem.class);
+  public MatlabExpr getExpr() {
+    return findNotNullChildByClass(MatlabExpr.class);
   }
 
 }

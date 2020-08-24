@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
+import com.github.kornilova203.matlab.psi.MatlabDeclarationBase;
 import com.github.kornilova203.matlab.psi.*;
 
-public class MatlabEnumerationBlockImpl extends MatlabASTWrapperPsiElement implements MatlabEnumerationBlock {
+public class MatlabEnumItemImpl extends MatlabDeclarationBase implements MatlabEnumItem {
 
-  public MatlabEnumerationBlockImpl(@NotNull ASTNode node) {
+  public MatlabEnumItemImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
-    visitor.visitEnumerationBlock(this);
+    visitor.visitEnumItem(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,9 +27,9 @@ public class MatlabEnumerationBlockImpl extends MatlabASTWrapperPsiElement imple
   }
 
   @Override
-  @NotNull
-  public List<MatlabEnumItem> getEnumItemList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, MatlabEnumItem.class);
+  @Nullable
+  public MatlabArguments getArguments() {
+    return findChildByClass(MatlabArguments.class);
   }
 
 }

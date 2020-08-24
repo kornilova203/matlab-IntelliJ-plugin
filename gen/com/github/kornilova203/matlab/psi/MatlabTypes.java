@@ -26,9 +26,12 @@ public interface MatlabTypes {
   IElementType CELL_ARRAY_LITERAL = new MatlabElementType("CELL_ARRAY_LITERAL");
   IElementType CELL_ARRAY_ROW = new MatlabElementType("CELL_ARRAY_ROW");
   IElementType CLASS_DECLARATION = new MatlabClassDeclarationElementType("CLASS_DECLARATION");
+  IElementType CLASS_NAME = new MatlabElementType("CLASS_NAME");
   IElementType CONDITION = new MatlabElementType("CONDITION");
   IElementType CONTROL_EXPR = new MatlabElementType("CONTROL_EXPR");
   IElementType CTRANSPOSE_EXPR = new MatlabElementType("CTRANSPOSE_EXPR");
+  IElementType DEFAULT_VALUE = new MatlabElementType("DEFAULT_VALUE");
+  IElementType DIMENSION = new MatlabElementType("DIMENSION");
   IElementType ELEMENT_WISE_LDIV_EXPR = new MatlabElementType("ELEMENT_WISE_LDIV_EXPR");
   IElementType ELEMENT_WISE_MUL_EXPR = new MatlabElementType("ELEMENT_WISE_MUL_EXPR");
   IElementType ELEMENT_WISE_POW_EXPR = new MatlabElementType("ELEMENT_WISE_POW_EXPR");
@@ -36,6 +39,7 @@ public interface MatlabTypes {
   IElementType ELSEIF_BLOCK = new MatlabElementType("ELSEIF_BLOCK");
   IElementType ELSE_BLOCK = new MatlabElementType("ELSE_BLOCK");
   IElementType ENUMERATION_BLOCK = new MatlabElementType("ENUMERATION_BLOCK");
+  IElementType ENUM_ITEM = new MatlabElementType("ENUM_ITEM");
   IElementType EQUAL_EXPR = new MatlabElementType("EQUAL_EXPR");
   IElementType EVENTS_BLOCK = new MatlabElementType("EVENTS_BLOCK");
   IElementType EVENTS_LIST = new MatlabElementType("EVENTS_LIST");
@@ -62,6 +66,7 @@ public interface MatlabTypes {
   IElementType MATRIX_ROW = new MatlabElementType("MATRIX_ROW");
   IElementType META_CLASS_EXPR = new MatlabElementType("META_CLASS_EXPR");
   IElementType METHODS_BLOCK = new MatlabElementType("METHODS_BLOCK");
+  IElementType METHODS_LIST = new MatlabElementType("METHODS_LIST");
   IElementType MINUS_EXPR = new MatlabElementType("MINUS_EXPR");
   IElementType MORE_EXPR = new MatlabElementType("MORE_EXPR");
   IElementType MORE_OR_EQUAL_EXPR = new MatlabElementType("MORE_OR_EQUAL_EXPR");
@@ -75,6 +80,10 @@ public interface MatlabTypes {
   IElementType PLUS_EXPR = new MatlabElementType("PLUS_EXPR");
   IElementType POW_EXPR = new MatlabElementType("POW_EXPR");
   IElementType PROPERTIES_BLOCK = new MatlabElementType("PROPERTIES_BLOCK");
+  IElementType PROPERTIES_LIST = new MatlabElementType("PROPERTIES_LIST");
+  IElementType PROPERTY = new MatlabElementType("PROPERTY");
+  IElementType PROPERTY_SIZE = new MatlabElementType("PROPERTY_SIZE");
+  IElementType PROPERTY_VALIDATION_FUNCTIONS = new MatlabElementType("PROPERTY_VALIDATION_FUNCTIONS");
   IElementType QUALIFIED_EXPR = new MatlabElementType("QUALIFIED_EXPR");
   IElementType RANGE_EXPR = new MatlabElementType("RANGE_EXPR");
   IElementType RDIV_EXPR = new MatlabElementType("RDIV_EXPR");
@@ -217,6 +226,9 @@ public interface MatlabTypes {
       else if (type == CLASS_DECLARATION) {
         return new MatlabClassDeclarationImpl(node);
       }
+      else if (type == CLASS_NAME) {
+        return new MatlabClassNameImpl(node);
+      }
       else if (type == CONDITION) {
         return new MatlabConditionImpl(node);
       }
@@ -225,6 +237,12 @@ public interface MatlabTypes {
       }
       else if (type == CTRANSPOSE_EXPR) {
         return new MatlabCtransposeExprImpl(node);
+      }
+      else if (type == DEFAULT_VALUE) {
+        return new MatlabDefaultValueImpl(node);
+      }
+      else if (type == DIMENSION) {
+        return new MatlabDimensionImpl(node);
       }
       else if (type == ELEMENT_WISE_LDIV_EXPR) {
         return new MatlabElementWiseLdivExprImpl(node);
@@ -246,6 +264,9 @@ public interface MatlabTypes {
       }
       else if (type == ENUMERATION_BLOCK) {
         return new MatlabEnumerationBlockImpl(node);
+      }
+      else if (type == ENUM_ITEM) {
+        return new MatlabEnumItemImpl(node);
       }
       else if (type == EQUAL_EXPR) {
         return new MatlabEqualExprImpl(node);
@@ -322,6 +343,9 @@ public interface MatlabTypes {
       else if (type == METHODS_BLOCK) {
         return new MatlabMethodsBlockImpl(node);
       }
+      else if (type == METHODS_LIST) {
+        return new MatlabMethodsListImpl(node);
+      }
       else if (type == MINUS_EXPR) {
         return new MatlabMinusExprImpl(node);
       }
@@ -360,6 +384,18 @@ public interface MatlabTypes {
       }
       else if (type == PROPERTIES_BLOCK) {
         return new MatlabPropertiesBlockImpl(node);
+      }
+      else if (type == PROPERTIES_LIST) {
+        return new MatlabPropertiesListImpl(node);
+      }
+      else if (type == PROPERTY) {
+        return new MatlabPropertyImpl(node);
+      }
+      else if (type == PROPERTY_SIZE) {
+        return new MatlabPropertySizeImpl(node);
+      }
+      else if (type == PROPERTY_VALIDATION_FUNCTIONS) {
+        return new MatlabPropertyValidationFunctionsImpl(node);
       }
       else if (type == QUALIFIED_EXPR) {
         return new MatlabQualifiedExprImpl(node);
