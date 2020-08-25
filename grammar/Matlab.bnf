@@ -111,6 +111,7 @@ private el ::= if_block
   | file_operation
   | for_loop
   | while_loop
+  | parfor_loop
   | spmd_block
   | function_declaration
   | class_declaration
@@ -163,6 +164,11 @@ while_loop ::= while br* while_loop_condition [ ';' | ',' ] NEWLINE*
     block_that_recovers_until_end
     end { pin=1 }
 while_loop_condition ::= expr
+
+parfor_loop ::= parfor br* parfor_loop_range [ ';' | ',' ] NEWLINE*
+    block_that_recovers_until_end
+    end { pin=1 }
+parfor_loop_range ::= '(' assign_expr sep ',' sep INTEGER ')' | assign_expr
 
 spmd_block ::= spmd NEWLINE* <<block element>> end { pin=1 }
 

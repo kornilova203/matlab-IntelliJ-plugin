@@ -72,6 +72,8 @@ public interface MatlabTypes {
   IElementType PARAMETER = new MatlabElementType("PARAMETER");
   IElementType PARAMETERS = new MatlabElementType("PARAMETERS");
   IElementType PAREN_EXPR = new MatlabElementType("PAREN_EXPR");
+  IElementType PARFOR_LOOP = new MatlabElementType("PARFOR_LOOP");
+  IElementType PARFOR_LOOP_RANGE = new MatlabElementType("PARFOR_LOOP_RANGE");
   IElementType PLUS_EXPR = new MatlabElementType("PLUS_EXPR");
   IElementType POW_EXPR = new MatlabElementType("POW_EXPR");
   IElementType PROPERTIES_BLOCK = new MatlabElementType("PROPERTIES_BLOCK");
@@ -152,6 +154,7 @@ public interface MatlabTypes {
   IElementType NOT_EQUAL = new MatlabTokenType("~=");
   IElementType OR = new MatlabTokenType("||");
   IElementType OTHERWISE = new MatlabTokenType("otherwise");
+  IElementType PARFOR = new MatlabTokenType("parfor");
   IElementType PLUS = new MatlabTokenType("+");
   IElementType PLUSPLUS = new MatlabTokenType("++");
   IElementType POW = new MatlabTokenType("^");
@@ -353,6 +356,12 @@ public interface MatlabTypes {
       }
       else if (type == PAREN_EXPR) {
         return new MatlabParenExprImpl(node);
+      }
+      else if (type == PARFOR_LOOP) {
+        return new MatlabParforLoopImpl(node);
+      }
+      else if (type == PARFOR_LOOP_RANGE) {
+        return new MatlabParforLoopRangeImpl(node);
       }
       else if (type == PLUS_EXPR) {
         return new MatlabPlusExprImpl(node);

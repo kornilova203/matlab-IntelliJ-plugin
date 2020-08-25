@@ -870,6 +870,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   //   | file_operation
   //   | for_loop
   //   | while_loop
+  //   | parfor_loop
   //   | spmd_block
   //   | function_declaration
   //   | class_declaration
@@ -886,6 +887,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!r) r = file_operation(b, l + 1);
     if (!r) r = for_loop(b, l + 1);
     if (!r) r = while_loop(b, l + 1);
+    if (!r) r = parfor_loop(b, l + 1);
     if (!r) r = spmd_block(b, l + 1);
     if (!r) r = function_declaration(b, l + 1);
     if (!r) r = class_declaration(b, l + 1);
@@ -2614,6 +2616,92 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = p_opt_list(b, l + 1, parameter_parser_);
     exit_section_(b, m, PARAMETERS, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // parfor br* parfor_loop_range [ ';' | ',' ] NEWLINE*
+  //     block_that_recovers_until_end
+  //     end
+  public static boolean parfor_loop(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parfor_loop")) return false;
+    if (!nextTokenIs(b, PARFOR)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, PARFOR_LOOP, null);
+    r = consumeToken(b, PARFOR);
+    p = r; // pin = 1
+    r = r && report_error_(b, parfor_loop_1(b, l + 1));
+    r = p && report_error_(b, parfor_loop_range(b, l + 1)) && r;
+    r = p && report_error_(b, parfor_loop_3(b, l + 1)) && r;
+    r = p && report_error_(b, parfor_loop_4(b, l + 1)) && r;
+    r = p && report_error_(b, block_that_recovers_until_end(b, l + 1)) && r;
+    r = p && consumeToken(b, END) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // br*
+  private static boolean parfor_loop_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parfor_loop_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!br(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "parfor_loop_1", c)) break;
+    }
+    return true;
+  }
+
+  // [ ';' | ',' ]
+  private static boolean parfor_loop_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parfor_loop_3")) return false;
+    parfor_loop_3_0(b, l + 1);
+    return true;
+  }
+
+  // ';' | ','
+  private static boolean parfor_loop_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parfor_loop_3_0")) return false;
+    boolean r;
+    r = consumeToken(b, SEMICOLON);
+    if (!r) r = consumeToken(b, COMMA);
+    return r;
+  }
+
+  // NEWLINE*
+  private static boolean parfor_loop_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parfor_loop_4")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!consumeToken(b, NEWLINE)) break;
+      if (!empty_element_parsed_guard_(b, "parfor_loop_4", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // '(' assign_expr sep ',' sep INTEGER ')' | assign_expr
+  public static boolean parfor_loop_range(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parfor_loop_range")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, PARFOR_LOOP_RANGE, "<parfor loop range>");
+    r = parfor_loop_range_0(b, l + 1);
+    if (!r) r = expr(b, l + 1, -1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // '(' assign_expr sep ',' sep INTEGER ')'
+  private static boolean parfor_loop_range_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "parfor_loop_range_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LPARENTH);
+    r = r && expr(b, l + 1, -1);
+    r = r && sep(b, l + 1);
+    r = r && consumeToken(b, COMMA);
+    r = r && sep(b, l + 1);
+    r = r && consumeTokens(b, 0, INTEGER, RPARENTH);
+    exit_section_(b, m, null, r);
     return r;
   }
 
