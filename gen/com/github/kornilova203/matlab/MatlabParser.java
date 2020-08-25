@@ -870,6 +870,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   //   | file_operation
   //   | for_loop
   //   | while_loop
+  //   | spmd_block
   //   | function_declaration
   //   | class_declaration
   //   | expr
@@ -885,6 +886,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!r) r = file_operation(b, l + 1);
     if (!r) r = for_loop(b, l + 1);
     if (!r) r = while_loop(b, l + 1);
+    if (!r) r = spmd_block(b, l + 1);
     if (!r) r = function_declaration(b, l + 1);
     if (!r) r = class_declaration(b, l + 1);
     if (!r) r = expr(b, l + 1, -1);
@@ -2983,6 +2985,33 @@ public class MatlabParser implements PsiParser, LightPsiParser {
       int c = current_position_(b);
       if (!br(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "single_return_value_part_1", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // spmd NEWLINE* <<block element>> end
+  public static boolean spmd_block(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "spmd_block")) return false;
+    if (!nextTokenIs(b, SPMD)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, SPMD_BLOCK, null);
+    r = consumeToken(b, SPMD);
+    p = r; // pin = 1
+    r = r && report_error_(b, spmd_block_1(b, l + 1));
+    r = p && report_error_(b, block(b, l + 1, element_parser_)) && r;
+    r = p && consumeToken(b, END) && r;
+    exit_section_(b, l, m, r, p, null);
+    return r || p;
+  }
+
+  // NEWLINE*
+  private static boolean spmd_block_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "spmd_block_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!consumeToken(b, NEWLINE)) break;
+      if (!empty_element_parsed_guard_(b, "spmd_block_1", c)) break;
     }
     return true;
   }

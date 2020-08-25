@@ -295,6 +295,10 @@ public class MatlabVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitSpmdBlock(@NotNull MatlabSpmdBlock o) {
+    visitPsiElement(o);
+  }
+
   public void visitSuperClasses(@NotNull MatlabSuperClasses o) {
     visitPsiElement(o);
   }

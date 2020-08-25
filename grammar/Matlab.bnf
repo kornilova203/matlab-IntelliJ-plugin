@@ -111,6 +111,7 @@ private el ::= if_block
   | file_operation
   | for_loop
   | while_loop
+  | spmd_block
   | function_declaration
   | class_declaration
   | expr
@@ -162,6 +163,8 @@ while_loop ::= while br* while_loop_condition [ ';' | ',' ] NEWLINE*
     block_that_recovers_until_end
     end { pin=1 }
 while_loop_condition ::= expr
+
+spmd_block ::= spmd NEWLINE* <<block element>> end { pin=1 }
 
 function_declaration ::= function br* return_value_part? br* getter_or_setter_modifier? <<withOn 'ALLOW_END_AS_IDENTIFIER' ident>> br* parameters? NEWLINE*
     block_that_recovers_until_end
