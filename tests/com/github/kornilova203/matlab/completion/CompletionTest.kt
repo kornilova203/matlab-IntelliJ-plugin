@@ -20,12 +20,19 @@ class CompletionTest : BasePlatformTestCase() {
     fun testNumberDot() = doTest()
     fun testWhile() = doTest("function", "for", "classdef", "if", "end", "while", "return", "continue", "break")
     fun testPackage() = doTest("apputil", "engine", "exception", "lang", "system", "types")
+    fun testClassName() = doTestMultiFile("ClassNameAdd")
+    fun testFunction() = doTestMultiFile("FunctionAdd()")
 
     private fun doTest(vararg completionVariants: String) {
         myFixture.configureByFile(getTestFilePath())
         myFixture.complete(CompletionType.BASIC)
         val variants = myFixture.lookupElementStrings
         UsefulTestCase.assertContainsElements(variants!!, *completionVariants)
+    }
+    
+    private fun doTestMultiFile(vararg completionVariants: String) {
+        myFixture.configureByFile(getTestName(false) + "Add.m")
+        doTest(*completionVariants)
     }
 
     private fun getTestFilePath(): String = testDataPath + "/" + getTestName(false) + ".m"
