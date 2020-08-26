@@ -5,9 +5,12 @@ import com.github.kornilova203.matlab.editor.actions.reduceIndent
 import com.github.kornilova203.matlab.psi.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns.*
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
+import com.intellij.util.DocumentUtil
 import com.intellij.util.ProcessingContext
 
 class MatlabKeywordCompletionContributor : CompletionContributor() {
@@ -50,7 +53,19 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
                 }
                 for (keyword in keywords) {
                     result.addElement(PrioritizedLookupElement.withPriority(LookupElementBuilder.create(keyword).bold().withInsertHandler { insertionContext, _ ->
-                        reduceIndent(insertionContext.project, insertionContext.editor, insertionContext.file)
+                        val editor = insertionContext.editor
+                        reduceIndent(insertionContext.project, editor, insertionContext.file)
+                        if (insertionContext.completionChar == '\n' && keyword == "end") {
+                            val document = editor.document
+                            val offset = editor.caretModel.offset
+                            val indent = DocumentUtil.getIndent(document, offset)
+                            val end = DocumentUtil.getLineEndOffset(offset, document)
+                            if (document.getText(TextRange(offset, end)).isBlank()) {
+                                document.insertString(offset, "\n" + indent)
+                                editor.caretModel.moveToOffset(offset + 1 + indent.length)
+                                PsiDocumentManager.getInstance(insertionContext.project).commitDocument(document)
+                            }
+                        }
                     }, 1.0))
                 }
             }
