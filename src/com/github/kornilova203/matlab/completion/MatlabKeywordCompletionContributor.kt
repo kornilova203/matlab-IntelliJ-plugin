@@ -1,6 +1,7 @@
 package com.github.kornilova203.matlab.completion
 
 import com.github.kornilova203.matlab.MatlabLanguage
+import com.github.kornilova203.matlab.editor.actions.reduceIndent
 import com.github.kornilova203.matlab.psi.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
@@ -48,7 +49,9 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
                     return
                 }
                 for (keyword in keywords) {
-                    result.addElement(PrioritizedLookupElement.withPriority(LookupElementBuilder.create(keyword).bold(), 1.0))
+                    result.addElement(PrioritizedLookupElement.withPriority(LookupElementBuilder.create(keyword).bold().withInsertHandler { insertionContext, _ ->
+                        reduceIndent(insertionContext.project, insertionContext.editor, insertionContext.file)
+                    }, 1.0))
                 }
             }
         }
