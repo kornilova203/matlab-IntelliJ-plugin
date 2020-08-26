@@ -87,6 +87,7 @@
     mixin("for_loop")="com.github.kornilova203.matlab.psi.MatlabForLoopMixin"
     mixin("lambda_expr")="com.github.kornilova203.matlab.psi.MatlabLambdaExprMixin"
     mixin("global_variable_declaration")="com.github.kornilova203.matlab.psi.MatlabStubbedGlobalVariable"
+    mixin("matrix_item")="com.github.kornilova203.matlab.psi.MatlabMatrixItemMixin"
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?
