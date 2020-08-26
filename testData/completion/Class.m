@@ -1,0 +1,2 @@
+classdef BasicClass
+    <caret>

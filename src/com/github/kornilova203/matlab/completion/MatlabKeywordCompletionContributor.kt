@@ -22,6 +22,7 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
                 or(psiElement(MatlabTypes.INTEGER), psiElement(MatlabTypes.FLOAT))
         )
         private val IN_CYCLE = and(M, or(IDENT.inside(MatlabWhileLoop::class.java), IDENT.inside(MatlabForLoop::class.java)))
+        private val IN_CLASS = and(M, psiElement().withSuperParent(2, MatlabClassDeclaration::class.java))
     }
 
     init {
@@ -36,8 +37,11 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
         extend(CompletionType.BASIC,
                 psiElement().and(IN_CYCLE).and(IN_BLOCK),
                 provider("continue", "break"))
-
-        // todo: completion in classdef
+        
+        extend(CompletionType.BASIC, 
+                psiElement().and(IN_CLASS), 
+                provider("properties", "methods", "events", "enumeration", "end"))
+        
     }
 
     private fun provider(vararg keywords: String): CompletionProvider<CompletionParameters> {

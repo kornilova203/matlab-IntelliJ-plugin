@@ -183,8 +183,9 @@ fake parameters_list ::= parameter*
 parameter ::= ident | '~'
 
 class_declaration ::= classdef br* attributes? br* ident br* super_classes? NEWLINE*
-    (( properties_block | methods_block | events_block | enumeration_block ) NEWLINE*)*
+    class_body NEWLINE*
     end { pin=1 }
+private class_body ::= (( properties_block | methods_block | events_block | enumeration_block ) NEWLINE*)* { recoverWhile=not_end_or_oef }
 
 super_classes ::= '<' br* super_classes_list { pin=1 }
 private super_classes_list ::= super_classes_list_item ('&' super_classes_list_item) *
