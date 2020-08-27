@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
+import com.github.kornilova203.matlab.psi.MatlabParforLoopMixin;
 import com.github.kornilova203.matlab.psi.*;
 
-public class MatlabParforLoopImpl extends MatlabASTWrapperPsiElement implements MatlabParforLoop {
+public class MatlabParforLoopImpl extends MatlabParforLoopMixin implements MatlabParforLoop {
 
   public MatlabParforLoopImpl(@NotNull ASTNode node) {
     super(node);

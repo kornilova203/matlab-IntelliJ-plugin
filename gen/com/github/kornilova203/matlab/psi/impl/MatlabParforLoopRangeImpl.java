@@ -28,14 +28,8 @@ public class MatlabParforLoopRangeImpl extends MatlabASTWrapperPsiElement implem
 
   @Override
   @NotNull
-  public MatlabAssignExpr getAssignExpr() {
-    return findNotNullChildByClass(MatlabAssignExpr.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getInteger() {
-    return findChildByType(INTEGER);
+  public List<MatlabExpr> getExprList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, MatlabExpr.class);
   }
 
 }

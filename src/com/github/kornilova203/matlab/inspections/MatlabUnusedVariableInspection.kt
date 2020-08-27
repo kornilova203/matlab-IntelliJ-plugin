@@ -103,7 +103,7 @@ class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) 
         val function = element.parentOfTypes(MatlabFunctionDeclaration::class)
         val retValues = function?.returnValues?.retValueList?.map { it.text } ?: emptyList()
         if (element is MatlabQualifiedExpr || element is MatlabFunctionExpr || retValues.contains(element.text) 
-                || element.parentOfTypes(MatlabPropertiesBlock::class, MatlabForLoopRange::class) != null) {
+                || element.parentOfTypes(MatlabPropertiesBlock::class, MatlabForLoopRange::class, MatlabParforLoopRange::class) != null) {
             return false
         }
         val block = element.parentOfTypes(MatlabBlock::class) ?: return true

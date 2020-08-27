@@ -2694,7 +2694,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '(' assign_expr sep ',' sep INTEGER ')' | assign_expr
+  // '(' assign_expr sep ',' sep expr ')' | assign_expr
   public static boolean parfor_loop_range(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parfor_loop_range")) return false;
     boolean r;
@@ -2705,7 +2705,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '(' assign_expr sep ',' sep INTEGER ')'
+  // '(' assign_expr sep ',' sep expr ')'
   private static boolean parfor_loop_range_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "parfor_loop_range_0")) return false;
     boolean r;
@@ -2715,7 +2715,8 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = r && sep(b, l + 1);
     r = r && consumeToken(b, COMMA);
     r = r && sep(b, l + 1);
-    r = r && consumeTokens(b, 0, INTEGER, RPARENTH);
+    r = r && expr(b, l + 1, -1);
+    r = r && consumeToken(b, RPARENTH);
     exit_section_(b, m, null, r);
     return r;
   }

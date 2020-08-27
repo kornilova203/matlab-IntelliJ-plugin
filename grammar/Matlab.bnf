@@ -85,6 +85,7 @@
     mixin("ret_value")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
     mixin("block")="com.github.kornilova203.matlab.psi.MatlabBlockMixin"
     mixin("for_loop")="com.github.kornilova203.matlab.psi.MatlabForLoopMixin"
+    mixin("parfor_loop")="com.github.kornilova203.matlab.psi.MatlabParforLoopMixin"
     mixin("lambda_expr")="com.github.kornilova203.matlab.psi.MatlabLambdaExprMixin"
     mixin("global_variable_declaration")="com.github.kornilova203.matlab.psi.MatlabStubbedGlobalVariable"
     mixin("matrix_item")="com.github.kornilova203.matlab.psi.MatlabMatrixItemMixin"
@@ -169,7 +170,7 @@ while_loop_condition ::= expr
 parfor_loop ::= parfor br* parfor_loop_range [ ';' | ',' ] NEWLINE*
     block_that_recovers_until_end
     end { pin=1 }
-parfor_loop_range ::= '(' assign_expr sep ',' sep INTEGER ')' | assign_expr
+parfor_loop_range ::= '(' assign_expr sep ',' sep expr ')' | assign_expr
 
 spmd_block ::= spmd NEWLINE* <<block element>> end { pin=1 }
 
