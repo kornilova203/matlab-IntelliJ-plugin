@@ -31,7 +31,7 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
     init {
         extend(CompletionType.BASIC,
                 psiElement().andOr(AT_TOP_LEVEL, IN_BLOCK),
-                provider("function", "if", "while", "for", "classdef", "return"))
+                provider("function", "if", "while", "for", "classdef", "return", "spmd", "parfor"))
 
         extend(CompletionType.BASIC,
                 psiElement().and(IN_BLOCK),

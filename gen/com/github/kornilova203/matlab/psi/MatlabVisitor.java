@@ -259,6 +259,14 @@ public class MatlabVisitor extends PsiElementVisitor {
     visitExpr(o);
   }
 
+  public void visitParforLoop(@NotNull MatlabParforLoop o) {
+    visitPsiElement(o);
+  }
+
+  public void visitParforLoopRange(@NotNull MatlabParforLoopRange o) {
+    visitPsiElement(o);
+  }
+
   public void visitPlusExpr(@NotNull MatlabPlusExpr o) {
     visitBinaryExpr(o);
   }
@@ -292,6 +300,10 @@ public class MatlabVisitor extends PsiElementVisitor {
   }
 
   public void visitReturnValues(@NotNull MatlabReturnValues o) {
+    visitPsiElement(o);
+  }
+
+  public void visitSpmdBlock(@NotNull MatlabSpmdBlock o) {
     visitPsiElement(o);
   }
 

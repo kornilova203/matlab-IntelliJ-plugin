@@ -21,7 +21,7 @@ class MatlabLibraryFunctionCompletionContributor : CompletionContributor() {
         private var functions = HashSet<LookupElement>()
         private var packages = HashMap<String, MutableSet<LookupElement>>()
 
-        val KEYWORDS = hashSetOf("function", "end", "if", "else", "elseif", "while", "switch", "case", "otherwise", "for", "classdef", "try", "catch", "global")
+        val KEYWORDS = hashSetOf("function", "end", "if", "else", "elseif", "while", "switch", "case", "otherwise", "for", "classdef", "try", "catch", "global", "spmd", "parfor")
 
         private val IDENT = psiElement(MatlabTypes.IDENTIFIER).withParent(MatlabRefExpr::class.java)
         private val IN_QUALIFIED_EXPR = and(M, IDENT.withSuperParent(2, MatlabQualifiedExpr::class.java))
