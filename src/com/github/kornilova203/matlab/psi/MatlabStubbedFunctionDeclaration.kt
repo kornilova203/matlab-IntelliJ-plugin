@@ -16,6 +16,7 @@ abstract class MatlabStubbedFunctionDeclaration : StubBasedPsiElementBase<Matlab
     constructor(node: ASTNode) : super(node)
     constructor(stub: MatlabFunctionDeclarationStub?, nodeType: IElementType?, node: ASTNode?) : super(stub, nodeType, node)
     override val visibleOutsideFunction = true
+    override val visibleBeforeDeclaration = true
 
     override fun getNameIdentifier(): PsiElement? = getChildOfType(MatlabTypes.IDENTIFIER)
 
