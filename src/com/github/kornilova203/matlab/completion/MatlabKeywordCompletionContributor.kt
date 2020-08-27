@@ -1,6 +1,7 @@
 package com.github.kornilova203.matlab.completion
 
 import com.github.kornilova203.matlab.MatlabLanguage
+import com.github.kornilova203.matlab.editor.actions.reduceIndent
 import com.github.kornilova203.matlab.psi.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
@@ -21,6 +22,7 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
                 or(psiElement(MatlabTypes.INTEGER), psiElement(MatlabTypes.FLOAT))
         )
         private val IN_CYCLE = and(M, or(IDENT.inside(MatlabWhileLoop::class.java), IDENT.inside(MatlabForLoop::class.java)))
+        private val IN_CLASS = and(M, psiElement().withSuperParent(2, MatlabClassDeclaration::class.java))
     }
 
     init {
@@ -35,8 +37,11 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
         extend(CompletionType.BASIC,
                 psiElement().and(IN_CYCLE).and(IN_BLOCK),
                 provider("continue", "break"))
-
-        // todo: completion in classdef
+        
+        extend(CompletionType.BASIC, 
+                psiElement().and(IN_CLASS), 
+                provider("properties", "methods", "events", "enumeration", "end"))
+        
     }
 
     private fun provider(vararg keywords: String): CompletionProvider<CompletionParameters> {
@@ -48,7 +53,9 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
                     return
                 }
                 for (keyword in keywords) {
-                    result.addElement(PrioritizedLookupElement.withPriority(LookupElementBuilder.create(keyword).bold(), 1.0))
+                    result.addElement(PrioritizedLookupElement.withPriority(LookupElementBuilder.create(keyword).bold().withInsertHandler { insertionContext, _ ->
+                        reduceIndent(insertionContext.project, insertionContext.editor, insertionContext.file)
+                    }, 1.0))
                 }
             }
         }

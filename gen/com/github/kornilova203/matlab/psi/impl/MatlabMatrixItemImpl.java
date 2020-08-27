@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
+import com.github.kornilova203.matlab.psi.MatlabMatrixItemMixin;
 import com.github.kornilova203.matlab.psi.*;
 
-public class MatlabMatrixItemImpl extends MatlabASTWrapperPsiElement implements MatlabMatrixItem {
+public class MatlabMatrixItemImpl extends MatlabMatrixItemMixin implements MatlabMatrixItem {
 
   public MatlabMatrixItemImpl(@NotNull ASTNode node) {
     super(node);

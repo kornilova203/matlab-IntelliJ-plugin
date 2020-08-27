@@ -14,6 +14,16 @@ class MatlabResolvingScopeProcessor(private val myReference: MatlabReference) : 
 
     override fun execute(decl: PsiElement, state: ResolveState): Boolean {
         if (decl !is MatlabDeclaration) return true
+        if (decl is MatlabAssignExpr && decl.left is MatlabLiteralExpr) {
+            val matrix = decl.left.firstChild
+            if (matrix is MatlabMatrixLiteral) {
+                for (row in matrix.matrixRowList) {
+                    for (item in row.matrixItemList) {
+                        this.execute(item, state)
+                    }
+                }
+            }
+        }
         if (decl.name == myReference.element.text && (decl is MatlabGlobalVariableDeclaration || declaration == null || isResolvedToItself())) {
             this.declaration = decl
             return decl !is MatlabGlobalVariableDeclaration
