@@ -2,6 +2,6 @@ if true
     <ref>fun()
 end
 
-function fun()
+function <decl>fun()
 
 end
