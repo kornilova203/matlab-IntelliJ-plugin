@@ -1,6 +1,8 @@
 package com.github.kornilova203.matlab
 
-import com.github.kornilova203.matlab.psi.*
+import com.github.kornilova203.matlab.psi.MatlabAssignExpr
+import com.github.kornilova203.matlab.psi.MatlabDeclaration
+import com.github.kornilova203.matlab.psi.MatlabFunctionDeclaration
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveState
 import com.intellij.psi.scope.PsiScopeProcessor
@@ -32,9 +34,9 @@ fun PsiElement.inCurrentFunction(parent: PsiElement): Boolean {
     return true
 }
 
-fun PsiElement.findDeclaration(processor: PsiScopeProcessor, state: ResolveState, inCurrentScope: Boolean, declarationIsBeforeUsage: Boolean = false): Boolean {
+fun PsiElement.findDeclaration(processor: PsiScopeProcessor, state: ResolveState, inCurrentScope: Boolean, declarationIsBeforeUsage: Boolean = true): Boolean {
     if (this is MatlabDeclaration) {
-        if ((inCurrentScope || this.visibleOutsideFunction) && (!declarationIsBeforeUsage || this.visibleBeforeDeclaration)) {
+        if ((inCurrentScope || this.visibleOutsideFunction) && (declarationIsBeforeUsage || this.visibleBeforeDeclaration)) {
             return processor.execute(this, state)
         }
     }
@@ -53,5 +55,5 @@ fun processDeclarations(parent: PsiElement, processor: PsiScopeProcessor, state:
     val res = lastParent?.forEachSiblingBackwards { it.findDeclaration(processor, state, inCurrentScope) }
     if (res == false) return false
 
-    return lastParent?.forEachSiblingForward { it.findDeclaration(processor, state, inCurrentScope, true) } ?: true
+    return lastParent?.forEachSiblingForward { it.findDeclaration(processor, state, inCurrentScope, false) } ?: true
 }
