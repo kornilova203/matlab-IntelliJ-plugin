@@ -8,12 +8,12 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns.*
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import java.io.BufferedReader
-import java.nio.file.Paths
 import kotlin.collections.HashSet
 
 class MatlabLibraryFunctionCompletionContributor : CompletionContributor() {
@@ -82,7 +82,14 @@ class MatlabLibraryFunctionCompletionContributor : CompletionContributor() {
         }
     }
 
-    private fun funcElement(name: String) = LookupElementBuilder.create(name).withIcon(AllIcons.Nodes.Function)
+    private fun funcElement(name: String) = LookupElementBuilder.create("$name()").withIcon(AllIcons.Nodes.Function).withInsertHandler { context, _ ->
+        val caretModel = context.editor.caretModel
+        val offset = caretModel.offset
+        val document = context.document
+        if (document.getText(TextRange(offset, offset + 2)) == "()") {
+            document.deleteString(offset, offset + 2)
+        }
+    }
 
     private fun packageElement(name: String) = LookupElementBuilder.create(name).withIcon(AllIcons.Nodes.Package)
 }

@@ -11,6 +11,7 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveState
 import com.intellij.psi.search.GlobalSearchScope
@@ -40,25 +41,7 @@ class MatlabReferenceCompletionContributor : CompletionContributor() {
         resolveIndex(project, MatlabClassDeclarationIndex.KEY, MatlabClassDeclaration::class.java) { declaration ->
             return@resolveIndex LookupElementBuilder.create(declaration).withIcon(AllIcons.Nodes.Class)
         }
-        resolveIndex(project, MatlabFunctionDeclarationIndex.KEY, MatlabFunctionDeclaration::class.java) { declaration ->
-            val name = declaration.name
-            if (name != null) {
-                return@resolveIndex LookupElementBuilder.create("$name()").withIcon(AllIcons.Nodes.Function).withInsertHandler { context, _ ->
-                    if (declaration !is MatlabFunctionDeclaration) {
-                        return@withInsertHandler
-                    }
-                    val parameterList = declaration.parameters?.parameterList ?: return@withInsertHandler
-                    if (parameterList.isNotEmpty()) {
-                        val caretModel = context.editor.caretModel
-                        val offset = caretModel.offset
-                        if (offset > 0) {
-                            caretModel.moveToOffset(offset - 1)
-                        }
-                    }
-                }
-            }
-            return@resolveIndex LookupElementBuilder.create(declaration).withIcon(AllIcons.Nodes.Function)
-        }
+        resolveIndex(project, MatlabFunctionDeclarationIndex.KEY, MatlabFunctionDeclaration::class.java) { declaration -> createFunctionLookupElement(declaration) }
         result.addAllElements(stubs)
         stubs.clear()
     }
