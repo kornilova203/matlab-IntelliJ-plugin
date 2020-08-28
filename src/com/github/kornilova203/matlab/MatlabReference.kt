@@ -1,6 +1,7 @@
 package com.github.kornilova203.matlab
 
 import com.github.kornilova203.matlab.psi.*
+import com.github.kornilova203.matlab.psi.types.*
 import com.github.kornilova203.matlab.stub.MatlabClassDeclarationIndex
 import com.github.kornilova203.matlab.stub.MatlabFunctionDeclarationIndex
 import com.github.kornilova203.matlab.stub.MatlabGlobalVariableIndex
@@ -19,6 +20,7 @@ class MatlabReference(myElement: MatlabRefExpr) : PsiPolyVariantReferenceBase<Ma
     companion object {
         private const val USE_CACHE = true
         private val RESOLVER = ResolveCache.AbstractResolver { ref: MatlabReference, _: Boolean -> ref.resolveInner() }
+        private val TYPE_RESOLVER = ResolveCache.AbstractResolver { ref: MatlabReference, _: Boolean -> ref.getTypeInner() }
     }
 
     override fun resolve(): MatlabDeclaration? {
@@ -35,7 +37,7 @@ class MatlabReference(myElement: MatlabRefExpr) : PsiPolyVariantReferenceBase<Ma
         }
     }
 
-    private fun resolveInner(): Array<ResolveResult>{
+    private fun resolveInner(): Array<ResolveResult> {
         val res = mutableListOf<ResolveResult>()
         val processor = MatlabResolvingScopeProcessor(this)
         val containingFile = myElement.containingFile
@@ -59,7 +61,7 @@ class MatlabReference(myElement: MatlabRefExpr) : PsiPolyVariantReferenceBase<Ma
         return arrayOf(PsiElementResolveResult(processor.declaration!!))
     }
 
-    private fun <Psi : PsiElement?> resolveIndex(processor: PsiScopeProcessor, indexKey: StubIndexKey<String, Psi>, requiredClass : Class<Psi>) {
+    private fun <Psi : PsiElement?> resolveIndex(processor: PsiScopeProcessor, indexKey: StubIndexKey<String, Psi>, requiredClass: Class<Psi>) {
         StubIndex.getInstance().processElements(indexKey, myElement.text, myElement.project, GlobalSearchScope.projectScope(myElement.project), requiredClass) { psiElement ->
             if (psiElement != null) {
                 if (psiElement.containingFile != myElement.containingFile && psiElement.containingFile.name == myElement.text + ".m") {
@@ -71,4 +73,13 @@ class MatlabReference(myElement: MatlabRefExpr) : PsiPolyVariantReferenceBase<Ma
     }
 
     override fun getVariants(): Array<PsiElement> = emptyArray()
+
+    fun getType(): MatlabType {
+        val cache = ResolveCache.getInstance(element.project)
+        return cache.resolveWithCaching(this, TYPE_RESOLVER, false, false)!!
+    }
+
+    private fun getTypeInner(): MatlabType {
+        return getTypeFromRefExpr(myElement)
+    }
 }
