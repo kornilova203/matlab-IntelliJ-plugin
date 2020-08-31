@@ -20,7 +20,6 @@ import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.util.ProcessingContext
 
 class MatlabReferenceCompletionContributor : CompletionContributor() {
-    val stubs = mutableListOf<LookupElement>()
 
     init {
         extend(CompletionType.BASIC,
@@ -37,15 +36,15 @@ class MatlabReferenceCompletionContributor : CompletionContributor() {
 
     private fun addCompletionsFromStubs(position: PsiElement, result: CompletionResultSet) {
         val project = position.project
-        resolveIndex(project, MatlabClassDeclarationIndex.KEY, MatlabClassDeclaration::class.java) { declaration ->
+        val stubs = mutableListOf<LookupElement>()
+        resolveIndex(project, MatlabClassDeclarationIndex.KEY, MatlabClassDeclaration::class.java, stubs) { declaration ->
             return@resolveIndex LookupElementBuilder.create(declaration).withIcon(AllIcons.Nodes.Class)
         }
-        resolveIndex(project, MatlabFunctionDeclarationIndex.KEY, MatlabFunctionDeclaration::class.java) { declaration -> createFunctionLookupElement(declaration) }
+        resolveIndex(project, MatlabFunctionDeclarationIndex.KEY, MatlabFunctionDeclaration::class.java, stubs) { declaration -> createFunctionLookupElement(declaration) }
         result.addAllElements(stubs)
-        stubs.clear()
     }
 
-    private fun <Psi : PsiElement?> resolveIndex(project: Project, indexKey: StubIndexKey<String, Psi>, requiredClass: Class<Psi>, create: (MatlabDeclaration) -> LookupElement?) {
+    private fun <Psi : PsiElement?> resolveIndex(project: Project, indexKey: StubIndexKey<String, Psi>, requiredClass: Class<Psi>, stubs: MutableList<LookupElement>, create: (MatlabDeclaration) -> LookupElement?) {
         StubIndex.getInstance().processAllKeys(indexKey, project) { key ->
             StubIndex.getInstance().processElements(indexKey, key, project, GlobalSearchScope.projectScope(project), requiredClass) { psiElement ->
                 if (psiElement is MatlabDeclaration && psiElement.name + ".m" == psiElement.containingFile.name) {
