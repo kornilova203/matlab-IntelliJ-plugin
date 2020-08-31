@@ -11,7 +11,6 @@ import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveState
 import com.intellij.psi.search.GlobalSearchScope
@@ -46,11 +45,14 @@ class MatlabReferenceCompletionContributor : CompletionContributor() {
         stubs.clear()
     }
 
-    private fun <Psi : PsiElement?> resolveIndex(project: Project, indexKey: StubIndexKey<String, Psi>, requiredClass: Class<Psi>, create: (MatlabDeclaration) -> LookupElement) {
+    private fun <Psi : PsiElement?> resolveIndex(project: Project, indexKey: StubIndexKey<String, Psi>, requiredClass: Class<Psi>, create: (MatlabDeclaration) -> LookupElement?) {
         StubIndex.getInstance().processAllKeys(indexKey, project) { key ->
             StubIndex.getInstance().processElements(indexKey, key, project, GlobalSearchScope.projectScope(project), requiredClass) { psiElement ->
                 if (psiElement is MatlabDeclaration && psiElement.name + ".m" == psiElement.containingFile.name) {
-                    stubs.add(create(psiElement))
+                    val element = create(psiElement)
+                    if (element != null) {
+                        stubs.add(element)
+                    }
                 }
                 return@processElements true
             }

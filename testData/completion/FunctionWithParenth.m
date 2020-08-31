@@ -1,0 +1,1 @@
+a = Func<caret>  ()

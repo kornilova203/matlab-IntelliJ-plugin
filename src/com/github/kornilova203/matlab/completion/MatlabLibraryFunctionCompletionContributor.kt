@@ -8,13 +8,11 @@ import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.icons.AllIcons
-import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns.*
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import java.io.BufferedReader
-import kotlin.collections.HashSet
 
 class MatlabLibraryFunctionCompletionContributor : CompletionContributor() {
     companion object {
@@ -69,25 +67,23 @@ class MatlabLibraryFunctionCompletionContributor : CompletionContributor() {
             val names = name.split('.')
             for (j in 0 until names.size - 1) {
                 functions.add(packageElement(names[j]))
-                val nextElement = if (j + 1 == names.size - 1) funcElement(names[j + 1]) else packageElement(names[j + 1])
+                val nextElement = when {
+                    j + 1 == names.size - 1 -> createFunctionLookupElement(names[j + 1])
+                    else -> packageElement(names[j + 1])
+                } ?: continue
                 if (packages.containsKey(names[j])) {
                     packages[names[j]]?.add(nextElement)
                 } else {
                     packages[names[j]] = mutableSetOf<LookupElement>(nextElement)
                 }
             }
-            functions.add(funcElement(names.last()))
+            createFunctionLookupElement(names.last())?.let { element ->
+                functions.add(element)
+            }
         } else {
-            functions.add(funcElement(name))
-        }
-    }
-
-    private fun funcElement(name: String) = LookupElementBuilder.create("$name()").withIcon(AllIcons.Nodes.Function).withInsertHandler { context, _ ->
-        val caretModel = context.editor.caretModel
-        val offset = caretModel.offset
-        val document = context.document
-        if (document.getText(TextRange(offset, offset + 2)) == "()") {
-            document.deleteString(offset, offset + 2)
+            createFunctionLookupElement(name)?.let { element ->
+                functions.add(element)
+            }
         }
     }
 
