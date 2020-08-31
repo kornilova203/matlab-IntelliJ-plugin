@@ -34,9 +34,9 @@ fun PsiElement.inCurrentFunction(parent: PsiElement): Boolean {
     return true
 }
 
-fun PsiElement.findDeclaration(processor: PsiScopeProcessor, state: ResolveState, inCurrentScope : Boolean) : Boolean {
+fun PsiElement.findDeclaration(processor: PsiScopeProcessor, state: ResolveState, inCurrentScope: Boolean, declarationIsBeforeUsage: Boolean = true): Boolean {
     if (this is MatlabDeclaration) {
-        if (inCurrentScope || this.visibleOutsideFunction) {
+        if ((inCurrentScope || this.visibleOutsideFunction) && (declarationIsBeforeUsage || this.visibleBeforeDeclaration)) {
             return processor.execute(this, state)
         }
     }
@@ -55,7 +55,5 @@ fun processDeclarations(parent: PsiElement, processor: PsiScopeProcessor, state:
     val res = lastParent?.forEachSiblingBackwards { it.findDeclaration(processor, state, inCurrentScope) }
     if (res == false) return false
 
-    if (inCurrentScope) return true
-
-    return lastParent?.forEachSiblingForward { it.findDeclaration(processor, state, inCurrentScope) } ?: true
+    return lastParent?.forEachSiblingForward { it.findDeclaration(processor, state, inCurrentScope, false) } ?: true
 }

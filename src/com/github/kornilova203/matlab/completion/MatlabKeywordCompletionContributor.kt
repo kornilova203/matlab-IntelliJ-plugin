@@ -1,12 +1,16 @@
 package com.github.kornilova203.matlab.completion
 
 import com.github.kornilova203.matlab.MatlabLanguage
+import com.github.kornilova203.matlab.editor.actions.reduceIndent
 import com.github.kornilova203.matlab.psi.*
 import com.intellij.codeInsight.completion.*
 import com.intellij.codeInsight.lookup.LookupElementBuilder
+import com.intellij.openapi.util.TextRange
 import com.intellij.patterns.PlatformPatterns.psiElement
 import com.intellij.patterns.StandardPatterns.*
+import com.intellij.psi.PsiDocumentManager
 import com.intellij.psi.PsiElement
+import com.intellij.util.DocumentUtil
 import com.intellij.util.ProcessingContext
 
 class MatlabKeywordCompletionContributor : CompletionContributor() {
@@ -21,12 +25,13 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
                 or(psiElement(MatlabTypes.INTEGER), psiElement(MatlabTypes.FLOAT))
         )
         private val IN_CYCLE = and(M, or(IDENT.inside(MatlabWhileLoop::class.java), IDENT.inside(MatlabForLoop::class.java)))
+        private val IN_CLASS = and(M, psiElement().withSuperParent(2, MatlabClassDeclaration::class.java))
     }
 
     init {
         extend(CompletionType.BASIC,
                 psiElement().andOr(AT_TOP_LEVEL, IN_BLOCK),
-                provider("function", "if", "while", "for", "classdef", "return"))
+                provider("function", "if", "while", "for", "classdef", "return", "spmd", "parfor"))
 
         extend(CompletionType.BASIC,
                 psiElement().and(IN_BLOCK),
@@ -35,8 +40,11 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
         extend(CompletionType.BASIC,
                 psiElement().and(IN_CYCLE).and(IN_BLOCK),
                 provider("continue", "break"))
-
-        // todo: completion in classdef
+        
+        extend(CompletionType.BASIC, 
+                psiElement().and(IN_CLASS), 
+                provider("properties", "methods", "events", "enumeration", "end"))
+        
     }
 
     private fun provider(vararg keywords: String): CompletionProvider<CompletionParameters> {
@@ -48,7 +56,21 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
                     return
                 }
                 for (keyword in keywords) {
-                    result.addElement(PrioritizedLookupElement.withPriority(LookupElementBuilder.create(keyword).bold(), 1.0))
+                    result.addElement(PrioritizedLookupElement.withPriority(LookupElementBuilder.create(keyword).bold().withInsertHandler { insertionContext, _ ->
+                        val editor = insertionContext.editor
+                        reduceIndent(insertionContext.project, editor, insertionContext.file)
+                        if (insertionContext.completionChar == '\n' && keyword == "end") {
+                            val document = editor.document
+                            val offset = editor.caretModel.offset
+                            val indent = DocumentUtil.getIndent(document, offset)
+                            val end = DocumentUtil.getLineEndOffset(offset, document)
+                            if (document.getText(TextRange(offset, end)).isBlank()) {
+                                document.insertString(offset, "\n" + indent)
+                                editor.caretModel.moveToOffset(offset + 1 + indent.length)
+                                PsiDocumentManager.getInstance(insertionContext.project).commitDocument(document)
+                            }
+                        }
+                    }, 1.0))
                 }
             }
         }

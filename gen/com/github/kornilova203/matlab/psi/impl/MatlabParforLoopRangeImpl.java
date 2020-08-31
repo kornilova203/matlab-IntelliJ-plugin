@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabMatrixItemMixin;
+import com.github.kornilova203.matlab.psi.MatlabASTWrapperPsiElement;
 import com.github.kornilova203.matlab.psi.*;
 
-public class MatlabMatrixItemImpl extends MatlabMatrixItemMixin implements MatlabMatrixItem {
+public class MatlabParforLoopRangeImpl extends MatlabASTWrapperPsiElement implements MatlabParforLoopRange {
 
-  public MatlabMatrixItemImpl(@NotNull ASTNode node) {
+  public MatlabParforLoopRangeImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
-    visitor.visitMatrixItem(this);
+    visitor.visitParforLoopRange(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,9 +27,9 @@ public class MatlabMatrixItemImpl extends MatlabMatrixItemMixin implements Matla
   }
 
   @Override
-  @Nullable
-  public MatlabExpr getExpr() {
-    return findChildByClass(MatlabExpr.class);
+  @NotNull
+  public List<MatlabExpr> getExprList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, MatlabExpr.class);
   }
 
 }

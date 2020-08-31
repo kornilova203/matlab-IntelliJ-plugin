@@ -128,6 +128,8 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
   if                    { stopLookForCtrans(); return IF; }
   for                   { stopLookForCtrans(); return FOR; }
   while                 { stopLookForCtrans(); return WHILE; }
+  parfor                { stopLookForCtrans(); return PARFOR; }
+  spmd                  { stopLookForCtrans(); return SPMD; }
   classdef              { stopLookForCtrans(); return CLASSDEF; }
   switch                { stopLookForCtrans(); return SWITCH; }
   case                  { stopLookForCtrans(); return CASE; }

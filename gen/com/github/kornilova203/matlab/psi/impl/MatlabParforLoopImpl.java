@@ -8,17 +8,17 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabMatrixItemMixin;
+import com.github.kornilova203.matlab.psi.MatlabParforLoopMixin;
 import com.github.kornilova203.matlab.psi.*;
 
-public class MatlabMatrixItemImpl extends MatlabMatrixItemMixin implements MatlabMatrixItem {
+public class MatlabParforLoopImpl extends MatlabParforLoopMixin implements MatlabParforLoop {
 
-  public MatlabMatrixItemImpl(@NotNull ASTNode node) {
+  public MatlabParforLoopImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull MatlabVisitor visitor) {
-    visitor.visitMatrixItem(this);
+    visitor.visitParforLoop(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -28,8 +28,14 @@ public class MatlabMatrixItemImpl extends MatlabMatrixItemMixin implements Matla
 
   @Override
   @Nullable
-  public MatlabExpr getExpr() {
-    return findChildByClass(MatlabExpr.class);
+  public MatlabBlock getBlock() {
+    return findChildByClass(MatlabBlock.class);
+  }
+
+  @Override
+  @Nullable
+  public MatlabParforLoopRange getParforLoopRange() {
+    return findChildByClass(MatlabParforLoopRange.class);
   }
 
 }

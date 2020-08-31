@@ -19,10 +19,10 @@ class ResolveTest : BasePlatformTestCase() {
     fun testVariableUnresolved() = doTestUnresolved()
     fun testVariableRecursive() = doTest("a")
     fun testFunction() = doTest("fun")
-    fun testFunctionUnresolved() = doTestUnresolved()
+    fun testFunctionAfter() = doTest("fun")
     fun testFunctionInFunction() = doTest("fun")
     fun testFunctionInBlock() = doTest("fun")
-    fun testFunctionInBlockUnresolved() = doTestUnresolved()
+    fun testFunctionInBlockAfter() = doTest("fun")
     fun testFunctionRecursive() = doTest("fib")
     fun testVarInsideFunctionUnresolved() = doTestUnresolved()
     fun testClass() = doTest("hit_list")
@@ -35,6 +35,7 @@ class ResolveTest : BasePlatformTestCase() {
     fun testVariableInCatchBlock() = doTest("a")
     fun testGlobal() = doTest("b")
     fun testGlobalInBlock() = doTest("a")
+    fun testNotFunctionCall() = doTest("foo")
 
     private fun doTest(name: String, shouldBeResolved: Boolean = true) {
         val file = File(testDataPath + getTestName(false) + ".m")

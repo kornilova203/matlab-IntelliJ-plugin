@@ -7,4 +7,6 @@ import com.intellij.psi.PsiNameIdentifierOwner
  **/
 interface MatlabDeclaration : PsiNameIdentifierOwner {
     val visibleOutsideFunction: Boolean
+    val visibleBeforeDeclaration: Boolean
+        get() = false
 }

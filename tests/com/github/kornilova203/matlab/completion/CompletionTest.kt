@@ -20,6 +20,7 @@ class CompletionTest : BasePlatformTestCase() {
     fun testNumberDot() = doTest()
     fun testWhile() = doTest("function", "for", "classdef", "if", "end", "while", "return", "continue", "break")
     fun testPackage() = doTest("apputil", "engine", "exception", "lang", "system", "types")
+    fun testClass() = doTest("properties", "methods", "events", "enumeration", "end")
     fun testClassName() = doTestMultiFile("ClassNameAdd")
     fun testFunction() = doTestMultiFile("FunctionAdd()")
 

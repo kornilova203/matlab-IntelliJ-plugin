@@ -66,6 +66,8 @@
         <lang.documentationProvider language="Matlab" implementationClass="com.github.kornilova203.matlab.MatlabDocumentationProvider"/>
         <elementDescriptionProvider implementation="com.github.kornilova203.matlab.MatlabElementDescriptionProvider"/>
         <inlineActionHandler implementation="com.github.kornilova203.matlab.refactoring.MatlabInlineVariableHandler"/>
+        <typedHandler implementation="com.github.kornilova203.matlab.editor.actions.MatlabTypedHandler"/>
+        <enterHandlerDelegate implementation="com.github.kornilova203.matlab.editor.actions.MatlabEnterHandler"/>
 
         <stubElementTypeHolder class="com.github.kornilova203.matlab.psi.MatlabTypes"/>
         <stubIndex implementation="com.github.kornilova203.matlab.stub.MatlabFunctionDeclarationIndex"/>

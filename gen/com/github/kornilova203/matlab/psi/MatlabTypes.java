@@ -72,6 +72,8 @@ public interface MatlabTypes {
   IElementType PARAMETER = new MatlabElementType("PARAMETER");
   IElementType PARAMETERS = new MatlabElementType("PARAMETERS");
   IElementType PAREN_EXPR = new MatlabElementType("PAREN_EXPR");
+  IElementType PARFOR_LOOP = new MatlabElementType("PARFOR_LOOP");
+  IElementType PARFOR_LOOP_RANGE = new MatlabElementType("PARFOR_LOOP_RANGE");
   IElementType PLUS_EXPR = new MatlabElementType("PLUS_EXPR");
   IElementType POW_EXPR = new MatlabElementType("POW_EXPR");
   IElementType PROPERTIES_BLOCK = new MatlabElementType("PROPERTIES_BLOCK");
@@ -81,6 +83,7 @@ public interface MatlabTypes {
   IElementType REF_EXPR = new MatlabElementType("REF_EXPR");
   IElementType RETURN_VALUES = new MatlabElementType("RETURN_VALUES");
   IElementType RET_VALUE = new MatlabElementType("RET_VALUE");
+  IElementType SPMD_BLOCK = new MatlabElementType("SPMD_BLOCK");
   IElementType SUPER_CLASSES = new MatlabElementType("SUPER_CLASSES");
   IElementType SWITCH_BLOCK = new MatlabElementType("SWITCH_BLOCK");
   IElementType SWITCH_EXPRESSION = new MatlabElementType("SWITCH_EXPRESSION");
@@ -151,6 +154,7 @@ public interface MatlabTypes {
   IElementType NOT_EQUAL = new MatlabTokenType("~=");
   IElementType OR = new MatlabTokenType("||");
   IElementType OTHERWISE = new MatlabTokenType("otherwise");
+  IElementType PARFOR = new MatlabTokenType("parfor");
   IElementType PLUS = new MatlabTokenType("+");
   IElementType PLUSPLUS = new MatlabTokenType("++");
   IElementType POW = new MatlabTokenType("^");
@@ -162,6 +166,7 @@ public interface MatlabTypes {
   IElementType RPARENTH = new MatlabTokenType(")");
   IElementType SEMICOLON = new MatlabTokenType(";");
   IElementType SINGLE_QUOTE_STRING = new MatlabTokenType("SINGLE_QUOTE_STRING");
+  IElementType SPMD = new MatlabTokenType("spmd");
   IElementType SWITCH = new MatlabTokenType("switch");
   IElementType TILDA = new MatlabTokenType("~");
   IElementType TRANS = new MatlabTokenType(".'");
@@ -352,6 +357,12 @@ public interface MatlabTypes {
       else if (type == PAREN_EXPR) {
         return new MatlabParenExprImpl(node);
       }
+      else if (type == PARFOR_LOOP) {
+        return new MatlabParforLoopImpl(node);
+      }
+      else if (type == PARFOR_LOOP_RANGE) {
+        return new MatlabParforLoopRangeImpl(node);
+      }
       else if (type == PLUS_EXPR) {
         return new MatlabPlusExprImpl(node);
       }
@@ -378,6 +389,9 @@ public interface MatlabTypes {
       }
       else if (type == RET_VALUE) {
         return new MatlabRetValueImpl(node);
+      }
+      else if (type == SPMD_BLOCK) {
+        return new MatlabSpmdBlockImpl(node);
       }
       else if (type == SUPER_CLASSES) {
         return new MatlabSuperClassesImpl(node);
