@@ -60,6 +60,13 @@ fun MatlabRefExpr.isLeftPartQualified(): Boolean {
     return parent is MatlabQualifiedExpr && this == parent.left
 }
 
+fun MatlabFunctionDeclaration.isConstructor(): MatlabClassDeclaration? {
+    val classDeclaration = this.parentOfTypes(MatlabClassDeclaration::class) ?: return null
+    val className = classDeclaration.getChildOfType(IDENTIFIER)?.text ?: return null
+    val functionName = this.getChildOfType(IDENTIFIER)?.text ?: return null
+    return if (className == functionName) classDeclaration else null
+}
+
 fun deleteExpr(expr: PsiElement) {
     trim(expr)
     if (expr.nextSibling.elementType == MatlabTypes.SEMICOLON) {

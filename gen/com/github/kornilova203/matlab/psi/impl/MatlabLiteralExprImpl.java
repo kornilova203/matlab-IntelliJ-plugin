@@ -8,9 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
+import com.github.kornilova203.matlab.psi.MatlabLiteralExprMixin;
 import com.github.kornilova203.matlab.psi.*;
 
-public class MatlabLiteralExprImpl extends MatlabExprImpl implements MatlabLiteralExpr {
+public class MatlabLiteralExprImpl extends MatlabLiteralExprMixin implements MatlabLiteralExpr {
 
   public MatlabLiteralExprImpl(@NotNull ASTNode node) {
     super(node);

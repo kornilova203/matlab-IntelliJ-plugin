@@ -20,7 +20,6 @@ class MatlabReference(myElement: MatlabRefExpr) : PsiPolyVariantReferenceBase<Ma
     companion object {
         private const val USE_CACHE = true
         private val RESOLVER = ResolveCache.AbstractResolver { ref: MatlabReference, _: Boolean -> ref.resolveInner() }
-        private val TYPE_RESOLVER = ResolveCache.AbstractResolver { ref: MatlabReference, _: Boolean -> ref.getTypeInner() }
     }
 
     override fun resolve(): MatlabDeclaration? {
@@ -73,13 +72,4 @@ class MatlabReference(myElement: MatlabRefExpr) : PsiPolyVariantReferenceBase<Ma
     }
 
     override fun getVariants(): Array<PsiElement> = emptyArray()
-
-    fun getType(): MatlabType {
-        val cache = ResolveCache.getInstance(element.project)
-        return cache.resolveWithCaching(this, TYPE_RESOLVER, false, false)!!
-    }
-
-    private fun getTypeInner(): MatlabType {
-        return getTypeFromRefExpr(myElement)
-    }
 }
