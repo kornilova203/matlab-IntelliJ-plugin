@@ -89,6 +89,9 @@
     mixin("lambda_expr")="com.github.kornilova203.matlab.psi.MatlabLambdaExprMixin"
     mixin("global_variable_declaration")="com.github.kornilova203.matlab.psi.MatlabStubbedGlobalVariable"
     mixin("matrix_item")="com.github.kornilova203.matlab.psi.MatlabMatrixItemMixin"
+    mixin("binary_expr")="com.github.kornilova203.matlab.psi.MatlabBinaryExprMixin"
+    mixin("function_expr")="com.github.kornilova203.matlab.psi.MatlabFunctionExprMixin"
+    mixin("literal_expr")="com.github.kornilova203.matlab.psi.MatlabLiteralExprMixin"
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?

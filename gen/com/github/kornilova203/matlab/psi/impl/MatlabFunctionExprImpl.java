@@ -8,9 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
+import com.github.kornilova203.matlab.psi.MatlabFunctionExprMixin;
 import com.github.kornilova203.matlab.psi.*;
 
-public class MatlabFunctionExprImpl extends MatlabExprImpl implements MatlabFunctionExpr {
+public class MatlabFunctionExprImpl extends MatlabFunctionExprMixin implements MatlabFunctionExpr {
 
   public MatlabFunctionExprImpl(@NotNull ASTNode node) {
     super(node);
