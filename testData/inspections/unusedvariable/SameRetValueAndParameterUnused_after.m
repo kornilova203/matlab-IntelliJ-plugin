@@ -1,0 +1,2 @@
+function obj = foo()
+end

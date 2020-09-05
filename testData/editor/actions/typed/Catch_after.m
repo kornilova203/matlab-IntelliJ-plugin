@@ -1,0 +1,3 @@
+try
+    disp(a)
+catch 

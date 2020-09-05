@@ -1,5 +1,7 @@
 package com.github.kornilova203.matlab.psi
 
+import com.github.kornilova203.matlab.psi.types.MatlabType
+import com.github.kornilova203.matlab.psi.types.MatlabTypeClass
 import com.github.kornilova203.matlab.stub.MatlabClassDeclarationStub
 import com.intellij.extapi.psi.StubBasedPsiElementBase
 import com.intellij.lang.ASTNode
@@ -9,7 +11,7 @@ import com.intellij.psi.stubs.IStubElementType
 import com.intellij.psi.tree.IElementType
 
 abstract class MatlabStubbedClassDeclaration : StubBasedPsiElementBase<MatlabClassDeclarationStub?>,
-        StubBasedPsiElement<MatlabClassDeclarationStub>, MatlabDeclaration, MatlabClassDeclaration {
+        StubBasedPsiElement<MatlabClassDeclarationStub>, MatlabDeclaration, MatlabClassDeclaration, MatlabTypedExpr {
     constructor(stub: MatlabClassDeclarationStub, nodeType: IStubElementType<*, *>) : super(stub, nodeType)
     constructor(node: ASTNode) : super(node)
     constructor(stub: MatlabClassDeclarationStub?, nodeType: IElementType?, node: ASTNode?) : super(stub, nodeType, node)
@@ -35,4 +37,6 @@ abstract class MatlabStubbedClassDeclaration : StubBasedPsiElementBase<MatlabCla
     override fun toString(): String {
         return "${javaClass.simpleName}(${node.elementType})"
     }
+
+    override fun getType(): MatlabType = MatlabTypeClass(this)
 }

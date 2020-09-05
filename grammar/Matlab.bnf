@@ -85,8 +85,13 @@
     mixin("ret_value")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
     mixin("block")="com.github.kornilova203.matlab.psi.MatlabBlockMixin"
     mixin("for_loop")="com.github.kornilova203.matlab.psi.MatlabForLoopMixin"
+    mixin("parfor_loop")="com.github.kornilova203.matlab.psi.MatlabParforLoopMixin"
     mixin("lambda_expr")="com.github.kornilova203.matlab.psi.MatlabLambdaExprMixin"
     mixin("global_variable_declaration")="com.github.kornilova203.matlab.psi.MatlabStubbedGlobalVariable"
+    mixin("matrix_item")="com.github.kornilova203.matlab.psi.MatlabMatrixItemMixin"
+    mixin("binary_expr")="com.github.kornilova203.matlab.psi.MatlabBinaryExprMixin"
+    mixin("function_expr")="com.github.kornilova203.matlab.psi.MatlabFunctionExprMixin"
+    mixin("literal_expr")="com.github.kornilova203.matlab.psi.MatlabLiteralExprMixin"
     mixin("qualified_expr")="com.github.kornilova203.matlab.psi.MatlabQualifiedExprMixin"
     mixin("property")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
     mixin("enum_item")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
@@ -115,6 +120,8 @@ private el ::= if_block
   | file_operation
   | for_loop
   | while_loop
+  | parfor_loop
+  | spmd_block
   | function_declaration
   | class_declaration
   | expr
@@ -167,6 +174,13 @@ while_loop ::= while br* while_loop_condition [ ';' | ',' ] NEWLINE*
     end { pin=1 }
 while_loop_condition ::= expr
 
+parfor_loop ::= parfor br* parfor_loop_range [ ';' | ',' ] NEWLINE*
+    block_that_recovers_until_end
+    end { pin=1 }
+parfor_loop_range ::= '(' assign_expr sep ',' sep expr ')' | assign_expr
+
+spmd_block ::= spmd NEWLINE* <<block element>> end { pin=1 }
+
 function_declaration ::= function br* return_value_part? br* getter_or_setter_modifier? <<withOn 'ALLOW_END_AS_IDENTIFIER' ident>> br* parameters? NEWLINE*
     block_that_recovers_until_end
     NEWLINE* ( end | <<eof>> ) { pin=1 }
@@ -187,8 +201,9 @@ fake parameters_list ::= parameter*
 parameter ::= ident | '~'
 
 class_declaration ::= classdef br* attributes? br* ident br* super_classes? NEWLINE*
-    (( properties_block | methods_block | events_block | enumeration_block ) NEWLINE*)*
+    class_body NEWLINE*
     end { pin=1 }
+private class_body ::= (( properties_block | methods_block | events_block | enumeration_block ) NEWLINE*)* { recoverWhile=not_end_or_oef }
 
 super_classes ::= '<' br* super_classes_list { pin=1 }
 private super_classes_list ::= super_classes_list_item ('&' super_classes_list_item) *

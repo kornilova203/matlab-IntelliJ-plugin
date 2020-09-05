@@ -35,6 +35,7 @@ class ResolveTest : BasePlatformTestCase() {
     fun testVariableInCatchBlock() = doTest("a")
     fun testGlobal() = doTest("b")
     fun testGlobalInBlock() = doTest("a")
+    fun testNotFunctionCall() = doTest("foo")
     fun testClassInside() = doTest("Prop")
 
     private fun doTest(name: String, shouldBeResolved: Boolean = true) {

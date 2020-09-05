@@ -33,7 +33,9 @@ class MatlabLineIndentProvider : LineIndentProvider {
                 MatlabElementTypes.PROPERTIES,
                 MatlabElementTypes.METHODS,
                 MatlabElementTypes.EVENTS,
-                MatlabElementTypes.ENUMERATION
+                MatlabElementTypes.ENUMERATION,
+                MatlabTypes.PARFOR,
+                MatlabTypes.SPMD
         )
 
         private val BLOCK_CLOSING: Array<IElementType> = arrayOf(

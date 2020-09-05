@@ -5,6 +5,7 @@ import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.UsefulTestCase
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import java.io.File
 
 @TestDataPath("completion")
 class CompletionTest : BasePlatformTestCase() {
@@ -20,12 +21,26 @@ class CompletionTest : BasePlatformTestCase() {
     fun testNumberDot() = doTest()
     fun testWhile() = doTest("function", "for", "classdef", "if", "end", "while", "return", "continue", "break")
     fun testPackage() = doTest("apputil", "engine", "exception", "lang", "system", "types")
+    fun testClass() = doTest("properties", "methods", "events", "enumeration", "end")
+    fun testClassName() = doTestMultiFile("ClassNameAdd")
+    fun testFunction() = doTestMultiFile("FunctionAdd")
+    fun testFunctionWithParenth() = doTestMultiFile("FunctionWithParenthAdd")
 
     private fun doTest(vararg completionVariants: String) {
         myFixture.configureByFile(getTestFilePath())
         myFixture.complete(CompletionType.BASIC)
         val variants = myFixture.lookupElementStrings
         UsefulTestCase.assertContainsElements(variants!!, *completionVariants)
+        val afterFile = testDataPath + "/" + getTestName(false) + ".after.m"
+        if (File(afterFile).exists()) {
+            myFixture.finishLookup('\n')
+            UsefulTestCase.assertSameLinesWithFile(afterFile, myFixture.file.text)
+        }
+    }
+    
+    private fun doTestMultiFile(vararg completionVariants: String) {
+        myFixture.configureByFile(getTestName(false) + "Add.m")
+        doTest(*completionVariants)
     }
 
     private fun getTestFilePath(): String = testDataPath + "/" + getTestName(false) + ".m"

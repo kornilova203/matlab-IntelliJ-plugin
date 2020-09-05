@@ -14,6 +14,7 @@ abstract class MatlabStubbedGlobalVariable: StubBasedPsiElementBase<MatlabGlobal
     constructor(node: ASTNode) : super(node)
     constructor(stub: MatlabGlobalVariableStub?, nodeType: IElementType?, node: ASTNode?) : super(stub, nodeType, node)
     override val visibleOutsideFunction = true
+    override val visibleBeforeDeclaration = true
 
     override fun getNameIdentifier(): PsiElement? = getChildOfType(MatlabTypes.IDENTIFIER)
 

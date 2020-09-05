@@ -8,7 +8,9 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiFileFactory
 import com.intellij.psi.PsiWhiteSpace
 import com.intellij.psi.tree.IElementType
+import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.psi.util.elementType
+import com.intellij.psi.util.parentOfTypes
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
 import com.intellij.psi.util.parentOfTypes
@@ -47,6 +49,23 @@ private fun PsiElement.findSiblingForward(type: IElementType): PsiElement? {
         e = e.nextSibling
     }
     return null
+}
+
+fun MatlabRefExpr.isLeftPartOfAssign() : MatlabAssignExpr? {
+    val assign = this.parentOfTypes(MatlabAssignExpr::class) ?: return null
+    return if (PsiTreeUtil.isAncestor(assign.left, this, false)) assign else null
+}
+
+fun MatlabRefExpr.isLeftPartQualified(): Boolean {
+    val parent = this.parent
+    return parent is MatlabQualifiedExpr && this == parent.left
+}
+
+fun MatlabFunctionDeclaration.isConstructor(): MatlabClassDeclaration? {
+    val classDeclaration = this.parentOfTypes(MatlabClassDeclaration::class) ?: return null
+    val className = classDeclaration.getChildOfType(IDENTIFIER)?.text ?: return null
+    val functionName = this.getChildOfType(IDENTIFIER)?.text ?: return null
+    return if (className == functionName) classDeclaration else null
 }
 
 fun deleteExpr(expr: PsiElement) {

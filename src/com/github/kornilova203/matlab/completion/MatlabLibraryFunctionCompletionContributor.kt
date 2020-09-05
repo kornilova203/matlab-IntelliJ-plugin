@@ -13,15 +13,13 @@ import com.intellij.patterns.StandardPatterns.*
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 import java.io.BufferedReader
-import java.nio.file.Paths
-import kotlin.collections.HashSet
 
 class MatlabLibraryFunctionCompletionContributor : CompletionContributor() {
     companion object {
         private var functions = HashSet<LookupElement>()
         private var packages = HashMap<String, MutableSet<LookupElement>>()
 
-        val KEYWORDS = hashSetOf("function", "end", "if", "else", "elseif", "while", "switch", "case", "otherwise", "for", "classdef", "try", "catch", "global")
+        val KEYWORDS = hashSetOf("function", "end", "if", "else", "elseif", "while", "switch", "case", "otherwise", "for", "classdef", "try", "catch", "global", "spmd", "parfor")
 
         private val IDENT = psiElement(MatlabTypes.IDENTIFIER).withParent(MatlabRefExpr::class.java)
         private val IN_QUALIFIED_EXPR = and(M, IDENT.withSuperParent(2, MatlabQualifiedExpr::class.java))
@@ -69,20 +67,25 @@ class MatlabLibraryFunctionCompletionContributor : CompletionContributor() {
             val names = name.split('.')
             for (j in 0 until names.size - 1) {
                 functions.add(packageElement(names[j]))
-                val nextElement = if (j + 1 == names.size - 1) funcElement(names[j + 1]) else packageElement(names[j + 1])
+                val nextElement = when {
+                    j + 1 == names.size - 1 -> createFunctionLookupElement(names[j + 1])
+                    else -> packageElement(names[j + 1])
+                } ?: continue
                 if (packages.containsKey(names[j])) {
                     packages[names[j]]?.add(nextElement)
                 } else {
                     packages[names[j]] = mutableSetOf<LookupElement>(nextElement)
                 }
             }
-            functions.add(funcElement(names.last()))
+            createFunctionLookupElement(names.last())?.let { element ->
+                functions.add(element)
+            }
         } else {
-            functions.add(funcElement(name))
+            createFunctionLookupElement(name)?.let { element ->
+                functions.add(element)
+            }
         }
     }
-
-    private fun funcElement(name: String) = LookupElementBuilder.create(name).withIcon(AllIcons.Nodes.Function)
 
     private fun packageElement(name: String) = LookupElementBuilder.create(name).withIcon(AllIcons.Nodes.Package)
 }
