@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabDeclarationBase;
+import com.github.kornilova203.matlab.psi.MatlabRetValueMixin;
 import com.github.kornilova203.matlab.psi.*;
 
-public class MatlabRetValueImpl extends MatlabDeclarationBase implements MatlabRetValue {
+public class MatlabRetValueImpl extends MatlabRetValueMixin implements MatlabRetValue {
 
   public MatlabRetValueImpl(@NotNull ASTNode node) {
     super(node);

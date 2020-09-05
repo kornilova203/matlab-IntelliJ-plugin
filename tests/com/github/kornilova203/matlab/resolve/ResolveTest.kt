@@ -19,10 +19,10 @@ class ResolveTest : BasePlatformTestCase() {
     fun testVariableUnresolved() = doTestUnresolved()
     fun testVariableRecursive() = doTest("a")
     fun testFunction() = doTest("fun")
-    fun testFunctionUnresolved() = doTestUnresolved()
+    fun testFunctionAfter() = doTest("fun")
     fun testFunctionInFunction() = doTest("fun")
     fun testFunctionInBlock() = doTest("fun")
-    fun testFunctionInBlockUnresolved() = doTestUnresolved()
+    fun testFunctionInBlockAfter() = doTest("fun")
     fun testFunctionRecursive() = doTest("fib")
     fun testVarInsideFunctionUnresolved() = doTestUnresolved()
     fun testClass() = doTest("hit_list")
@@ -54,7 +54,8 @@ class ResolveTest : BasePlatformTestCase() {
 
     private fun doTestUnresolved() = doTest(name, false)
 
-    private fun getExpectedDeclaration(fileText: String): Pair<MatlabReference, MatlabDeclaration?> {
+    private fun getExpectedDeclaration(fileTex: String): Pair<MatlabReference, MatlabDeclaration?> {
+        val fileText = fileTex.replace("\r", "")
         var declOffset = fileText.indexOf(DECL_MARKER)
         var refOffset = fileText.indexOf(REF_MARKER)
         val clearText: String = when {

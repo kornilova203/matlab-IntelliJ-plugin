@@ -29,7 +29,7 @@ abstract class MatlabRefExprMixin(node: ASTNode) : MatlabASTWrapperPsiElement(no
             }
             return MatlabTypeUnknown()
         }
-        if (declaration !is MatlabTypedExpr || (this.parent is MatlabFunctionExpr && declaration !is MatlabClassDeclaration)) {
+        if (declaration !is MatlabTypedExpr) {
             return MatlabTypeUnknown()
         }
         return declaration.getType()

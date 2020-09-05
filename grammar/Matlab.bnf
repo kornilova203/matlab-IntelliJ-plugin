@@ -81,8 +81,8 @@
     mixin("class_declaration")="com.github.kornilova203.matlab.psi.MatlabStubbedClassDeclaration"
     mixin("catch_block")="com.github.kornilova203.matlab.psi.MatlabCatchBlockMixin"
     mixin("function_declaration")="com.github.kornilova203.matlab.psi.MatlabStubbedFunctionDeclaration"
-    mixin("parameter")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
-    mixin("ret_value")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
+    mixin("parameter")="com.github.kornilova203.matlab.psi.MatlabParameterMixin"
+    mixin("ret_value")="com.github.kornilova203.matlab.psi.MatlabRetValueMixin"
     mixin("block")="com.github.kornilova203.matlab.psi.MatlabBlockMixin"
     mixin("for_loop")="com.github.kornilova203.matlab.psi.MatlabForLoopMixin"
     mixin("parfor_loop")="com.github.kornilova203.matlab.psi.MatlabParforLoopMixin"
@@ -93,9 +93,8 @@
     mixin("function_expr")="com.github.kornilova203.matlab.psi.MatlabFunctionExprMixin"
     mixin("literal_expr")="com.github.kornilova203.matlab.psi.MatlabLiteralExprMixin"
     mixin("qualified_expr")="com.github.kornilova203.matlab.psi.MatlabQualifiedExprMixin"
-    mixin("property")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
+    mixin("property")="com.github.kornilova203.matlab.psi.MatlabPropertyMixin"
     mixin("enum_item")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
-    mixin("function_expr")="com.github.kornilova203.matlab.psi.MatlabFunctionExprMixin"
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?
