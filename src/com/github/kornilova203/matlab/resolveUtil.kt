@@ -1,11 +1,11 @@
 package com.github.kornilova203.matlab
 
-import com.github.kornilova203.matlab.psi.MatlabAssignExpr
-import com.github.kornilova203.matlab.psi.MatlabDeclaration
-import com.github.kornilova203.matlab.psi.MatlabFunctionDeclaration
+import com.github.kornilova203.matlab.psi.*
+import com.github.kornilova203.matlab.psi.types.MatlabTypeClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.ResolveState
 import com.intellij.psi.scope.PsiScopeProcessor
+import com.intellij.psi.util.PsiTreeUtil
 
 fun PsiElement.forEachSiblingBackwards(processor: (PsiElement) -> Boolean): Boolean {
     var el: PsiElement? = this.prevSibling
@@ -56,4 +56,19 @@ fun processDeclarations(parent: PsiElement, processor: PsiScopeProcessor, state:
     if (res == false) return false
 
     return lastParent?.forEachSiblingForward { it.findDeclaration(processor, state, inCurrentScope, false) } ?: true
+}
+
+fun processDeclarationsInClass(processor: PsiScopeProcessor, state: ResolveState, type: MatlabTypeClass): Boolean {
+    val classDeclaration = type.decl
+    val declarations = PsiTreeUtil.findChildrenOfAnyType(classDeclaration, false,
+            MatlabProperty::class.java,
+            MatlabFunctionDeclaration::class.java,
+            MatlabEnumItem::class.java)
+
+    for (declaration in declarations) {
+        if (!processor.execute(declaration, state)) {
+            break
+        }
+    }
+    return false
 }

@@ -2964,39 +2964,16 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '{' <<comma_list_item <<property_validation_function>>>> ( ',' <<comma_list_item <<property_validation_function>>>> )* '}'
+  // '{' <<comma_list property_validation_function>> '}'
   public static boolean property_validation_functions(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "property_validation_functions")) return false;
     if (!nextTokenIs(b, LBRACE)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LBRACE);
-    r = r && comma_list_item(b, l + 1, property_validation_functions_1_0_parser_);
-    r = r && property_validation_functions_2(b, l + 1);
+    r = r && comma_list(b, l + 1, property_validation_function_parser_);
     r = r && consumeToken(b, RBRACE);
     exit_section_(b, m, PROPERTY_VALIDATION_FUNCTIONS, r);
-    return r;
-  }
-
-  // ( ',' <<comma_list_item <<property_validation_function>>>> )*
-  private static boolean property_validation_functions_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_validation_functions_2")) return false;
-    while (true) {
-      int c = current_position_(b);
-      if (!property_validation_functions_2_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "property_validation_functions_2", c)) break;
-    }
-    return true;
-  }
-
-  // ',' <<comma_list_item <<property_validation_function>>>>
-  private static boolean property_validation_functions_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "property_validation_functions_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, COMMA);
-    r = r && comma_list_item(b, l + 1, property_validation_functions_2_0_1_0_parser_);
-    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -4565,12 +4542,11 @@ public class MatlabParser implements PsiParser, LightPsiParser {
       return parameter(b, l + 1);
     }
   };
-  static final Parser property_validation_functions_1_0_parser_ = new Parser() {
+  static final Parser property_validation_function_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return property_validation_function(b, l + 1);
     }
   };
-  static final Parser property_validation_functions_2_0_1_0_parser_ = property_validation_functions_1_0_parser_;
   static final Parser ref_expr_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return ref_expr(b, l + 1);

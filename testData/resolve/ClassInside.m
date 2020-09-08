@@ -3,7 +3,7 @@ classdef ClassInside
         <decl>Prop
     end
     methods
-        function foo(obj)
+        function obj = foo(obj)
             obj.<ref>Prop
         end
     end

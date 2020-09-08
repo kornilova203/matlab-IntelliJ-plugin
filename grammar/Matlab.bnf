@@ -226,7 +226,7 @@ property ::= ident property_size? class_name? property_validation_functions? ('=
 property_size ::= <<p_opt_list dimension>>
 dimension ::= INTEGER | ':'
 class_name ::= ref_expr
-property_validation_functions ::= '{' <<comma_list_item <<property_validation_function>>>> ( ',' <<comma_list_item <<property_validation_function>>>> )* '}'
+property_validation_functions ::= '{' <<comma_list property_validation_function>> '}'
 default_value ::= expr
 private property_validation_function ::= expr
 private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods_token | properties_token | events_token | enumeration_token ) )

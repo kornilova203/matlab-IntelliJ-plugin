@@ -1,5 +1,6 @@
 package com.github.kornilova203.matlab.psi
 
+import com.github.kornilova203.matlab.processDeclarationsInClass
 import com.github.kornilova203.matlab.psi.impl.MatlabBinaryExprImpl
 import com.github.kornilova203.matlab.psi.types.MatlabType
 import com.github.kornilova203.matlab.psi.types.MatlabTypeClass
@@ -13,27 +14,18 @@ import com.intellij.psi.util.parentOfTypes
 
 abstract class MatlabQualifiedExprMixin(node: ASTNode) : MatlabBinaryExprImpl(node), MatlabQualifiedExpr, MatlabTypedExpr {
     override fun processDeclarations(processor: PsiScopeProcessor, state: ResolveState, lastParent: PsiElement?, place: PsiElement): Boolean {
-        if (lastParent == this.right) {
-            val element = this.firstChild
-            if (element is MatlabTypedExpr) {
-                val type = element.getType()
-                if (type is MatlabTypeClass) {
-                    val classDeclaration = type.decl
-                    val declarations = PsiTreeUtil.findChildrenOfAnyType(classDeclaration, false,
-                            MatlabProperty::class.java,
-                            MatlabFunctionDeclaration::class.java,
-                            MatlabEnumItem::class.java)
-
-                    for (declaration in declarations) {
-                        if (!processor.execute(declaration, state)) {
-                            break
-                        }
-                    }
-                    return false
-                }
-            }
+        if (lastParent != this.right) {
+            return true
         }
-        return true
+        val element = this.firstChild
+        if (element !is MatlabTypedExpr) {
+            return true
+        }
+        val type = element.getType()
+        if (type !is MatlabTypeClass) {
+            return true
+        }
+        return processDeclarationsInClass(processor, state, type)
     }
 
     override fun getType(): MatlabType {

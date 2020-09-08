@@ -14,9 +14,7 @@ import com.intellij.psi.stubs.IStubElementType
 import com.intellij.psi.tree.IElementType
 import com.intellij.psi.util.parentOfTypes
 
-abstract class
-
-MatlabStubbedFunctionDeclaration : StubBasedPsiElementBase<MatlabFunctionDeclarationStub?>,
+abstract class MatlabStubbedFunctionDeclaration : StubBasedPsiElementBase<MatlabFunctionDeclarationStub?>,
         StubBasedPsiElement<MatlabFunctionDeclarationStub>, MatlabDeclaration, MatlabFunctionDeclaration, MatlabTypedExpr {
     constructor(stub: MatlabFunctionDeclarationStub, nodeType: IStubElementType<*, *>) : super(stub, nodeType)
     constructor(node: ASTNode) : super(node)
@@ -58,19 +56,6 @@ MatlabStubbedFunctionDeclaration : StubBasedPsiElementBase<MatlabFunctionDeclara
     }
 
     override fun getType(): MatlabType {
-        val cl = this.isConstructor() ?: this.isClassReturn()
-        return if (cl != null) MatlabTypeClass(cl) else MatlabTypeFunction(this)
-    }
-
-    private fun isClassReturn(): MatlabClassDeclaration? {
-        val classDeclaration = this.parentOfTypes(MatlabClassDeclaration::class) ?: return null
-        val retValues = this.returnValues?.retValueList
-        if (retValues?.size == 1) {
-            val retValue = retValues[0].text
-            val parameterList = this.parameters?.parameterList
-            val leftParameter = parameterList?.get(0)?.text
-            return if (retValue == leftParameter) classDeclaration else null
-        }
-        return null
+        return MatlabTypeFunction(this)
     }
 }

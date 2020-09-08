@@ -14,7 +14,7 @@ abstract class MatlabFunctionExprMixin(node: ASTNode) : MatlabASTWrapperPsiEleme
         if (this != place.parent) {
             return true
         }
-        val type = typeOfFirstArgument()
+        val type = firstArgument()?.getType()
         if (type !is MatlabTypeClass) {
             return true
         }
@@ -36,11 +36,11 @@ abstract class MatlabFunctionExprMixin(node: ASTNode) : MatlabASTWrapperPsiEleme
         }
         val type = expr.getType()
         if (type is MatlabTypeFunction) {
-            return MatlabTypeUnknown()
+            return type.getReturnType()
         }
         if (type is MatlabClassDeclaration) {
             if (this.parent !is MatlabQualifiedExpr) {
-                if (typeOfFirstArgument().getName() == type.getName()) {
+                if (firstArgument()?.getType()?.getName() == type.getName()) {
                     return type
                 }
                 return MatlabTypeUnknown()
@@ -49,14 +49,11 @@ abstract class MatlabFunctionExprMixin(node: ASTNode) : MatlabASTWrapperPsiEleme
         return type
     }
 
-    fun typeOfFirstArgument(): MatlabType {
+    fun firstArgument(): MatlabTypedExpr? {
         val children = arguments.children
         if (children.isNotEmpty()) {
-            val firstArgument = children[0]
-            if (firstArgument is MatlabTypedExpr) {
-                return firstArgument.getType()
-            }
+            return children[0] as MatlabTypedExpr
         }
-        return MatlabTypeUnknown()
+        return null
     }
 }

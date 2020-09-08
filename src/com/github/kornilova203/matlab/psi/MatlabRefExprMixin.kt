@@ -18,20 +18,16 @@ abstract class MatlabRefExprMixin(node: ASTNode) : MatlabASTWrapperPsiElement(no
             return if (assign is MatlabTypedExpr) assign.getType() else MatlabTypeUnknown()
         }
 
-        val declaration = this.reference.resolve()
-
-        if (declaration == null) {
-            if (this.text == "true" || this.text == "false") {
-                return MatlabTypeBool()
+        return when(val declaration = this.reference.resolve()) {
+            null -> {
+                when(this.text) {
+                    "true", "false" -> MatlabTypeBool()
+                    "struct" -> MatlabTypeStruct()
+                    else -> MatlabTypeUnknown()
+                }
             }
-            if (this.text == "struct") {
-                return MatlabTypeStruct()
-            }
-            return MatlabTypeUnknown()
+            !is MatlabTypedExpr -> MatlabTypeUnknown()
+            else -> declaration.getType()
         }
-        if (declaration !is MatlabTypedExpr) {
-            return MatlabTypeUnknown()
-        }
-        return declaration.getType()
     }
 }
