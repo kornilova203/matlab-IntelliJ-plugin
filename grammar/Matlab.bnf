@@ -81,8 +81,8 @@
     mixin("class_declaration")="com.github.kornilova203.matlab.psi.MatlabStubbedClassDeclaration"
     mixin("catch_block")="com.github.kornilova203.matlab.psi.MatlabCatchBlockMixin"
     mixin("function_declaration")="com.github.kornilova203.matlab.psi.MatlabStubbedFunctionDeclaration"
-    mixin("parameter")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
-    mixin("ret_value")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
+    mixin("parameter")="com.github.kornilova203.matlab.psi.MatlabParameterMixin"
+    mixin("ret_value")="com.github.kornilova203.matlab.psi.MatlabRetValueMixin"
     mixin("block")="com.github.kornilova203.matlab.psi.MatlabBlockMixin"
     mixin("for_loop")="com.github.kornilova203.matlab.psi.MatlabForLoopMixin"
     mixin("parfor_loop")="com.github.kornilova203.matlab.psi.MatlabParforLoopMixin"
@@ -92,6 +92,9 @@
     mixin("binary_expr")="com.github.kornilova203.matlab.psi.MatlabBinaryExprMixin"
     mixin("function_expr")="com.github.kornilova203.matlab.psi.MatlabFunctionExprMixin"
     mixin("literal_expr")="com.github.kornilova203.matlab.psi.MatlabLiteralExprMixin"
+    mixin("qualified_expr")="com.github.kornilova203.matlab.psi.MatlabQualifiedExprMixin"
+    mixin("property")="com.github.kornilova203.matlab.psi.MatlabPropertyMixin"
+    mixin("enum_item")="com.github.kornilova203.matlab.psi.MatlabDeclarationBase"
 }
 
 root ::= NEWLINE * (element NEWLINE *) * end?
@@ -213,19 +216,26 @@ private not_ampersand_or_super_class_or_properties_or_methods_or_end ::= !( br* 
     | NEWLINE* end )
 
 properties_block ::= properties_token br* attributes? NEWLINE*
-    properties_block_body NEWLINE*
+    properties_list NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
 private properties_token ::= <<parseIdentifierAsKeyword 'PROPERTIES'>>
 attributes ::= <<p_opt_list attribute>>
 attribute ::= [ '~' ] ref_expr [ sep '=' sep expr ] { pin(".*")=2 }
-private properties_block_body ::= <<block element>> { recoverWhile=block_inside_class_recovery }
+properties_list ::= (property NEWLINE*)* { recoverWhile=block_inside_class_recovery }
+property ::= ident property_size? class_name? property_validation_functions? ('=' default_value)? [ ';' ]
+property_size ::= <<p_opt_list dimension>>
+dimension ::= INTEGER | ':'
+class_name ::= ref_expr
+property_validation_functions ::= '{' <<comma_list property_validation_function>> '}'
+default_value ::= expr
+private property_validation_function ::= expr
 private block_inside_class_recovery ::= !( NEWLINE*  ( end | methods_token | properties_token | events_token | enumeration_token ) )
 
 methods_block ::= methods_token br* attributes? NEWLINE*
-    methods_block_body NEWLINE*
+    methods_list NEWLINE*
     end { pin=1 recoverWhile=block_inside_class_recovery }
 private methods_token ::= <<parseIdentifierAsKeyword 'METHODS'>>
-private methods_block_body ::= <<block element>> { recoverWhile=block_inside_class_recovery }
+methods_list ::= (function_declaration NEWLINE*)* { recoverWhile=block_inside_class_recovery }
 
 events_block ::= events_token br* attributes? NEWLINE*
     events_list NEWLINE*
@@ -239,7 +249,7 @@ enumeration_block ::= enumeration_token NEWLINE*
     end
     { pin=1 recoverWhile=block_inside_class_recovery }
 private enumeration_token ::= <<parseIdentifierAsKeyword 'ENUMERATION'>>
-private enum_item ::= ident arguments?
+enum_item ::= ident arguments?
 
 ;{
     name(".*literal")='literal'

@@ -181,7 +181,10 @@ class MatlabControlFlowBuilder : MatlabVisitor(), PsiRecursiveVisitor {
         builder.startNode(node)
         val methods = node.methodsBlockList
         for (method in methods) {
-            method.block?.accept(this)
+            val list = method.methodsList?.functionDeclarationList ?: emptyList()
+            for (function in list) {
+                function.accept(this)
+            }
         }
     }
 

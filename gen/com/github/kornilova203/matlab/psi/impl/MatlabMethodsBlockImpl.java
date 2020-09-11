@@ -34,8 +34,8 @@ public class MatlabMethodsBlockImpl extends MatlabASTWrapperPsiElement implement
 
   @Override
   @Nullable
-  public MatlabBlock getBlock() {
-    return findChildByClass(MatlabBlock.class);
+  public MatlabMethodsList getMethodsList() {
+    return findChildByClass(MatlabMethodsList.class);
   }
 
 }

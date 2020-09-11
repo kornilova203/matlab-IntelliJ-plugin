@@ -24,7 +24,8 @@ class MatlabFoldingBuilder : CustomFoldingBuilder() {
         val type = node.elementType
         val parentType = node.treeParent?.elementType
         if (type == MatlabTypes.BLOCK && parentType != MatlabTypes.CASE_BLOCK && parentType != MatlabTypes.OTHERWISE_BLOCK
-                || type == MatlabTypes.SWITCH_BLOCK || type == MatlabTypes.CLASS_DECLARATION || type == MatlabTypes.EVENTS_LIST ) {
+                || type == MatlabTypes.SWITCH_BLOCK || type == MatlabTypes.CLASS_DECLARATION || type == MatlabTypes.EVENTS_LIST 
+                || type == MatlabTypes.PROPERTIES_LIST || type == MatlabTypes.METHODS_LIST) {
             val start = getStartOffset(node)
             val end = getEndOffset(node)
             if (end > start) {

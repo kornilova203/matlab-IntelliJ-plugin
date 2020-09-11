@@ -11,6 +11,6 @@ public interface MatlabMethodsBlock extends PsiElement {
   MatlabAttributes getAttributes();
 
   @Nullable
-  MatlabBlock getBlock();
+  MatlabMethodsList getMethodsList();
 
 }

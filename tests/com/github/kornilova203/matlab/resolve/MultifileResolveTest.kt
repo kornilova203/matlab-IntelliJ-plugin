@@ -5,7 +5,6 @@ import com.github.kornilova203.matlab.psi.MatlabDeclaration
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import java.io.File
-import kotlin.test.assertNotEquals
 
 private const val DECL_MARKER = "<decl>"
 private const val REF_MARKER = "<ref>"
@@ -19,6 +18,14 @@ class MultifileResolveTest : BasePlatformTestCase() {
     fun testVariableUnresolved() = doTestUnresolved("a")
     fun testGlobal() = doTestMulti("a", 2)
     fun testGlobalUnresolved() = doTestUnresolved("a")
+    fun testProperty() = doTest("Prop")
+    fun testMethodDotNotation() = doTest("foo")
+    fun testConstructor() = doTest("Prop")
+    fun testFindClassInAssign() = doTest("Prop")
+    fun testFindClassInMethod() = doTest("Prop")    
+    fun testFindClassInProp() = doTestWithAdditionalFile("Prop")      
+    fun testNestedQualified() = doTestWithAdditionalFile("Prop")   
+    fun testMethod() = doTest("foo")
 
     private fun doTest(name: String, shouldBeResolved: Boolean = true) {
         val testName = testDataPath + getTestName(false)
@@ -50,6 +57,11 @@ class MultifileResolveTest : BasePlatformTestCase() {
             val element = decl.element as MatlabDeclaration
             assertEquals(name, element.nameIdentifier?.text)
         }
+    }
+    
+    private fun doTestWithAdditionalFile(name: String) {
+        myFixture.configureByFile(getTestName(false) + "Add.m")
+        doTest(name)
     }
 
     private fun getExpectedDeclaration(refFileOriginal: File, declFileOriginal: File): Pair<MatlabReference, MatlabDeclaration?> {

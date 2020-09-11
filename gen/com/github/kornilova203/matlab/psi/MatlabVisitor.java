@@ -71,6 +71,10 @@ public class MatlabVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitClassName(@NotNull MatlabClassName o) {
+    visitPsiElement(o);
+  }
+
   public void visitCondition(@NotNull MatlabCondition o) {
     visitPsiElement(o);
   }
@@ -81,6 +85,14 @@ public class MatlabVisitor extends PsiElementVisitor {
 
   public void visitCtransposeExpr(@NotNull MatlabCtransposeExpr o) {
     visitBinaryExpr(o);
+  }
+
+  public void visitDefaultValue(@NotNull MatlabDefaultValue o) {
+    visitPsiElement(o);
+  }
+
+  public void visitDimension(@NotNull MatlabDimension o) {
+    visitPsiElement(o);
   }
 
   public void visitElementWiseLdivExpr(@NotNull MatlabElementWiseLdivExpr o) {
@@ -104,6 +116,10 @@ public class MatlabVisitor extends PsiElementVisitor {
   }
 
   public void visitElseifBlock(@NotNull MatlabElseifBlock o) {
+    visitPsiElement(o);
+  }
+
+  public void visitEnumItem(@NotNull MatlabEnumItem o) {
     visitPsiElement(o);
   }
 
@@ -215,6 +231,10 @@ public class MatlabVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitMethodsList(@NotNull MatlabMethodsList o) {
+    visitPsiElement(o);
+  }
+
   public void visitMinusExpr(@NotNull MatlabMinusExpr o) {
     visitBinaryExpr(o);
   }
@@ -276,6 +296,22 @@ public class MatlabVisitor extends PsiElementVisitor {
   }
 
   public void visitPropertiesBlock(@NotNull MatlabPropertiesBlock o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPropertiesList(@NotNull MatlabPropertiesList o) {
+    visitPsiElement(o);
+  }
+
+  public void visitProperty(@NotNull MatlabProperty o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPropertySize(@NotNull MatlabPropertySize o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPropertyValidationFunctions(@NotNull MatlabPropertyValidationFunctions o) {
     visitPsiElement(o);
   }
 

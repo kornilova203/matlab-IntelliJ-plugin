@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.github.kornilova203.matlab.psi.MatlabTypes.*;
-import com.github.kornilova203.matlab.psi.MatlabDeclarationBase;
+import com.github.kornilova203.matlab.psi.MatlabParameterMixin;
 import com.github.kornilova203.matlab.psi.*;
 
-public class MatlabParameterImpl extends MatlabDeclarationBase implements MatlabParameter {
+public class MatlabParameterImpl extends MatlabParameterMixin implements MatlabParameter {
 
   public MatlabParameterImpl(@NotNull ASTNode node) {
     super(node);

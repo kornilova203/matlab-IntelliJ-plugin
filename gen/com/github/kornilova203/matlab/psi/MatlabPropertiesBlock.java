@@ -11,6 +11,6 @@ public interface MatlabPropertiesBlock extends PsiElement {
   MatlabAttributes getAttributes();
 
   @Nullable
-  MatlabBlock getBlock();
+  MatlabPropertiesList getPropertiesList();
 
 }

@@ -28,8 +28,8 @@ public class MatlabEnumerationBlockImpl extends MatlabASTWrapperPsiElement imple
 
   @Override
   @NotNull
-  public List<MatlabArguments> getArgumentsList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, MatlabArguments.class);
+  public List<MatlabEnumItem> getEnumItemList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, MatlabEnumItem.class);
   }
 
 }

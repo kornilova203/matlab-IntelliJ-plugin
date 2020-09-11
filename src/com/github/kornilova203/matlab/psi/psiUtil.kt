@@ -2,6 +2,8 @@ package com.github.kornilova203.matlab.psi
 
 import com.github.kornilova203.matlab.MatlabLanguage
 import com.github.kornilova203.matlab.psi.MatlabTypes.IDENTIFIER
+import com.github.kornilova203.matlab.psi.impl.MatlabClassDeclarationImpl
+import com.github.kornilova203.matlab.psi.impl.MatlabFunctionDeclarationImpl
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -13,6 +15,7 @@ import com.intellij.psi.util.elementType
 import com.intellij.psi.util.parentOfTypes
 import com.intellij.refactoring.suggested.endOffset
 import com.intellij.refactoring.suggested.startOffset
+import com.intellij.psi.util.parentOfTypes
 
 private fun createFile(project: Project, text: String): PsiFile {
     return PsiFileFactory.getInstance(project).createFileFromText("a.m", MatlabLanguage.INSTANCE, text, false, false)
@@ -60,10 +63,10 @@ fun MatlabRefExpr.isLeftPartQualified(): Boolean {
     return parent is MatlabQualifiedExpr && this == parent.left
 }
 
-fun MatlabFunctionDeclaration.isConstructor(): MatlabClassDeclaration? {
-    val classDeclaration = this.parentOfTypes(MatlabClassDeclaration::class) ?: return null
-    val className = classDeclaration.getChildOfType(IDENTIFIER)?.text ?: return null
-    val functionName = this.getChildOfType(IDENTIFIER)?.text ?: return null
+fun MatlabStubbedFunctionDeclaration.isConstructor(): MatlabClassDeclaration? {
+    val classDeclaration = this.parentOfTypes(MatlabStubbedClassDeclaration::class) ?: return null
+    val className = classDeclaration.name ?: return null
+    val functionName = this.name ?: return null
     return if (className == functionName) classDeclaration else null
 }
 

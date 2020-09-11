@@ -36,6 +36,7 @@ class ResolveTest : BasePlatformTestCase() {
     fun testGlobal() = doTest("b")
     fun testGlobalInBlock() = doTest("a")
     fun testNotFunctionCall() = doTest("foo")
+    fun testClassInside() = doTest("Prop")
 
     private fun doTest(name: String, shouldBeResolved: Boolean = true) {
         val file = File(testDataPath + getTestName(false) + ".m")
@@ -53,7 +54,8 @@ class ResolveTest : BasePlatformTestCase() {
 
     private fun doTestUnresolved() = doTest(name, false)
 
-    private fun getExpectedDeclaration(fileText: String): Pair<MatlabReference, MatlabDeclaration?> {
+    private fun getExpectedDeclaration(fileTex: String): Pair<MatlabReference, MatlabDeclaration?> {
+        val fileText = fileTex.replace("\r", "")
         var declOffset = fileText.indexOf(DECL_MARKER)
         var refOffset = fileText.indexOf(REF_MARKER)
         val clearText: String = when {

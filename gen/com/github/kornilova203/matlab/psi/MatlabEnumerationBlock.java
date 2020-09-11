@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface MatlabEnumerationBlock extends PsiElement {
 
   @NotNull
-  List<MatlabArguments> getArgumentsList();
+  List<MatlabEnumItem> getEnumItemList();
 
 }
