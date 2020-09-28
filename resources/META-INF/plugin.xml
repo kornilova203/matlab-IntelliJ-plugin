@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>MatlabSupport</id>
     <name>Matlab Support</name>
-    <version>0.8</version>
+    <version>0.8.1</version>
 
     <vendor url="https://github.com/kornilova203" email="kornilova203@gmail.com"/>
 
@@ -12,17 +12,7 @@
 
     <change-notes><![CDATA[
     <ol>
-        <li>Resolve qualified expressions (by @YaPravaATyNet)</li>
-        <li>Basic type inference (by @YaPravaATyNet)</li>
-        <li>Built-in functions completion (by @YaPravaATyNet)</li>
-        <li>Function names completion better handles parentheses (by @YaPravaATyNet)</li>
-        <li>Complete names from other files (by @YaPravaATyNet)</li>
-        <li>Support for parfor loop and spmd blocks (by @YaPravaATyNet)</li>
-        <li>Automatically reduce indent when end keyword is typed (by @YaPravaATyNet)</li>
-        <li>Extract/inline variable refactorings (by @YaPravaATyNet)</li>
-        <li>Support documentations for built-in functions and for functions in source code (by @YaPravaATyNet)</li>
-        <li>Add unnecessary 'continue' and 'return' inspection (by @YaPravaATyNet)</li>
-        <li>Unreachable code inspection (by @YaPravaATyNet)</li>
+        <li>Fix ClassCastException when detecting function type</li>
     </ol>
     ]]>
     </change-notes>
