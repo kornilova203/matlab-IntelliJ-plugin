@@ -49,11 +49,8 @@ abstract class MatlabFunctionExprMixin(node: ASTNode) : MatlabASTWrapperPsiEleme
         return type
     }
 
-    fun firstArgument(): MatlabTypedExpr? {
+    private fun firstArgument(): MatlabTypedExpr? {
         val children = arguments.children
-        if (children.isNotEmpty()) {
-            return children[0] as MatlabTypedExpr
-        }
-        return null
+        return if (children.isNotEmpty()) children[0] as? MatlabTypedExpr else null
     }
 }

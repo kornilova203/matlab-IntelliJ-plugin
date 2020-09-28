@@ -18,6 +18,7 @@ class TypeInfoTest: BasePlatformTestCase() {
     fun testBool() = doTest("Bool")
     fun testStruct() = doTest("Struct")
     fun testFunction() = doTest("Function")
+    fun testFunctionCall() = doTest("Function")
     fun testClass() {
         myFixture.configureByText("MyClass.m", "classdef MyClass end")
         doTest("MyClass")
