@@ -71,7 +71,7 @@ class MatlabIntroduceVariableHandler : RefactoringActionHandler {
     }
 
     private fun isValidExtractVariant(element: PsiElement): Boolean {
-        if (element.parent is MatlabAssignExpr && (element.parent as MatlabAssignExpr).left == element) {
+        if ((element.parent as? MatlabAssignExpr)?.left == element) {
             return false
         }
         return element is MatlabExpr && element !is MatlabAssignExpr && !isAfterDot(element)
@@ -165,13 +165,14 @@ class MatlabIntroduceVariableHandler : RefactoringActionHandler {
             PsiDocumentManager.getInstance(project).commitDocument(document)
         }
         editor.caretModel.moveToOffset(start)
-        val declaration = findReference(start, file)!!
-        val refs = hashSetOf(declaration.reference!!)
+        val declarationRef = findReference(start, file)!!
+        val refs = hashSetOf(declarationRef.reference!!)
         markers.forEach { marker ->
             val ref = findReference(marker.startOffset, file)!!
             refs.add(ref.reference!!)
         }
-        MatlabInplaceVariableIntroducer(declaration, editor, project, "Introduce Variable", refs).performInplaceRefactoring(null)
+        val declaration = declarationRef.parent as? MatlabDeclaration ?: return
+        MatlabInplaceVariableIntroducer(declarationRef, declaration, editor, project, "Introduce Variable", refs).performInplaceRefactoring(null)
     }
 
     private fun findStart(extractedElement: PsiElement, occurrences: List<PsiElement>): PsiElement {
@@ -202,7 +203,7 @@ class MatlabIntroduceVariableHandler : RefactoringActionHandler {
         while (element != null && element !is MatlabRefExpr) {
             element = element.parent
         }
-        return element as MatlabRefExpr
+        return element as? MatlabRefExpr
     }
 
     private fun getText(element: PsiElement) : String {
@@ -227,19 +228,20 @@ class MatlabIntroduceVariableHandler : RefactoringActionHandler {
         CommonRefactoringUtil.showErrorHint(project, editor, "Cannot find expression to introduce", "Extract Variable", "refactoring.introduceVariable")
     }
 
-    private class MatlabInplaceVariableIntroducer(val declaration: MatlabRefExpr,
+    private class MatlabInplaceVariableIntroducer(val ref: MatlabRefExpr,
+                                                  declaration: MatlabDeclaration,
                                                   editor: Editor,
                                                   project: Project,
                                                   title: String,
                                                   val refs: MutableCollection<PsiReference>)
-        : InplaceVariableIntroducer<PsiElement>(declaration.parent as MatlabDeclaration, editor, project, title, emptyArray(), null) {
+        : InplaceVariableIntroducer<PsiElement>(declaration, editor, project, title, emptyArray(), null) {
 
         override fun collectRefs(referencesSearchScope: SearchScope?): MutableCollection<PsiReference> {
             return refs
         }
 
         override fun checkLocalScope(): PsiElement? {
-            return declaration.containingFile
+            return ref.containingFile
         }
     }
 }

@@ -21,7 +21,7 @@ class EvaluatorTest : BasePlatformTestCase() {
     private fun doTest(text: String, expected: Boolean) {
         val file = myFixture.configureByText("test.m", text)
         UsefulTestCase.assertInstanceOf(file.firstChild, MatlabExpr::class.java)
-        val actual = evaluateAsBoolean(file.firstChild as MatlabExpr?)
+        val actual = evaluateAsBoolean(file.firstChild as? MatlabExpr)
         TestCase.assertEquals(expected, actual)
     }
 }

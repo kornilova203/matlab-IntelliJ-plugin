@@ -6,9 +6,8 @@ import com.intellij.openapi.editor.highlighter.HighlighterIterator
 import com.intellij.psi.tree.IElementType
 import com.intellij.util.text.CharArrayUtil
 
-class MatlabSemanticEditorPosition(editor: EditorEx, offset: Int) {
+class MatlabSemanticEditorPosition(private var editor: EditorEx, offset: Int) {
     private var iterator: HighlighterIterator = editor.highlighter.createIterator(offset)
-    private var editor: EditorEx = editor
     private var chars: CharSequence = this.editor.document.charsSequence
 
     fun isAtEnd(): Boolean {

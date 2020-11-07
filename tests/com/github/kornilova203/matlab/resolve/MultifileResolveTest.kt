@@ -48,7 +48,7 @@ class MultifileResolveTest : BasePlatformTestCase() {
 
     private fun doTestMulti(name: String, count: Int) {
         val testName = testDataPath + getTestName(false)
-        val refFile = File(testName + ".m")
+        val refFile = File("$testName.m")
         val declFile = File(testName + "Declaration.m")
         val ref = getExpectedDeclaration(refFile, declFile).first
         val resolvedDecl = ref.multiResolve(false)

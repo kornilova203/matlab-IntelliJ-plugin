@@ -5,7 +5,7 @@ import com.github.kornilova203.matlab.psi.MatlabDeclaration
 
 class MatlabTypeClass(val decl: MatlabClassDeclaration): MatlabType {
     override fun getName(): String {
-        return (decl as MatlabDeclaration).name ?: "<unknown>"
+        return (decl as? MatlabDeclaration)?.name ?: "<unknown>"
     }
 
     fun getDeclaration(): MatlabClassDeclaration = decl

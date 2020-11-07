@@ -5,8 +5,8 @@ import com.intellij.lang.ASTNode
 
 abstract class MatlabBinaryExprMixin(node: ASTNode) : MatlabASTWrapperPsiElement(node), MatlabBinaryExpr, MatlabTypedExpr {
     override fun getType(): MatlabType {
-        val leftType = if (left is MatlabTypedExpr) (left as MatlabTypedExpr).getType() else MatlabTypeUnknown()
-        val rightType = if (right is MatlabTypedExpr) (right as MatlabTypedExpr).getType() else MatlabTypeUnknown()
+        val leftType = (left as? MatlabTypedExpr)?.getType() ?: MatlabTypeUnknown()
+        val rightType = (right as? MatlabTypedExpr)?.getType() ?: MatlabTypeUnknown()
         return when (this) {
             is MatlabAndExpr, is MatlabOrExpr, is MatlabMatrixAndExpr, is MatlabMatrixOrExpr, is MatlabUnaryNegationExpr, is MatlabEqualExpr,
             is MatlabNotEqualExpr, is MatlabLessExpr, is MatlabLessOrEqualExpr, is MatlabMoreExpr, is MatlabMoreOrEqualExpr -> MatlabTypeBool()

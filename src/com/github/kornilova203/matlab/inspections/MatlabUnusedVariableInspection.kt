@@ -20,11 +20,12 @@ class MatlabUnusedVariableInspection : LocalInspectionTool() {
 
 class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) : MatlabVisitor() {
     override fun visitAssignExpr(expr: MatlabAssignExpr) {
-        if (expr.left is MatlabLiteralExpr && expr.left.firstChild is MatlabMatrixLiteral) {
-            registerMatrixItems(expr.left.firstChild as MatlabMatrixLiteral)
+        val firstChild = expr.left.firstChild
+        if (expr.left is MatlabLiteralExpr && firstChild is MatlabMatrixLiteral) {
+            registerMatrixItems(firstChild)
         } else {
-            if (isMustBeChecked(expr.left)) {
-                registerProblem(expr as MatlabDeclaration, "variable") { deleteExpr(expr) }
+            if (expr is MatlabDeclaration && isMustBeChecked(expr.left)) {
+                registerProblem(expr, "variable") { deleteExpr(expr) }
             }
         }
     }
@@ -35,17 +36,17 @@ class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) 
         if (retValues != null) {
             for (retValue in retValues) {
                 if (retValue.text == parameter.text) {
-                    registerProblem(retValue as MatlabDeclaration, "parameter", parameter) { deleteElementInList(parameter, MatlabTypes.COMMA) }
+                    registerProblem(retValue as? MatlabDeclaration, "parameter", parameter) { deleteElementInList(parameter, MatlabTypes.COMMA) }
                     return
                 }
             }
         }
-        registerProblem(parameter as MatlabDeclaration, "parameter") { deleteElementInList(parameter, MatlabTypes.COMMA) }
+        registerProblem(parameter as? MatlabDeclaration, "parameter") { deleteElementInList(parameter, MatlabTypes.COMMA) }
     }
 
     override fun visitCatchBlock(block: MatlabCatchBlock) {
-        val exception = (block as MatlabDeclaration).identifyingElement ?: return
-        registerProblem(block as MatlabDeclaration, "exception") {
+        val exception = (block as? MatlabDeclaration)?.identifyingElement ?: return
+        registerProblem(block as? MatlabDeclaration, "exception") {
             trim(exception)
             exception.delete()
         }
@@ -53,7 +54,7 @@ class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) 
 
     override fun visitRetValue(retValue: MatlabRetValue) {
         val retValues = retValue.parent
-        registerProblem(retValue as MatlabDeclaration, "return value") {
+        registerProblem(retValue as? MatlabDeclaration, "return value") {
             if (retValues.children.size == 1 && retValues.firstChild.elementType != MatlabTypes.LBRACKET) {
                 deleteWhiteSpace(retValues.nextSibling)
                 if (retValues.nextSibling.elementType == MatlabTypes.ASSIGN) {
@@ -70,8 +71,8 @@ class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) 
     private fun registerMatrixItems(matrix: MatlabMatrixLiteral) {
         for (row in matrix.matrixRowList) {
             for (item in row.matrixItemList) {
-                if ((item as MatlabDeclaration).identifyingElement != null && isMustBeChecked(item)) {
-                    registerProblem(item as MatlabDeclaration, "variable") {
+                if ((item as? MatlabDeclaration)?.identifyingElement != null && isMustBeChecked(item)) {
+                    registerProblem(item as? MatlabDeclaration, "variable") {
                         deleteElementInList(item, MatlabTypes.COMMA)
                     }
                 }
@@ -79,11 +80,12 @@ class MatlabUnusedVariableInspectionVisitor(private val holder: ProblemsHolder) 
         }
     }
     
-    private fun registerProblem(declaration: MatlabDeclaration, name: String, invoke: (PsiElement) -> Unit) {
+    private fun registerProblem(declaration: MatlabDeclaration?, name: String, invoke: (PsiElement) -> Unit) {
         registerProblem(declaration, name, null, invoke)
     }
 
-    private fun registerProblem(declaration: MatlabDeclaration, name: String, selectedElement: PsiElement?, invoke: (PsiElement) -> Unit) {
+    private fun registerProblem(declaration: MatlabDeclaration?, name: String, selectedElement: PsiElement?, invoke: (PsiElement) -> Unit) {
+        declaration ?: return
         val refs = getReferences(declaration)
         if (!refs.isEmpty()) return
         holder.registerProblem(selectedElement ?: declaration.identifyingElement ?: declaration,

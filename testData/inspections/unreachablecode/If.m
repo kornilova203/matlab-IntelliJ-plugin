@@ -17,3 +17,9 @@ elseif false
 <warning descr="Unreachable code">else
     d = 4
 </warning>end
+
+if [1,2](1)
+    a = 1
+else
+    b = 2
+end

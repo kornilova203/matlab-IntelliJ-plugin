@@ -1,7 +1,6 @@
 package com.github.kornilova203.matlab
 
 import com.github.kornilova203.matlab.psi.*
-import com.github.kornilova203.matlab.psi.types.*
 import com.github.kornilova203.matlab.stub.MatlabClassDeclarationIndex
 import com.github.kornilova203.matlab.stub.MatlabFunctionDeclarationIndex
 import com.github.kornilova203.matlab.stub.MatlabGlobalVariableIndex
@@ -24,7 +23,7 @@ class MatlabReference(myElement: MatlabRefExpr) : PsiPolyVariantReferenceBase<Ma
 
     override fun resolve(): MatlabDeclaration? {
         val resolveResults = multiResolve(false)
-        return if (resolveResults.size == 1) resolveResults[0].element as MatlabDeclaration else null
+        return if (resolveResults.size == 1) resolveResults[0].element as? MatlabDeclaration else null
     }
 
     override fun multiResolve(incompleteCode: Boolean): Array<ResolveResult> {
