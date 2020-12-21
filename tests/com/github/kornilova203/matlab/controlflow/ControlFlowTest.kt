@@ -6,12 +6,12 @@ import com.github.kornilova203.matlab.psi.MatlabExpr
 import com.intellij.codeInsight.controlflow.ConditionalInstruction
 import com.intellij.codeInsight.controlflow.ControlFlow
 import com.intellij.codeInsight.controlflow.Instruction
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.util.elementType
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import java.io.File
-import java.lang.StringBuilder
 
 @TestDataPath("controlflow")
 class ControlFlowTest : BasePlatformTestCase() {
@@ -34,10 +34,10 @@ class ControlFlowTest : BasePlatformTestCase() {
         val controlFlow = MatlabControlFlowBuilder().buildControlFlow(file)
         val actual = printControlFlow(controlFlow!!)
         val expectedFile = File(testDataPath + "/" + getTestName(false) + ".txt")
-        val expected = expectedFile.readText()
+        val expected = StringUtil.convertLineSeparators(expectedFile.readText())
         TestCase.assertEquals(expected, actual)
         val actualGraph = drawGraph(controlFlow)
-        val expectedGraph = File(testDataPath + "/" + getTestName(false) + "_graph.txt").readText()
+        val expectedGraph = StringUtil.convertLineSeparators(File(testDataPath + "/" + getTestName(false) + "_graph.txt").readText())
         TestCase.assertEquals(expectedGraph, actualGraph)
     }
     

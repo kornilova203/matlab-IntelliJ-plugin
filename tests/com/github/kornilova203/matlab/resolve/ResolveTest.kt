@@ -2,6 +2,7 @@ package com.github.kornilova203.matlab.resolve
 
 import com.github.kornilova203.matlab.MatlabReference
 import com.github.kornilova203.matlab.psi.MatlabDeclaration
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import java.io.File
 
@@ -40,7 +41,7 @@ class ResolveTest : BasePlatformTestCase() {
 
     private fun doTest(name: String, shouldBeResolved: Boolean = true) {
         val file = File(testDataPath + getTestName(false) + ".m")
-        val (ref, decl) = getExpectedDeclaration(file.readText())
+        val (ref, decl) = getExpectedDeclaration(StringUtil.convertLineSeparators(file.readText()))
         val resolvedDecl = ref.resolve()
         if (shouldBeResolved) {
             assertNotNull("Declaration not found", resolvedDecl)
@@ -54,8 +55,7 @@ class ResolveTest : BasePlatformTestCase() {
 
     private fun doTestUnresolved() = doTest(name, false)
 
-    private fun getExpectedDeclaration(fileTex: String): Pair<MatlabReference, MatlabDeclaration?> {
-        val fileText = fileTex.replace("\r", "")
+    private fun getExpectedDeclaration(fileText: String): Pair<MatlabReference, MatlabDeclaration?> {
         var declOffset = fileText.indexOf(DECL_MARKER)
         var refOffset = fileText.indexOf(REF_MARKER)
         val clearText: String = when {
