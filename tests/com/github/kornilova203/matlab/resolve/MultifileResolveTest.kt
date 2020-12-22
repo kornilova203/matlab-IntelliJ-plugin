@@ -2,6 +2,7 @@ package com.github.kornilova203.matlab.resolve
 
 import com.github.kornilova203.matlab.MatlabReference
 import com.github.kornilova203.matlab.psi.MatlabDeclaration
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import junit.framework.TestCase
 import java.io.File
@@ -65,8 +66,8 @@ class MultifileResolveTest : BasePlatformTestCase() {
     }
 
     private fun getExpectedDeclaration(refFileOriginal: File, declFileOriginal: File): Pair<MatlabReference, MatlabDeclaration?> {
-        val refFileText = refFileOriginal.readText()
-        val declFileText = declFileOriginal.readText()
+        val refFileText = StringUtil.convertLineSeparators(refFileOriginal.readText())
+        val declFileText = StringUtil.convertLineSeparators(declFileOriginal.readText())
         val refOffset = refFileText.indexOf(REF_MARKER)
         val declOffset = declFileText.indexOf(DECL_MARKER)
         val refClearText = refFileText.cutOut(refOffset, REF_MARKER.length)

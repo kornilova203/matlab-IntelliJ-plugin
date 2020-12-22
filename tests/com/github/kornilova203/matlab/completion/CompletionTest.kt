@@ -25,6 +25,11 @@ class CompletionTest : BasePlatformTestCase() {
     fun testClassName() = doTestMultiFile("ClassNameAdd")
     fun testFunction() = doTestMultiFile("FunctionAdd")
     fun testFunctionWithParenth() = doTestMultiFile("FunctionWithParenthAdd")
+    fun testEndInProperties() = doTest("end")
+    fun testEndInMethods() = doTest("end")
+    fun testEndInEvents() = doTest("end")
+    fun testEndInEnumeration() = doTest("end")
+    fun testFunctionInMethods() = doTest("function")
 
     private fun doTest(vararg completionVariants: String) {
         myFixture.configureByFile(getTestFilePath())
@@ -34,7 +39,8 @@ class CompletionTest : BasePlatformTestCase() {
         val afterFile = testDataPath + "/" + getTestName(false) + ".after.m"
         if (File(afterFile).exists()) {
             myFixture.finishLookup('\n')
-            UsefulTestCase.assertSameLinesWithFile(afterFile, myFixture.file.text)
+            val actual = myFixture.file.text.replace("(^|.*[^ ]) +$".toRegex(RegexOption.MULTILINE), "$0% blank")
+            UsefulTestCase.assertSameLinesWithFile(afterFile, actual)
         }
     }
     

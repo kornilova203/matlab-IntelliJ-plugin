@@ -26,6 +26,10 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
         )
         private val IN_CYCLE = and(M, or(IDENT.inside(MatlabWhileLoop::class.java), IDENT.inside(MatlabForLoop::class.java)))
         private val IN_CLASS = and(M, psiElement().withSuperParent(2, MatlabClassDeclaration::class.java))
+        private val IN_CLASS_PROPERTIES = and(M, psiElement().withSuperParent(3, MatlabPropertiesBlock::class.java))
+        private val IN_CLASS_METHODS = and(M, psiElement().withSuperParent(3, MatlabMethodsBlock::class.java))
+        private val IN_CLASS_EVENTS = and(M, psiElement().withSuperParent(3, MatlabEventsBlock::class.java))
+        private val IN_CLASS_ENUMERATIONS = and(M, psiElement().withSuperParent(2, MatlabEnumerationBlock::class.java))
     }
 
     init {
@@ -44,7 +48,14 @@ class MatlabKeywordCompletionContributor : CompletionContributor() {
         extend(CompletionType.BASIC, 
                 psiElement().and(IN_CLASS), 
                 provider("properties", "methods", "events", "enumeration", "end"))
-        
+
+        extend(CompletionType.BASIC,
+                psiElement().and(or(IN_CLASS_PROPERTIES, IN_CLASS_METHODS, IN_CLASS_EVENTS, IN_CLASS_ENUMERATIONS)),
+                provider("end"))
+
+        extend(CompletionType.BASIC,
+                psiElement().and(IN_CLASS_METHODS),
+                provider("function"))
     }
 
     private fun provider(vararg keywords: String): CompletionProvider<CompletionParameters> {

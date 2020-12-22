@@ -3,6 +3,7 @@ package com.github.kornilova203.matlab.highlighting
 import com.github.kornilova203.matlab.getTestDataRoot
 import com.intellij.codeInsight.highlighting.BraceMatchingUtil
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiDocumentManager
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
@@ -23,7 +24,7 @@ class ParenthHighlightingTest : BasePlatformTestCase() {
     private fun doTest() {
         val testFile = File(testDataPath, getTestName(true) + ".m")
 
-        myFixture.configureByText(testFile.name, testFile.readText())
+        myFixture.configureByText(testFile.name, StringUtil.convertLineSeparators(testFile.readText()))
 
         val pairOffset = myFixture.file.text.indexOf(PAIR_MARKER)
 
