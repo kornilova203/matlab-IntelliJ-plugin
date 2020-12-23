@@ -1,3 +1,5 @@
+![Multi-OS Build](https://github.com/kornilova203/matlab-IntelliJ-plugin/workflows/Multi-OS%20Build/badge.svg)
+
 # Matlab support for IntelliJ
 Matlab syntax highlighting plugin for JetBrains IDEs.
 
