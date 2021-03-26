@@ -3,7 +3,6 @@ package com.github.kornilova203.matlab.settings
 import com.github.kornilova203.matlab.MatlabLanguage
 import com.intellij.application.options.CodeStyleAbstractConfigurable
 import com.intellij.application.options.CodeStyleAbstractPanel
-import com.intellij.application.options.TabbedLanguageCodeStylePanel
 import com.intellij.lang.Language
 import com.intellij.psi.codeStyle.*
 
@@ -32,7 +31,5 @@ class MatlabCodeStyleSettingsProvider: CodeStyleSettingsProvider() {
         return MatlabLanguage.INSTANCE
     }
 
-    class MatlabCodeStyleMainPanel(currentSettings: CodeStyleSettings, settings: CodeStyleSettings?):
-        TabbedLanguageCodeStylePanel(MatlabLanguage.INSTANCE, currentSettings, settings)
 
 }
