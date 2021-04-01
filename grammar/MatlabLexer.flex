@@ -78,6 +78,9 @@ SINGLE_QUOTE='
 LINE_COMMENT=%.*
 BLOCK_COMMENT_PREFIX={WHITE_SPACE}* "%{" {WHITE_SPACE}*
 BLOCK_COMMENT_SUFFIX={WHITE_SPACE}* "%}" {WHITE_SPACE}*
+LINE_HASH_COMMENT=#.*
+BLOCK_HASH_COMMENT_PREFIX={WHITE_SPACE}* "#{" {WHITE_SPACE}*
+BLOCK_HASH_COMMENT_SUFFIX={WHITE_SPACE}* "#}" {WHITE_SPACE}*
 FLOAT=(([\d]*\.[\d]+)|([\d]+\.))i?
 FLOAT_EXPONENTIAL=(([\d]*\.[\d]+)|([\d]+\.)|\d+)e[\+-]?[\d]+i?
 IDENTIFIER = [:jletter:] [:jletterdigit:]*
@@ -93,6 +96,7 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 %state LOOK_FOR_CTRANS
 %state SINGLE_QOUTE_STRING_STATE
 %state BLOCKCOMMENT_STATE
+%state BLOCK_HASH_COMMENT_STATE
 %state LOOK_FOR_LINECOMMENT
 %state LINECOMMENT_STATE
 %state FILE_NAME_STATE
@@ -187,7 +191,9 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
 
   {NEWLINE}             { stopLookForCtrans(); return NEWLINE; }
   {LINE_COMMENT}        { stopLookForCtrans(); return COMMENT; }
+  {LINE_HASH_COMMENT}  { stopLookForCtrans(); return COMMENT; }
   ^{BLOCK_COMMENT_PREFIX}$ { stopLookForCtrans(); yypushState(BLOCKCOMMENT_STATE); }
+  ^{BLOCK_HASH_COMMENT_PREFIX}$ { stopLookForCtrans(); yypushState(BLOCK_HASH_COMMENT_STATE); }
   {FLOAT_EXPONENTIAL}   { lookForCtrans(); return FLOAT_EXPONENTIAL; }
   {FLOAT}               { lookForCtrans(); return FLOAT; }
   {INTEGER}             { lookForCtrans(); return INTEGER; }
@@ -230,6 +236,17 @@ SINGLE_QUOTE_EXCAPE_SEQUENCE=\\[\\bfnrt]|''
     ^{BLOCK_COMMENT_SUFFIX}$ { yypopState();
                                if (yystate() != BLOCKCOMMENT_STATE) return COMMENT;
                              }
+    <<EOF>>                  { yyclearStack(); yybegin(YYINITIAL); return COMMENT; }
+
+    [^]                      {  }
+}
+
+<BLOCK_HASH_COMMENT_STATE> {
+    ^{BLOCK_HASH_COMMENT_PREFIX}$ { yypushState(BLOCK_HASH_COMMENT_STATE); }
+
+    ^{BLOCK_HASH_COMMENT_SUFFIX}$ { yypopState();
+                                   if (yystate() != BLOCK_HASH_COMMENT_STATE) return COMMENT;
+                                 }
     <<EOF>>                  { yyclearStack(); yybegin(YYINITIAL); return COMMENT; }
 
     [^]                      {  }
