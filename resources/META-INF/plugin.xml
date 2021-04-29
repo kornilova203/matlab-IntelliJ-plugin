@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>MatlabSupport</id>
     <name>Matlab Support</name>
-    <version>0.8.3</version>
+    <version>0.8.4</version>
 
     <vendor url="https://github.com/kornilova203" email="kornilova203@gmail.com"/>
 
@@ -12,7 +12,7 @@
 
     <change-notes><![CDATA[
     <ol>
-        <li>Better keywords completion inside classdef</li>
+        <li>Support comments that start with symbol #</li>
     </ol>
     ]]>
     </change-notes>
