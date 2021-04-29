@@ -1,5 +1,7 @@
 % line comment
 
+# line comment
+
 y = 1 ... comment
     -1
 y = [1, ...c
@@ -9,12 +11,23 @@ y = [1, ...c
 block comment
 %}
 
+#{
+block comment
+#}
+
 %{
 block comment
   %{
     nested comment
   %}
 %}
+
+#{
+block comment
+  #{
+    nested comment
+  #}
+#}
 
 %{
 %{ not start
@@ -25,6 +38,16 @@ not start %{
 %} not end
 not end %}
 %}
+
+#{
+#{ not start
+not start #{
+#}
+
+#{
+#} not end
+not end #}
+#}
 
 myVar %{
 

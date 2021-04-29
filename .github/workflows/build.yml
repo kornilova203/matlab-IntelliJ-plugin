@@ -1,4 +1,4 @@
-name: Windows Build
+name: Multi-OS Build
 
 on:
   push:
@@ -10,7 +10,10 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -24,8 +27,8 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: win-${{ hashFiles('**/*.gradle*') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
-            win-
-      - name: Build with Gradle
-        run: ./gradlew clean build
+            ${{ runner.os }}-gradle-
+      - name: Tests with Gradle
+        run: ./gradlew test
