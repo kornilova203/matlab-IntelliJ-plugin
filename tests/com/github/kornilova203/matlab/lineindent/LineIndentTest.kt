@@ -1,6 +1,7 @@
 package com.github.kornilova203.matlab.lineindent
 
 import com.github.kornilova203.matlab.getTestDataRoot
+import com.intellij.application.options.CodeStyle
 import com.intellij.openapi.actionSystem.IdeActions
 import com.intellij.testFramework.TestDataPath
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
@@ -23,9 +24,18 @@ class LineIndentTest : BasePlatformTestCase() {
         myFixture.performEditorAction(IdeActions.ACTION_EDITOR_ENTER)
         myFixture.checkResult("if a > b a end\n")
     }
+    fun testCustomIndent() {
+        myFixture.configureByText("test.m", "")
+        CodeStyle.getIndentOptions(myFixture.file).INDENT_SIZE = 20
+        performEditorActionsAndCompare()
+    }
 
     private fun doTest() {
         myFixture.configureByText("test.m", "")
+        performEditorActionsAndCompare()
+    }
+
+    private fun performEditorActionsAndCompare() {
         val file = File(testDataPath, getTestName(false) + ".m")
         file.forEachLine { line ->
             myFixture.type(line)
