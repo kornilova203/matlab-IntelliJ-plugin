@@ -25,17 +25,24 @@ class LineIndentTest : BasePlatformTestCase() {
         myFixture.checkResult("if a > b a end\n")
     }
     fun testCustomIndent() {
+        val customIndent = 20
+        val ifCondition = "if a > b"
+        val ifBody = "a = b;"
+
         myFixture.configureByText("test.m", "")
-        CodeStyle.getIndentOptions(myFixture.file).INDENT_SIZE = 20
-        performEditorActionsAndCompare()
+        CodeStyle.getIndentOptions(myFixture.file).INDENT_SIZE = customIndent
+        myFixture.type(ifCondition)
+        myFixture.performEditorAction(IdeActions.ACTION_EDITOR_ENTER)
+        myFixture.type(ifBody)
+        myFixture.checkResult("""
+            $ifCondition
+            ${" ".repeat(customIndent)}$ifBody
+            """.trimIndent()
+        )
     }
 
     private fun doTest() {
         myFixture.configureByText("test.m", "")
-        performEditorActionsAndCompare()
-    }
-
-    private fun performEditorActionsAndCompare() {
         val file = File(testDataPath, getTestName(false) + ".m")
         file.forEachLine { line ->
             myFixture.type(line)
