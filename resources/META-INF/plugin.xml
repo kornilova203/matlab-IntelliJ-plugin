@@ -82,6 +82,11 @@
         <localInspection language="Matlab" shortName="MatlabUnusedVariable" displayName="Unused variable and parameters" groupName="Matlab" enabledByDefault="true" level="WEAK WARNING"
                          implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnusedVariableInspection"/>
         
+        <codeStyleSettingsProvider
+                implementation="com.github.kornilova203.matlab.settings.MatlabCodeStyleSettingsProvider"/>
+        <langCodeStyleSettingsProvider
+                implementation="com.github.kornilova203.matlab.settings.MatlabLanguageCodeStyleSettingsProvider"/>
+        
     </extensions>
 
     <project-components>
