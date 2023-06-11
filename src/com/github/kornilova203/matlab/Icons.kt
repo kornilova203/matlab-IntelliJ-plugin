@@ -3,5 +3,5 @@ package com.github.kornilova203.matlab
 import com.intellij.openapi.util.IconLoader
 
 object Icons {
-    val Matlab = IconLoader.getIcon("/icons/matlab.svg", Icons::class.java.javaClass)
+    val Matlab = IconLoader.getIcon("/icons/matlab.svg", Icons::class.java.classLoader)
 }
