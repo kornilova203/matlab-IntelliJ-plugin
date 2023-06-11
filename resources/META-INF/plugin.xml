@@ -2,7 +2,7 @@
     <id>MatlabSupport</id>
     <name>Matlab Support</name>
 
-    <vendor url="https://github.com/kornilova203" email="kornilova203@gmail.com"/>
+    <vendor url="https://github.com/kornilova203" email="kornilova203@gmail.com">Liudmila Kornilova</vendor>
 
     <description><![CDATA[
     <strong>Matlab syntax highlighting plugin for JetBrains IDEs.</strong><br>
