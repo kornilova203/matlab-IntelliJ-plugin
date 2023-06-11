@@ -8,6 +8,7 @@ import com.github.kornilova203.matlab.psi.MatlabParameters
 import com.github.kornilova203.matlab.psi.MatlabTypes.*
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
+import com.intellij.lang.annotation.HighlightSeverity
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors
 import com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey
 import com.intellij.psi.PsiElement
@@ -39,7 +40,10 @@ class MatlabAnnotator : Annotator {
                 else -> null
             }
             if (attrs != null) {
-                holder.createInfoAnnotation(el, null).textAttributes = attrs
+                holder.newAnnotation(HighlightSeverity.INFORMATION, "")
+                    .range(el)
+                    .textAttributes(attrs)
+                    .create()
             }
         }
     }
