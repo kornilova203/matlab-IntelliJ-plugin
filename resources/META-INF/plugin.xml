@@ -1,7 +1,6 @@
 <idea-plugin>
     <id>MatlabSupport</id>
     <name>Matlab Support</name>
-    <version>0.8.4</version>
 
     <vendor url="https://github.com/kornilova203" email="kornilova203@gmail.com"/>
 
@@ -12,7 +11,7 @@
 
     <change-notes><![CDATA[
     <ol>
-        <li>Support comments that start with symbol #</li>
+        <li>Fix compatibility problems</li>
     </ol>
     ]]>
     </change-notes>

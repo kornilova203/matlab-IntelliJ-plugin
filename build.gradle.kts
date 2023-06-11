@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.github.kornilova203"
-version = "0.8.5-SNAPSHOT"
+version = "0.8.5"
 
 repositories {
     mavenCentral()
