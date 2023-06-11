@@ -26,10 +26,7 @@ class MatlabParserDefinition : ParserDefinition {
 
     override fun createParser(project: Project?): PsiParser = MatlabParser()
 
-    override fun createFile(viewProvider: FileViewProvider?): PsiFile? {
-        if (viewProvider == null) {
-            return null
-        }
+    override fun createFile(viewProvider: FileViewProvider): PsiFile {
         return MatlabFile(viewProvider)
     }
 

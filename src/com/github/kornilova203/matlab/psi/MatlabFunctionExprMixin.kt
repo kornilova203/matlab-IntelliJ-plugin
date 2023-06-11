@@ -26,7 +26,7 @@ abstract class MatlabFunctionExprMixin(node: ASTNode) : MatlabASTWrapperPsiEleme
                 processor.execute(function, state)
             }
         }
-        return (processor as? MatlabResolvingScopeProcessor)?.declaration == null ?: true
+        return (processor as? MatlabResolvingScopeProcessor)?.declaration == null
     }
 
     override fun getType(): MatlabType {
