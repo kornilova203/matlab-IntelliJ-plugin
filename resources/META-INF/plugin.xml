@@ -81,13 +81,7 @@
                          implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnnecessaryReturnInspection"/>
         <localInspection language="Matlab" shortName="MatlabUnusedVariable" displayName="Unused variable and parameters" groupName="Matlab" enabledByDefault="true" level="WEAK WARNING"
                          implementationClass="com.github.kornilova203.matlab.inspections.MatlabUnusedVariableInspection"/>
+        <highlightingPassFactory implementation="com.github.kornilova203.matlab.MatlabBlockHighlighterFactory"/>
         
     </extensions>
-
-    <project-components>
-        <component>
-            <implementation-class>com.github.kornilova203.matlab.MatlabBlockHighlighterFactory</implementation-class>
-        </component>
-    </project-components>
-
 </idea-plugin>

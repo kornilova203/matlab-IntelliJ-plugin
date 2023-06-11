@@ -2,10 +2,7 @@ package com.github.kornilova203.matlab
 
 import com.github.kornilova203.matlab.psi.*
 import com.github.kornilova203.matlab.psi.MatlabTypes.*
-import com.intellij.codeHighlighting.Pass
-import com.intellij.codeHighlighting.TextEditorHighlightingPass
-import com.intellij.codeHighlighting.TextEditorHighlightingPassFactory
-import com.intellij.codeHighlighting.TextEditorHighlightingPassRegistrar
+import com.intellij.codeHighlighting.*
 import com.intellij.codeInsight.daemon.impl.HighlightInfo
 import com.intellij.codeInsight.daemon.impl.HighlightInfoType
 import com.intellij.codeInsight.daemon.impl.UpdateHighlightersUtil
@@ -17,6 +14,7 @@ import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.editor.colors.CodeInsightColors
 import com.intellij.openapi.editor.colors.EditorColors
 import com.intellij.openapi.progress.ProgressIndicator
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
@@ -30,8 +28,8 @@ import com.intellij.util.containers.ContainerUtil
 /**
  * @author Liudmila Kornilova
  **/
-class MatlabBlockHighlighterFactory(registrar: TextEditorHighlightingPassRegistrar) : TextEditorHighlightingPassFactory, BaseComponent, ProjectComponent, NamedComponent {
-    init {
+class MatlabBlockHighlighterFactory : TextEditorHighlightingPassFactory, TextEditorHighlightingPassFactoryRegistrar {
+    override fun registerHighlightingPassFactory(registrar: TextEditorHighlightingPassRegistrar, project: Project) {
         registrar.registerTextEditorHighlightingPass(this, null, intArrayOf(Pass.UPDATE_ALL), false, -1)
     }
 
@@ -157,10 +155,4 @@ class MatlabBlockHighlighterFactory(registrar: TextEditorHighlightingPassRegistr
         private val MATCHED = HighlightInfoType.HighlightInfoTypeImpl(HighlightInfoType.SYMBOL_TYPE_SEVERITY, EditorColors.IDENTIFIER_UNDER_CARET_ATTRIBUTES)
         private val UNMATCHED = HighlightInfoType.HighlightInfoTypeImpl(HighlightSeverity.ERROR, CodeInsightColors.UNMATCHED_BRACE_ATTRIBUTES)
     }
-
-    override fun initComponent() {}
-    override fun disposeComponent() {}
-    override fun projectClosed() {}
-    override fun projectOpened() {}
-    override fun getComponentName(): String = javaClass.name
 }
