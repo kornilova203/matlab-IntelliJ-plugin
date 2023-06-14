@@ -84,7 +84,7 @@ BLOCK_HASH_COMMENT_SUFFIX={WHITE_SPACE}* "#}" {WHITE_SPACE}*
 FLOAT=(([\d]*\.[\d]+)|([\d]+\.))i?
 FLOAT_EXPONENTIAL=(([\d]*\.[\d]+)|([\d]+\.)|\d+)e[\+-]?[\d]+i?
 IDENTIFIER = [:jletter:] [:jletterdigit:]*
-INTEGER=[0-9]+i?
+INTEGER=[0-9]+[ijIJ]?
 
 /* double quote literal does not allow single \ character. Sequence \" gives double quote */
 ESCAPE_SEQUENCE = \\[^\r\n]
