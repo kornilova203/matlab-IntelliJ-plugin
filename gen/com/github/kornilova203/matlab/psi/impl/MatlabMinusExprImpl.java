@@ -16,10 +16,12 @@ public class MatlabMinusExprImpl extends MatlabBinaryExprImpl implements MatlabM
     super(node);
   }
 
+  @Override
   public void accept(@NotNull MatlabVisitor visitor) {
     visitor.visitMinusExpr(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MatlabVisitor) accept((MatlabVisitor)visitor);
     else super.accept(visitor);

@@ -16,10 +16,12 @@ public class MatlabPowExprImpl extends MatlabBinaryExprImpl implements MatlabPow
     super(node);
   }
 
+  @Override
   public void accept(@NotNull MatlabVisitor visitor) {
     visitor.visitPowExpr(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MatlabVisitor) accept((MatlabVisitor)visitor);
     else super.accept(visitor);

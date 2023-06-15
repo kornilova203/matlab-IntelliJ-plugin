@@ -16,8 +16,8 @@ import com.intellij.psi.tree.IElementType;
 
 public class MatlabFunctionDeclarationImpl extends MatlabStubbedFunctionDeclaration implements MatlabFunctionDeclaration {
 
-  public MatlabFunctionDeclarationImpl(@NotNull MatlabFunctionDeclarationStub stub, @NotNull IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
+  public MatlabFunctionDeclarationImpl(@NotNull MatlabFunctionDeclarationStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public MatlabFunctionDeclarationImpl(@NotNull ASTNode node) {
@@ -32,6 +32,7 @@ public class MatlabFunctionDeclarationImpl extends MatlabStubbedFunctionDeclarat
     visitor.visitFunctionDeclaration(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MatlabVisitor) accept((MatlabVisitor)visitor);
     else super.accept(visitor);

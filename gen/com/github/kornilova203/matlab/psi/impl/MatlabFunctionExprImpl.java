@@ -21,6 +21,7 @@ public class MatlabFunctionExprImpl extends MatlabFunctionExprMixin implements M
     visitor.visitFunctionExpr(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MatlabVisitor) accept((MatlabVisitor)visitor);
     else super.accept(visitor);

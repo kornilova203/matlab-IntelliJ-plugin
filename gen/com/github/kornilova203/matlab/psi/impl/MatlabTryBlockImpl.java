@@ -21,6 +21,7 @@ public class MatlabTryBlockImpl extends MatlabASTWrapperPsiElement implements Ma
     visitor.visitTryBlock(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MatlabVisitor) accept((MatlabVisitor)visitor);
     else super.accept(visitor);

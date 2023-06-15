@@ -16,8 +16,8 @@ import com.intellij.psi.tree.IElementType;
 
 public class MatlabGlobalVariableDeclarationImpl extends MatlabStubbedGlobalVariable implements MatlabGlobalVariableDeclaration {
 
-  public MatlabGlobalVariableDeclarationImpl(@NotNull MatlabGlobalVariableStub stub, @NotNull IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
+  public MatlabGlobalVariableDeclarationImpl(@NotNull MatlabGlobalVariableStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public MatlabGlobalVariableDeclarationImpl(@NotNull ASTNode node) {
@@ -32,6 +32,7 @@ public class MatlabGlobalVariableDeclarationImpl extends MatlabStubbedGlobalVari
     visitor.visitGlobalVariableDeclaration(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MatlabVisitor) accept((MatlabVisitor)visitor);
     else super.accept(visitor);
