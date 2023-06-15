@@ -78,19 +78,19 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "arguments")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, ARGUMENTS, "<arguments>");
-    r = withOn(b, l + 1, NEW_LINE_ALLOWED, arguments_0_1_parser_);
+    r = withOn(b, l + 1, NEW_LINE_ALLOWED, MatlabParser::arguments_0_1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   // <<withOn 'ALLOW_END_AS_IDENTIFIER' (<<p_opt_list argument>>)>>
   private static boolean arguments_0_1(PsiBuilder b, int l) {
-    return withOn(b, l + 1, ALLOW_END_AS_IDENTIFIER, arguments_0_1_0_1_parser_);
+    return withOn(b, l + 1, ALLOW_END_AS_IDENTIFIER, MatlabParser::arguments_0_1_0_1);
   }
 
   // <<p_opt_list argument>>
   private static boolean arguments_0_1_0_1(PsiBuilder b, int l) {
-    return p_opt_list(b, l + 1, argument_parser_);
+    return p_opt_list(b, l + 1, MatlabParser::argument);
   }
 
   /* ********************************************************** */
@@ -142,7 +142,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!nextTokenIs(b, LPARENTH)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = p_opt_list(b, l + 1, attribute_parser_);
+    r = p_opt_list(b, l + 1, MatlabParser::attribute);
     exit_section_(b, m, ATTRIBUTES, r);
     return r;
   }
@@ -234,8 +234,8 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "block_that_recovers_until_end")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
-    r = block(b, l + 1, element_parser_);
-    exit_section_(b, l, m, r, false, not_end_or_oef_parser_);
+    r = block(b, l + 1, MatlabParser::element);
+    exit_section_(b, l, m, r, false, MatlabParser::not_end_or_oef);
     return r;
   }
 
@@ -263,8 +263,8 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = r && report_error_(b, case_block_1(b, l + 1));
     r = p && report_error_(b, case_expression(b, l + 1)) && r;
     r = p && report_error_(b, case_block_3(b, l + 1)) && r;
-    r = p && block(b, l + 1, element_parser_) && r;
-    exit_section_(b, l, m, r, p, case_block_recovery_parser_);
+    r = p && block(b, l + 1, MatlabParser::element) && r;
+    exit_section_(b, l, m, r, p, MatlabParser::case_block_recovery);
     return r || p;
   }
 
@@ -355,7 +355,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     p = r; // pin = 1
     r = r && report_error_(b, catch_block_1(b, l + 1));
     r = p && report_error_(b, sep(b, l + 1)) && r;
-    r = p && block(b, l + 1, element_parser_) && r;
+    r = p && block(b, l + 1, MatlabParser::element) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
@@ -395,20 +395,20 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "cell_array_access_item_list")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
-    r = withOff(b, l + 1, NEW_LINE_ALLOWED, cell_array_access_item_list_0_1_parser_);
+    r = withOff(b, l + 1, NEW_LINE_ALLOWED, MatlabParser::cell_array_access_item_list_0_1);
     r = r && cell_array_access_item_list_1(b, l + 1);
-    exit_section_(b, l, m, r, false, not_brace_parser_);
+    exit_section_(b, l, m, r, false, MatlabParser::not_brace);
     return r;
   }
 
   // <<withOn 'ALLOW_END_AS_IDENTIFIER' (<<comma_list argument>>)>>
   private static boolean cell_array_access_item_list_0_1(PsiBuilder b, int l) {
-    return withOn(b, l + 1, ALLOW_END_AS_IDENTIFIER, cell_array_access_item_list_0_1_0_1_parser_);
+    return withOn(b, l + 1, ALLOW_END_AS_IDENTIFIER, MatlabParser::cell_array_access_item_list_0_1_0_1);
   }
 
   // <<comma_list argument>>
   private static boolean cell_array_access_item_list_0_1_0_1(PsiBuilder b, int l) {
-    return comma_list(b, l + 1, argument_parser_);
+    return comma_list(b, l + 1, MatlabParser::argument);
   }
 
   // [ sep ';' ]
@@ -438,7 +438,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = cell_array_row(b, l + 1);
     r = r && cell_array_content_1(b, l + 1);
     r = r && cell_array_content_2(b, l + 1);
-    exit_section_(b, l, m, r, false, cell_array_content_recovery_parser_);
+    exit_section_(b, l, m, r, false, MatlabParser::cell_array_content_recovery);
     return r;
   }
 
@@ -551,7 +551,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = r && cell_array_row_1(b, l + 1);
     r = r && sep(b, l + 1);
     r = r && cell_array_row_3(b, l + 1);
-    exit_section_(b, l, m, r, false, cell_array_row_recovery_parser_);
+    exit_section_(b, l, m, r, false, MatlabParser::cell_array_row_recovery);
     return r;
   }
 
@@ -657,7 +657,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
       if (!class_body_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "class_body", c)) break;
     }
-    exit_section_(b, l, m, true, false, not_end_or_oef_parser_);
+    exit_section_(b, l, m, true, false, MatlabParser::not_end_or_oef);
     return true;
   }
 
@@ -1142,7 +1142,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = p && report_error_(b, enumeration_block_2(b, l + 1)) && r;
     r = p && report_error_(b, enumeration_block_3(b, l + 1)) && r;
     r = p && consumeToken(b, END) && r;
-    exit_section_(b, l, m, r, p, block_inside_class_recovery_parser_);
+    exit_section_(b, l, m, r, p, MatlabParser::block_inside_class_recovery);
     return r || p;
   }
 
@@ -1256,7 +1256,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = p && report_error_(b, events_list(b, l + 1)) && r;
     r = p && report_error_(b, events_block_5(b, l + 1)) && r;
     r = p && consumeToken(b, END) && r;
-    exit_section_(b, l, m, r, p, block_inside_class_recovery_parser_);
+    exit_section_(b, l, m, r, p, MatlabParser::block_inside_class_recovery);
     return r || p;
   }
 
@@ -1343,7 +1343,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
       if (!events_list_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "events_list", c)) break;
     }
-    exit_section_(b, l, m, true, false, events_block_body_recovery_parser_);
+    exit_section_(b, l, m, true, false, MatlabParser::events_block_body_recovery);
     return true;
   }
 
@@ -1491,7 +1491,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // assign_expr
+  // expr
   public static boolean for_loop_range(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "for_loop_range")) return false;
     boolean r;
@@ -1507,8 +1507,8 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "function_call_or_matrix_element_access")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = withOn(b, l + 1, ALLOW_END_AS_IDENTIFIER, ref_expr_parser_);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = withOn(b, l + 1, ALLOW_END_AS_IDENTIFIER, MatlabParser::ref_expr);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && arguments(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -1774,8 +1774,8 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "if_block_body")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
-    r = block(b, l + 1, element_parser_);
-    exit_section_(b, l, m, r, false, not_end_or_elseif_or_else_parser_);
+    r = block(b, l + 1, MatlabParser::element);
+    exit_section_(b, l, m, r, false, MatlabParser::not_end_or_elseif_or_else);
     return r;
   }
 
@@ -1800,7 +1800,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = r && list_item(b, l + 1, _item);
     r = r && list_2(b, l + 1, _item);
     r = r && sep(b, l + 1);
-    exit_section_(b, l, m, r, false, not_rparenth_parser_);
+    exit_section_(b, l, m, r, false, MatlabParser::not_rparenth);
     return r;
   }
 
@@ -1837,7 +1837,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = list_item_0(b, l + 1);
     p = r; // pin = 1
     r = r && _item.parse(b, l);
-    exit_section_(b, l, m, r, p, not_rparenth_or_comma_parser_);
+    exit_section_(b, l, m, r, p, MatlabParser::not_rparenth_or_comma);
     return r || p;
   }
 
@@ -1856,7 +1856,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = r && matrix_content_1(b, l + 1);
     r = r && sep(b, l + 1);
     r = r && matrix_content_3(b, l + 1);
-    exit_section_(b, l, m, r, false, not_rbracket_parser_);
+    exit_section_(b, l, m, r, false, MatlabParser::not_rbracket);
     return r;
   }
 
@@ -1949,7 +1949,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = r && matrix_row_1(b, l + 1);
     r = r && sep(b, l + 1);
     r = r && matrix_row_3(b, l + 1);
-    exit_section_(b, l, m, r, false, not_rbracket_or_semicolon_parser_);
+    exit_section_(b, l, m, r, false, MatlabParser::not_rbracket_or_semicolon);
     return r;
   }
 
@@ -2017,7 +2017,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = p && report_error_(b, methods_list(b, l + 1)) && r;
     r = p && report_error_(b, methods_block_5(b, l + 1)) && r;
     r = p && consumeToken(b, END) && r;
-    exit_section_(b, l, m, r, p, block_inside_class_recovery_parser_);
+    exit_section_(b, l, m, r, p, MatlabParser::block_inside_class_recovery);
     return r || p;
   }
 
@@ -2071,7 +2071,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
       if (!methods_list_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "methods_list", c)) break;
     }
-    exit_section_(b, l, m, true, false, block_inside_class_recovery_parser_);
+    exit_section_(b, l, m, true, false, MatlabParser::block_inside_class_recovery);
     return true;
   }
 
@@ -2610,8 +2610,8 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, OTHERWISE);
     p = r; // pin = 1
     r = r && report_error_(b, otherwise_block_1(b, l + 1));
-    r = p && block(b, l + 1, element_parser_) && r;
-    exit_section_(b, l, m, r, p, case_block_recovery_parser_);
+    r = p && block(b, l + 1, MatlabParser::element) && r;
+    exit_section_(b, l, m, r, p, MatlabParser::case_block_recovery);
     return r || p;
   }
 
@@ -2689,7 +2689,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!nextTokenIs(b, LPARENTH)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = p_opt_list(b, l + 1, parameter_parser_);
+    r = p_opt_list(b, l + 1, MatlabParser::parameter);
     exit_section_(b, m, PARAMETERS, r);
     return r;
   }
@@ -2797,7 +2797,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = p && report_error_(b, properties_list(b, l + 1)) && r;
     r = p && report_error_(b, properties_block_5(b, l + 1)) && r;
     r = p && consumeToken(b, END) && r;
-    exit_section_(b, l, m, r, p, block_inside_class_recovery_parser_);
+    exit_section_(b, l, m, r, p, MatlabParser::block_inside_class_recovery);
     return r || p;
   }
 
@@ -2851,7 +2851,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
       if (!properties_list_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "properties_list", c)) break;
     }
-    exit_section_(b, l, m, true, false, block_inside_class_recovery_parser_);
+    exit_section_(b, l, m, true, false, MatlabParser::block_inside_class_recovery);
     return true;
   }
 
@@ -2952,7 +2952,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!nextTokenIs(b, LPARENTH)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = p_opt_list(b, l + 1, dimension_parser_);
+    r = p_opt_list(b, l + 1, MatlabParser::dimension);
     exit_section_(b, m, PROPERTY_SIZE, r);
     return r;
   }
@@ -2971,7 +2971,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LBRACE);
-    r = r && comma_list(b, l + 1, property_validation_function_parser_);
+    r = r && comma_list(b, l + 1, MatlabParser::property_validation_function);
     r = r && consumeToken(b, RBRACE);
     exit_section_(b, m, PROPERTY_VALIDATION_FUNCTIONS, r);
     return r;
@@ -2996,7 +2996,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_);
     r = ret_value(b, l + 1);
     r = r && ret_values_list_1(b, l + 1);
-    exit_section_(b, l, m, r, false, ret_values_list_recovery_parser_);
+    exit_section_(b, l, m, r, false, MatlabParser::ret_values_list_recovery);
     return r;
   }
 
@@ -3244,7 +3244,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, RETURN_VALUES, "<single ret value>");
     r = ret_value(b, l + 1);
-    exit_section_(b, l, m, r, false, not_expr_or_equal_parser_);
+    exit_section_(b, l, m, r, false, MatlabParser::not_expr_or_equal);
     return r;
   }
 
@@ -3282,7 +3282,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, SPMD);
     p = r; // pin = 1
     r = r && report_error_(b, spmd_block_1(b, l + 1));
-    r = p && report_error_(b, block(b, l + 1, element_parser_)) && r;
+    r = p && report_error_(b, block(b, l + 1, MatlabParser::element)) && r;
     r = p && consumeToken(b, END) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
@@ -3379,7 +3379,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
     r = ref_expr(b, l + 1);
-    exit_section_(b, l, m, r, false, not_ampersand_or_super_class_or_properties_or_methods_or_end_parser_);
+    exit_section_(b, l, m, r, false, MatlabParser::not_ampersand_or_super_class_or_properties_or_methods_or_end);
     return r;
   }
 
@@ -3486,7 +3486,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, SWITCH_EXPRESSION, "<switch expression>");
     r = expr(b, l + 1, -1);
-    exit_section_(b, l, m, r, false, case_block_recovery_parser_);
+    exit_section_(b, l, m, r, false, MatlabParser::case_block_recovery);
     return r;
   }
 
@@ -3503,7 +3503,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, TRY);
     p = r; // pin = 1
     r = r && report_error_(b, sep(b, l + 1));
-    r = p && report_error_(b, block(b, l + 1, element_parser_)) && r;
+    r = p && report_error_(b, block(b, l + 1, MatlabParser::element)) && r;
     r = p && report_error_(b, try_block_3(b, l + 1)) && r;
     r = p && consumeToken(b, END) && r;
     exit_section_(b, l, m, r, p, null);
@@ -3792,9 +3792,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "assign_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, ASSIGN);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3804,9 +3804,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "or_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, OR);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3816,9 +3816,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "and_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, AND);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3828,9 +3828,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "matrix_or_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, MATRIX_OR);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3840,9 +3840,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "matrix_and_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, MATRIX_AND);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3852,9 +3852,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "equal_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, EQUAL);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3864,9 +3864,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "not_equal_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, NOT_EQUAL);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3876,9 +3876,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "less_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, LESS);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3888,9 +3888,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "less_or_equal_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, LESS_OR_EQUAL);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3900,9 +3900,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "more_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, MORE);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3912,9 +3912,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "more_or_equal_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, MORE_OR_EQUAL);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3924,9 +3924,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "range_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, COLON);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3943,9 +3943,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "range_expr_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, COLON);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && expr(b, l + 1, -1);
     exit_section_(b, m, null, r);
     return r;
@@ -3956,9 +3956,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "plus_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, PLUS);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3968,9 +3968,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "minus_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, MINUS);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3980,9 +3980,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "mul_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, MUL);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3992,9 +3992,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "element_wise_mul_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, DOT_MUL);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4004,9 +4004,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "rdiv_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, RDIV);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4016,9 +4016,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "element_wise_rdiv_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, DOT_RDIV);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4028,9 +4028,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "ldiv_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, LDIV);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4040,9 +4040,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "element_wise_ldiv_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, DOT_LDIV);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4052,9 +4052,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "pow_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, POW);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4064,9 +4064,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "element_wise_pow_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, DOT_POW);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4076,7 +4076,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "unary_inc_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, PLUSPLUS);
     exit_section_(b, m, null, r);
     return r;
@@ -4087,7 +4087,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "unary_dec_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, MINUSMINUS);
     exit_section_(b, m, null, r);
     return r;
@@ -4111,7 +4111,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokenSmart(b, MINUSMINUS);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4134,7 +4134,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokenSmart(b, PLUSPLUS);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4157,7 +4157,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokenSmart(b, PLUS);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4180,7 +4180,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokenSmart(b, MINUS);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4190,7 +4190,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "ctranspose_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, CTRANS);
     exit_section_(b, m, null, r);
     return r;
@@ -4201,7 +4201,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "transpose_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && consumeToken(b, TRANS);
     exit_section_(b, m, null, r);
     return r;
@@ -4225,7 +4225,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokenSmart(b, TILDA);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4248,7 +4248,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokenSmart(b, QUESTION_MARK);
-    r = r && parseWhiteSpace(b, l + 1, br_parser_);
+    r = r && parseWhiteSpace(b, l + 1, MatlabParser::br);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4295,7 +4295,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "function_expr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = parseWhiteSpace(b, l + 1, br_parser_);
+    r = parseWhiteSpace(b, l + 1, MatlabParser::br);
     r = r && arguments(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
@@ -4333,9 +4333,9 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, PAREN_EXPR, "<expression>");
     r = consumeTokenSmart(b, LPARENTH);
     p = r; // pin = 1
-    r = r && report_error_(b, parseWhiteSpace(b, l + 1, br_parser_));
+    r = r && report_error_(b, parseWhiteSpace(b, l + 1, MatlabParser::br));
     r = p && report_error_(b, paren_expr_2(b, l + 1)) && r;
-    r = p && report_error_(b, parseWhiteSpace(b, l + 1, br_parser_)) && r;
+    r = p && report_error_(b, parseWhiteSpace(b, l + 1, MatlabParser::br)) && r;
     r = p && consumeToken(b, RPARENTH) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
@@ -4411,150 +4411,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  static final Parser argument_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return argument(b, l + 1);
-    }
-  };
-  static final Parser arguments_0_1_0_1_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return arguments_0_1_0_1(b, l + 1);
-    }
-  };
-  static final Parser arguments_0_1_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return arguments_0_1(b, l + 1);
-    }
-  };
-  static final Parser attribute_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return attribute(b, l + 1);
-    }
-  };
-  static final Parser block_inside_class_recovery_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return block_inside_class_recovery(b, l + 1);
-    }
-  };
-  static final Parser br_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return br(b, l + 1);
-    }
-  };
-  static final Parser case_block_recovery_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return case_block_recovery(b, l + 1);
-    }
-  };
-  static final Parser cell_array_access_item_list_0_1_0_1_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return cell_array_access_item_list_0_1_0_1(b, l + 1);
-    }
-  };
-  static final Parser cell_array_access_item_list_0_1_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return cell_array_access_item_list_0_1(b, l + 1);
-    }
-  };
-  static final Parser cell_array_content_recovery_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return cell_array_content_recovery(b, l + 1);
-    }
-  };
-  static final Parser cell_array_row_recovery_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return cell_array_row_recovery(b, l + 1);
-    }
-  };
-  static final Parser dimension_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return dimension(b, l + 1);
-    }
-  };
-  static final Parser element_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return element(b, l + 1);
-    }
-  };
-  static final Parser enumeration_block_2_0_0_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return enum_item(b, l + 1);
-    }
-  };
+  static final Parser enumeration_block_2_0_0_parser_ = (b, l) -> enum_item(b, l + 1);
   static final Parser enumeration_block_2_1_0_0_1_0_parser_ = enumeration_block_2_0_0_parser_;
-  static final Parser events_block_body_recovery_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return events_block_body_recovery(b, l + 1);
-    }
-  };
-  static final Parser ident_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return parseIdentifier(b, l + 1);
-    }
-  };
-  static final Parser not_ampersand_or_super_class_or_properties_or_methods_or_end_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return not_ampersand_or_super_class_or_properties_or_methods_or_end(b, l + 1);
-    }
-  };
-  static final Parser not_brace_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return not_brace(b, l + 1);
-    }
-  };
-  static final Parser not_end_or_elseif_or_else_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return not_end_or_elseif_or_else(b, l + 1);
-    }
-  };
-  static final Parser not_end_or_oef_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return not_end_or_oef(b, l + 1);
-    }
-  };
-  static final Parser not_expr_or_equal_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return not_expr_or_equal(b, l + 1);
-    }
-  };
-  static final Parser not_rbracket_or_semicolon_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return not_rbracket_or_semicolon(b, l + 1);
-    }
-  };
-  static final Parser not_rbracket_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return not_rbracket(b, l + 1);
-    }
-  };
-  static final Parser not_rparenth_or_comma_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return not_rparenth_or_comma(b, l + 1);
-    }
-  };
-  static final Parser not_rparenth_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return not_rparenth(b, l + 1);
-    }
-  };
-  static final Parser parameter_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return parameter(b, l + 1);
-    }
-  };
-  static final Parser property_validation_function_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return property_validation_function(b, l + 1);
-    }
-  };
-  static final Parser ref_expr_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return ref_expr(b, l + 1);
-    }
-  };
-  static final Parser ret_values_list_recovery_parser_ = new Parser() {
-    public boolean parse(PsiBuilder b, int l) {
-      return ret_values_list_recovery(b, l + 1);
-    }
-  };
+  static final Parser ident_parser_ = (b, l) -> parseIdentifier(b, l + 1);
 }

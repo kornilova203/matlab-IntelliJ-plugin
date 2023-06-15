@@ -17,10 +17,12 @@ public class MatlabAssignExprImpl extends MatlabAssignExprMixin implements Matla
     super(node);
   }
 
+  @Override
   public void accept(@NotNull MatlabVisitor visitor) {
     visitor.visitAssignExpr(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MatlabVisitor) accept((MatlabVisitor)visitor);
     else super.accept(visitor);

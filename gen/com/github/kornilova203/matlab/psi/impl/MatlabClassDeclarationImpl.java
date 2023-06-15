@@ -16,8 +16,8 @@ import com.intellij.psi.tree.IElementType;
 
 public class MatlabClassDeclarationImpl extends MatlabStubbedClassDeclaration implements MatlabClassDeclaration {
 
-  public MatlabClassDeclarationImpl(@NotNull MatlabClassDeclarationStub stub, @NotNull IStubElementType<?, ?> nodeType) {
-    super(stub, nodeType);
+  public MatlabClassDeclarationImpl(@NotNull MatlabClassDeclarationStub stub, @NotNull IStubElementType<?, ?> type) {
+    super(stub, type);
   }
 
   public MatlabClassDeclarationImpl(@NotNull ASTNode node) {
@@ -32,6 +32,7 @@ public class MatlabClassDeclarationImpl extends MatlabStubbedClassDeclaration im
     visitor.visitClassDeclaration(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MatlabVisitor) accept((MatlabVisitor)visitor);
     else super.accept(visitor);

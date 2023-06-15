@@ -21,6 +21,7 @@ public class MatlabElseBlockImpl extends MatlabASTWrapperPsiElement implements M
     visitor.visitElseBlock(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MatlabVisitor) accept((MatlabVisitor)visitor);
     else super.accept(visitor);

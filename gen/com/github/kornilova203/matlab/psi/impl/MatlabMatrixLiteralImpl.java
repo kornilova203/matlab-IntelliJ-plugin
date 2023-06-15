@@ -21,6 +21,7 @@ public class MatlabMatrixLiteralImpl extends MatlabASTWrapperPsiElement implemen
     visitor.visitMatrixLiteral(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MatlabVisitor) accept((MatlabVisitor)visitor);
     else super.accept(visitor);

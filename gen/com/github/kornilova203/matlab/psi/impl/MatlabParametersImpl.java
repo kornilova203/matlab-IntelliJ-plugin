@@ -16,10 +16,12 @@ public class MatlabParametersImpl extends MatlabParametersListImpl implements Ma
     super(node);
   }
 
+  @Override
   public void accept(@NotNull MatlabVisitor visitor) {
     visitor.visitParameters(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MatlabVisitor) accept((MatlabVisitor)visitor);
     else super.accept(visitor);

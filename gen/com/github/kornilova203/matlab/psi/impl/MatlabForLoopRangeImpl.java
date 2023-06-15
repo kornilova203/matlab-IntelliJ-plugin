@@ -21,6 +21,7 @@ public class MatlabForLoopRangeImpl extends MatlabASTWrapperPsiElement implement
     visitor.visitForLoopRange(this);
   }
 
+  @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof MatlabVisitor) accept((MatlabVisitor)visitor);
     else super.accept(visitor);
@@ -28,8 +29,8 @@ public class MatlabForLoopRangeImpl extends MatlabASTWrapperPsiElement implement
 
   @Override
   @NotNull
-  public MatlabAssignExpr getAssignExpr() {
-    return findNotNullChildByClass(MatlabAssignExpr.class);
+  public MatlabExpr getExpr() {
+    return findNotNullChildByClass(MatlabExpr.class);
   }
 
 }
