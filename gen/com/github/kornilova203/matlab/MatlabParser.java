@@ -1491,7 +1491,7 @@ public class MatlabParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // assign_expr
+  // expr
   public static boolean for_loop_range(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "for_loop_range")) return false;
     boolean r;

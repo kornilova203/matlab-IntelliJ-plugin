@@ -49,8 +49,8 @@ class MatlabControlFlowBuilder : MatlabVisitor(), PsiRecursiveVisitor {
     override fun visitForLoop(node: MatlabForLoop) {
         val instruction = builder.startNode(node)
         val block = node.block
-        val loopRange = node.forLoopRange?.assignExpr
-        loopRange?.accept(this)
+        val loopRange = node.forLoopRange?.expr
+        (loopRange as? MatlabAssignExpr)?.accept(this)
         builder.addPendingEdge(node, builder.prevInstruction)
         builder.startNode(block)
         block?.accept(this)

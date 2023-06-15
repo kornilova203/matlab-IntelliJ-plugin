@@ -29,8 +29,8 @@ public class MatlabForLoopRangeImpl extends MatlabASTWrapperPsiElement implement
 
   @Override
   @NotNull
-  public MatlabAssignExpr getAssignExpr() {
-    return findNotNullChildByClass(MatlabAssignExpr.class);
+  public MatlabExpr getExpr() {
+    return findNotNullChildByClass(MatlabExpr.class);
   }
 
 }

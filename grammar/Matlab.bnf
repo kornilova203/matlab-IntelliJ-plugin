@@ -166,7 +166,7 @@ catch_block ::= catch [ br* ident ] sep <<block element>> {pin=1}
 for_loop ::= for br* for_loop_range [ ';' | ',' ] NEWLINE*
     block_that_recovers_until_end
     end { pin=1 }
-for_loop_range ::= assign_expr
+for_loop_range ::= expr
 
 while_loop ::= while br* while_loop_condition [ ';' | ',' ] NEWLINE*
     block_that_recovers_until_end

@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface MatlabForLoopRange extends PsiElement {
 
   @NotNull
-  MatlabAssignExpr getAssignExpr();
+  MatlabExpr getExpr();
 
 }
